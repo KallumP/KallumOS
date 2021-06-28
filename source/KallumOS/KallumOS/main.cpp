@@ -12,13 +12,14 @@ public:
 public:
 	bool OnUserCreate() override {
 
+		os = new KallumOS(this);
+
 		frameRate = 60;
 		targetFrameTime = 1 / frameRate;
 		return true;
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override {
-
 
 		//keeps track of how much time has passed
 		timeSinceLastFrame += fElapsedTime;
@@ -30,21 +31,19 @@ public:
 			timeSinceLastFrame = 0;
 
 			//clears the window
-			Clear(olc::BLACK);
+			Clear(olc::BLUE);
 
-			os.Tick(this, fElapsedTime);
-			os.Draw(this);
-
+			os->Tick(fElapsedTime);
+			os->Draw();
 
 		}
-
 
 		return true;
 	}
 
 private:
 
-	KallumOS os;
+	KallumOS* os;
 	float frameRate;
 	float targetFrameTime;
 	float timeSinceLastFrame;
@@ -52,10 +51,10 @@ private:
 
 int main() {
 
-	PixelGameEngine window;
+	PixelGameEngine* window = new PixelGameEngine();
 
-	if (window.Construct(1500, 750, 1, 1))
-		window.Start();
+	if (window->Construct(1500, 750, 1, 1))
+		window->Start();
 
 	return 0;
 }

@@ -8,10 +8,9 @@
 class TextBox : public Control {
 
 public:
-	TextBox();
-	TextBox(Point, Point);
+	TextBox(olc::PixelGameEngine*, Point, Point);
 
-	void Draw(olc::PixelGameEngine*);
+	void Draw();
 	bool Hover(Point*);
 	bool Click(Point*);
 

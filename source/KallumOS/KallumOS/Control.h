@@ -8,16 +8,18 @@ protected:
 
 	Point position;
 	Point size;
+	olc::PixelGameEngine* window;
 
 public:
-	Control(Point, Point);
 
-	virtual void Draw(olc::PixelGameEngine*) = 0;
+	Control(olc::PixelGameEngine*, Point, Point);
+
+	virtual void Draw() = 0;
 	virtual bool Hover(Point*) = 0;
 	virtual bool Click(Point*) = 0;
 
+	Point normalizePosition(Point*);
 	bool Within(Point*);
-
 
 };
 

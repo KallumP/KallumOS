@@ -9,24 +9,21 @@ class KallumOS {
 public:
 
 	KallumOS();
+	KallumOS(olc::PixelGameEngine*);
 	~KallumOS();
 
-	void Tick(olc::PixelGameEngine*, float);
-
-	void Draw(olc::PixelGameEngine*);
-
-
+	void Tick(float);
+	void Draw();
 
 private:
 
+	void Click();
+	void MouseMove();
 
-	void Click(Point*);
-	void MouseMove(Point*);
+	olc::PixelGameEngine* window;
+	std::vector<Control*> controls;
 
 	Point* mousePosition;
 	bool mouseClicked;
-	std::vector<Control*> controls;
-
-
 
 };
