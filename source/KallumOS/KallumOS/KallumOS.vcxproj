@@ -19,12 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Control.cpp" />
     <ClCompile Include="KallumOS.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Control.h" />
     <ClInclude Include="KallumOS.h" />
     <ClInclude Include="olcPixelGameEngine.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="TextBox.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

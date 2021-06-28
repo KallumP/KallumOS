@@ -1,19 +1,19 @@
 #define OLC_PGE_APPLICATION 0
 #include "KallumOS.h"
+#include "olcPixelGameEngine.h"
 
 
-
-// Override base class with your custom functionality
 class PixelGameEngine : public olc::PixelGameEngine {
 public:
 	PixelGameEngine() {
-		// Name you application
 		sAppName = "KallumOS";
 	}
 
 public:
 	bool OnUserCreate() override {
-		// Called once at the start, so create things here
+
+		frameRate = 60;
+		targetFrameTime = 1 / frameRate;
 		return true;
 	}
 
@@ -23,15 +23,19 @@ public:
 		//keeps track of how much time has passed
 		timeSinceLastFrame += fElapsedTime;
 
+		//checks to see if enough time has passed since the last frame
 		if (timeSinceLastFrame > targetFrameTime) {
 
-			timeSinceLastFrame -= targetFrameTime;
-			fElapsedTime = targetFrameTime;
+			//resets the time since last frame
+			timeSinceLastFrame = 0;
 
-			Clear(olc::DARK_BLUE);
+			//clears the window
+			Clear(olc::BLACK);
 
 			os.Tick(this, fElapsedTime);
 			os.Draw(this);
+
+
 		}
 
 
@@ -41,20 +45,17 @@ public:
 private:
 
 	KallumOS os;
-
-	float frameRate = 60;
-
-	float targetFrameTime = 1 / frameRate;
-
+	float frameRate;
+	float targetFrameTime;
 	float timeSinceLastFrame;
 };
 
 int main() {
 
-	PixelGameEngine engine;
+	PixelGameEngine window;
 
-	if (engine.Construct(256, 240, 4, 4))
-		engine.Start();
+	if (window.Construct(1500, 750, 1, 1))
+		window.Start();
 
 	return 0;
 }

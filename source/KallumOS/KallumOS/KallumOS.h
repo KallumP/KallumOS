@@ -1,17 +1,32 @@
-
 #pragma once
 #include "olcPixelGameEngine.h"
+#include "Control.h"
 
-class KallumOS : olc::PixelGameEngine {
+#include <vector>
+
+class KallumOS {
 
 public:
 
 	KallumOS();
+	~KallumOS();
 
 	void Tick(olc::PixelGameEngine*, float);
 
 	void Draw(olc::PixelGameEngine*);
 
-	~KallumOS();
+
+
+private:
+
+
+	void Click(Point*);
+	void MouseMove(Point*);
+
+	Point* mousePosition;
+	bool mouseClicked;
+	std::vector<Control*> controls;
+
+
 
 };
