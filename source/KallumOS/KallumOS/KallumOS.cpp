@@ -12,7 +12,9 @@ KallumOS::KallumOS(olc::PixelGameEngine* _window) {
 	window = _window;
 	mousePosition = new Point();
 	mouseClicked = false;
-	controls.push_back(new TextBox(_window, Point(0.5, 0.5), Point(200, 50)));
+	controls.push_back(new TextBox(_window, Point(0.5, 0.5), Point(250, 40)));
+	controls.push_back(new TextBox(_window, Point(0.5, 0.57), Point(250, 40)));
+	Focus(controls[0]);
 }
 
 KallumOS::~KallumOS() {
@@ -60,8 +62,19 @@ void KallumOS::Draw() {
 //Click event
 void KallumOS::Click() {
 
-	for (int i = 0; i < (int)controls.size(); i++)
-		controls[i]->Click(mousePosition);
+	for (int i = 0; i < (int)controls.size(); i++) {
+
+
+		//checks if the control being checked was clicked
+		if (controls[i]->Click(mousePosition)) {
+
+
+			//sets the focus to this control
+			Focus(controls[i]);
+
+			break;
+		}
+	}
 }
 
 //Mouse move event
@@ -69,5 +82,18 @@ void KallumOS::MouseMove() {
 
 	for (int i = 0; i < (int)controls.size(); i++)
 		controls[i]->Hover(mousePosition);
+}
+
+//Set the focus on the input control (and unsets it from the previous)
+void KallumOS::Focus(Control* toFocus) {
+
+	//unsets the old focus (in the control) (if there was a focus already)
+	if (focused != nullptr) focused->RevertFocus();
+
+	//reverts the focus in the os
+	toFocus->RevertFocus();
+
+	//sets the focus in the new control
+	focused = toFocus;
 }
 

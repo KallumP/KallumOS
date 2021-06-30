@@ -19,11 +19,13 @@ private:
 
 	void Click();
 	void MouseMove();
+	void Focus(Control*);
 
 	olc::PixelGameEngine* window;
 	std::vector<Control*> controls;
 
 	Point* mousePosition;
 	bool mouseClicked;
+	Control* focused;
 
 };

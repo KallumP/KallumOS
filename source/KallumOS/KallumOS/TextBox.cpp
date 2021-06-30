@@ -3,7 +3,7 @@
 #include "Point.h"
 
 
-TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size) : Control( _window, _position, _size) {
+TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size) : Control(_window, _position, _size) {
 
 	color = olc::WHITE;
 }
@@ -15,6 +15,9 @@ void TextBox::Draw() {
 
 	window->FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), color);
 
+	if (focused)
+		window->DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), olc::BLACK);
+
 	//draws red circles at the positoin and the positoin + size (to get hitboxes)
 	//window->FillCircle(position.GetX(), position.GetY(), 1, olc::RED);
 	//window->FillCircle(position.GetX() + size.GetX(), position.GetY() + size.GetY(), 1, olc::RED);
@@ -22,25 +25,19 @@ void TextBox::Draw() {
 
 bool TextBox::Hover(Point* mousePosition) {
 
-	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(window->ScreenWidth(), window->ScreenHeight()));
-
 	if (Within(mousePosition)) {
+
 		color = olc::RED;
-	} else {
-		color = olc::WHITE;
+		return true;
 	}
 
+	color = olc::WHITE;
 	return false;
 }
 bool TextBox::Click(Point* mousePosition) {
 
-	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(window->ScreenWidth(), window->ScreenHeight()));
-
-	if (Within(mousePosition)) {
-
-	}
+	if (Within(mousePosition))
+		return true;
 
 	return false;
 }

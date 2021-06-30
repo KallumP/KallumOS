@@ -8,6 +8,7 @@ Control::Control(olc::PixelGameEngine* _window, Point _position, Point _size) {
 	//takes position values as percentages
 	position = _position;
 	size = _size;
+	focused = false;
 }
 
 //turns a percentage position point into a pixel position point
@@ -31,4 +32,8 @@ bool Control::Within(Point* mousePosition) {
 		return true;
 
 	return false;
+}
+
+void Control::RevertFocus() {
+	focused = !focused;
 }

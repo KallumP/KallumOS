@@ -9,6 +9,7 @@ protected:
 	Point position;
 	Point size;
 	olc::PixelGameEngine* window;
+	bool focused;
 
 public:
 
@@ -20,6 +21,7 @@ public:
 
 	Point normalizePosition(Point*);
 	bool Within(Point*);
+	void RevertFocus();
 
 };
 
