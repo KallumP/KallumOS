@@ -53,7 +53,7 @@ int main() {
 
 	PixelGameEngine* window = new PixelGameEngine();
 
-	if (window->Construct(1500, 750, 1, 1))
+	if (window->Construct(1000, 700, 1, 1))
 		window->Start();
 
 	return 0;

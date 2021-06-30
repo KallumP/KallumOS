@@ -5,19 +5,16 @@
 
 #include <string>
 
-class TextBox : public Control {
+class Button : public Control
+{
 
 public:
 
-	TextBox(olc::PixelGameEngine*, Point, Point);
+	Button(olc::PixelGameEngine*, Point, Point, std::string);
 
 	void Draw();
 	bool Hover(Point*);
 	bool Click(Point*);
-
-	void Append(char input);
-	void DeleteOne();
-	void DeleteWord();
 
 private:
 
@@ -25,5 +22,3 @@ private:
 	olc::Pixel color;
 
 };
-
-
