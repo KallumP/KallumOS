@@ -1,6 +1,7 @@
 #pragma once
 #include "olcPixelGameEngine.h"
 #include "Control.h"
+#include "State.h"
 
 #include <vector>
 
@@ -17,15 +18,6 @@ public:
 
 private:
 
-	void Click();
-	void MouseMove();
-	void Focus(Control*);
-
 	olc::PixelGameEngine* window;
-	std::vector<Control*> controls;
-
-	Point* mousePosition;
-	bool mouseClicked;
-	Control* focused;
-
+	State* state;
 };

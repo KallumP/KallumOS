@@ -1,13 +1,17 @@
 #include "olcPixelGameEngine.h"
-#include "TextBox.h"
+#include "Button.h"
 #include "Point.h"
 
-TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size) : Control(_window, _position, _size) {
+#include <string>
+
+
+Button::Button(olc::PixelGameEngine* _window, Point _position, Point _size, std::string _value) : Control(_window, _position, _size) {
 
 	color = olc::WHITE;
+	value = _value;
 }
 
-void TextBox::Draw() {
+void Button::Draw() {
 
 	Point* normalizedPosition = new Point();
 	*normalizedPosition = normalizePosition(new Point(window->ScreenWidth(), window->ScreenHeight()));
@@ -18,7 +22,7 @@ void TextBox::Draw() {
 		window->DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), olc::BLACK);
 }
 
-bool TextBox::Hover(Point* mousePosition) {
+bool Button::Hover(Point* mousePosition) {
 
 	if (Within(mousePosition)) {
 
@@ -30,20 +34,10 @@ bool TextBox::Hover(Point* mousePosition) {
 	return false;
 }
 
-bool TextBox::Click(Point* mousePosition) {
+bool Button::Click(Point* mousePosition) {
 
 	if (Within(mousePosition))
 		return true;
 
 	return false;
-}
-
-void TextBox::Append(char input) {
-
-}
-void TextBox::DeleteOne() {
-
-}
-void TextBox::DeleteWord() {
-
 }
