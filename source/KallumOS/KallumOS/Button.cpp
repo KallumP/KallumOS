@@ -36,8 +36,19 @@ bool Button::Hover(Point* mousePosition) {
 
 bool Button::Click(Point* mousePosition) {
 
-	if (Within(mousePosition))
+	if (Within(mousePosition)) {
+		InvertClicked();
 		return true;
+	}
 
 	return false;
+}
+
+bool Button::GetClicked() {
+	return clicked;
+}
+
+
+void Button::InvertClicked() {
+	clicked = !clicked;
 }

@@ -20,10 +20,10 @@ State::~State() {
 void State::Focus(Control* toFocus) {
 
 	//unsets the old focus (in the control) (if there was a focus already)
-	if (focused != nullptr) focused->RevertFocus();
+	if (focused != nullptr) focused->InvertFocus();
 
 	//reverts the focus in the os
-	toFocus->RevertFocus();
+	toFocus->InvertFocus();
 
 	//sets the focus in the new control
 	focused = toFocus;

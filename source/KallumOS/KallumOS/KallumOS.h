@@ -9,7 +9,6 @@ class KallumOS {
 
 public:
 
-	KallumOS();
 	KallumOS(olc::PixelGameEngine*);
 	~KallumOS();
 

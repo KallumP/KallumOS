@@ -30,9 +30,6 @@ public:
 			//resets the time since last frame
 			timeSinceLastFrame = 0;
 
-			//clears the window
-			Clear(olc::BLUE);
-
 			os->Tick(fElapsedTime);
 			os->Draw();
 

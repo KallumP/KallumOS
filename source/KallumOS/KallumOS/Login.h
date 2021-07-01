@@ -1,5 +1,8 @@
 #pragma once
+#include "olcPixelGameEngine.h"
+
 #include "State.h"
+#include "Button.h"
 
 class Login : public State
 {
@@ -15,6 +18,9 @@ public:
 
 
 private:
+	void CheckLoginClicked();
 
+	Button* loginWatch;
+	olc::Pixel backgroundColor;
 };
 

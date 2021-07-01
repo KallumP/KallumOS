@@ -9,9 +9,12 @@
 Login::Login(olc::PixelGameEngine* _window) : State(_window) {
 
 	controls.push_back(new TextBox(_window, Point(0.5, 0.5), Point(250, 40)));
-	controls.push_back(new TextBox(_window, Point(0.5, 0.57), Point(250, 40)));
-	controls.push_back(new Button(_window, Point(0.5, 0.64), Point(250, 40), "Login"));
 	Focus(controls[0]);
+
+	controls.push_back(new TextBox(_window, Point(0.5, 0.57), Point(250, 40)));
+
+	controls.push_back(new Button(_window, Point(0.5, 0.64), Point(250, 40), "Login"));
+	loginWatch = (Button*)controls[controls.size() - 1];
 }
 
 Login::~Login() {
@@ -39,20 +42,23 @@ void Login::Tick(float ElapsedTime) {
 
 			mouseClicked = true;
 			Click();
-		}
-		else {
+		} else {
 
 			//no need to do anything if the mouse was already clicked down
 		}
-	}
-	else
+	} else
 		mouseClicked = false;
+
+	CheckLoginClicked();
 
 }
 
 
 //Draw event
 void Login::Draw() {
+
+	//clears all graphics on the window
+	window->Clear(backgroundColor);
 
 	for (int i = 0; i < (int)controls.size(); i++)
 		controls[i]->Draw();
@@ -81,3 +87,16 @@ void Login::MouseMove() {
 		controls[i]->Hover(mousePosition);
 }
 
+
+void Login::CheckLoginClicked() {
+
+	if (loginWatch->GetClicked()) {
+
+		if (backgroundColor == olc::DARK_BLUE)
+			backgroundColor = olc::BLUE;
+		else
+			backgroundColor = olc::DARK_BLUE;
+
+		loginWatch->InvertClicked();
+	}
+}

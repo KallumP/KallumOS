@@ -4,10 +4,6 @@
 #include "TextBox.h"
 #include "Login.h"
 
-KallumOS::KallumOS() {
-
-}
-
 KallumOS::KallumOS(olc::PixelGameEngine* _window) {
 
 	window = _window;

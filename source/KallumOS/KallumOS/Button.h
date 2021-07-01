@@ -16,9 +16,17 @@ public:
 	bool Hover(Point*);
 	bool Click(Point*);
 
+	bool GetClicked();
+	void InvertClicked();
+
+
 private:
+
 
 	std::string value;
 	olc::Pixel color;
+
+	bool clicked;
+
 
 };

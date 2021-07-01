@@ -34,6 +34,6 @@ bool Control::Within(Point* mousePosition) {
 	return false;
 }
 
-void Control::RevertFocus() {
+void Control::InvertFocus() {
 	focused = !focused;
 }
