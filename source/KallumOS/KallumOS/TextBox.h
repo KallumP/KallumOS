@@ -9,21 +9,20 @@ class TextBox : public Control {
 
 public:
 
-	TextBox(olc::PixelGameEngine*, Point, Point);
+	TextBox(olc::PixelGameEngine*, Point, Point, std::string);
 
 	void Draw();
-	bool Hover(Point*);
 	bool Click(Point*);
+
+
+private:
 
 	void Append(char input);
 	void DeleteOne();
 	void DeleteWord();
+	void FindNewCursorPosition(int);
 
-private:
-
-	std::string value;
-	olc::Pixel color;
-
+	int cursorPosition;
 };
 
 

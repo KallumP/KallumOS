@@ -11,12 +11,22 @@ protected:
 	olc::PixelGameEngine* window;
 	bool focused;
 
+	olc::Pixel hoverColor;
+	olc::Pixel defaultColor;
+	olc::Pixel backColor;
+
+	std::string value;
+	olc::Pixel fontColor;
+	Point padding;
+	int fontSize;
+
+
 public:
 
 	Control(olc::PixelGameEngine*, Point, Point);
 
 	virtual void Draw() = 0;
-	virtual bool Hover(Point*) = 0;
+	virtual bool Hover(Point*);
 	virtual bool Click(Point*) = 0;
 
 	Point normalizePosition(Point*);

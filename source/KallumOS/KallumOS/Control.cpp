@@ -37,3 +37,15 @@ bool Control::Within(Point* mousePosition) {
 void Control::InvertFocus() {
 	focused = !focused;
 }
+
+bool Control::Hover(Point* mousePosition) {
+
+	if (Within(mousePosition)) {
+
+		backColor = hoverColor;
+		return true;
+	}
+
+	backColor = defaultColor;
+	return false;
+}

@@ -8,10 +8,10 @@
 
 Login::Login(olc::PixelGameEngine* _window) : State(_window) {
 
-	controls.push_back(new TextBox(_window, Point(0.5, 0.5), Point(250, 40)));
+	controls.push_back(new TextBox(_window, Point(0.5, 0.5), Point(250, 40), "User1"));
 	Focus(controls[0]);
 
-	controls.push_back(new TextBox(_window, Point(0.5, 0.57), Point(250, 40)));
+	controls.push_back(new TextBox(_window, Point(0.5, 0.57), Point(250, 40), "Pass1"));
 
 	controls.push_back(new Button(_window, Point(0.5, 0.64), Point(250, 40), "Login"));
 	loginWatch = (Button*)controls[controls.size() - 1];

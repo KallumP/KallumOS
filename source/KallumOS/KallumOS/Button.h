@@ -5,15 +5,13 @@
 
 #include <string>
 
-class Button : public Control
-{
+class Button : public Control {
 
 public:
 
 	Button(olc::PixelGameEngine*, Point, Point, std::string);
 
 	void Draw();
-	bool Hover(Point*);
 	bool Click(Point*);
 
 	bool GetClicked();
@@ -22,11 +20,6 @@ public:
 
 private:
 
-
-	std::string value;
-	olc::Pixel color;
-
 	bool clicked;
-
 
 };
