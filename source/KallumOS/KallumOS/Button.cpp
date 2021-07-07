@@ -55,3 +55,12 @@ bool Button::GetClicked() {
 void Button::InvertClicked() {
 	clicked = !clicked;
 }
+
+void Button::KeyboardInput(std::vector<olc::Key> pressedKeys) {
+
+	for (int i = 0; i < pressedKeys.size(); i++) {
+
+
+
+	}
+}

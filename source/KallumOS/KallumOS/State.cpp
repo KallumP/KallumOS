@@ -1,5 +1,3 @@
-#include "State.h"
-
 #include "olcPixelGameEngine.h"
 #include "State.h"
 #include "Control.h"

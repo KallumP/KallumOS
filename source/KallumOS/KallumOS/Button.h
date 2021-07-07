@@ -16,6 +16,7 @@ public:
 
 	bool GetClicked();
 	void InvertClicked();
+	void KeyboardInput(std::vector<olc::Key>);
 
 
 private:

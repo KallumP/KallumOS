@@ -7,7 +7,7 @@
 KallumOS::KallumOS(olc::PixelGameEngine* _window) {
 
 	window = _window;
-	state = new Login(_window);
+	state = new Login(_window, &keybardHandler);
 }
 
 KallumOS::~KallumOS() {

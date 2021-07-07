@@ -2,6 +2,7 @@
 #include "olcPixelGameEngine.h"
 #include "Control.h"
 #include "State.h"
+#include "Input.h"
 
 #include <vector>
 
@@ -19,4 +20,5 @@ private:
 
 	olc::PixelGameEngine* window;
 	State* state;
+	Input keybardHandler;
 };

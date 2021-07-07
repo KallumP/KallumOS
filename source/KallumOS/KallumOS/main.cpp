@@ -1,7 +1,6 @@
 #define OLC_PGE_APPLICATION 0
-#include "KallumOS.h"
 #include "olcPixelGameEngine.h"
-
+#include "KallumOS.h"
 
 class PixelGameEngine : public olc::PixelGameEngine {
 public:

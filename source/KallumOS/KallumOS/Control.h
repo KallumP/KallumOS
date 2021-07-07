@@ -28,6 +28,7 @@ public:
 	virtual void Draw() = 0;
 	virtual bool Hover(Point*);
 	virtual bool Click(Point*) = 0;
+	virtual void KeyboardInput(std::vector<olc::Key>) = 0;
 
 	Point normalizePosition(Point*);
 	bool Within(Point*);
