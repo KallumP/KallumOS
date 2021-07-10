@@ -3,7 +3,9 @@
 #include "Control.h"
 #include "Point.h"
 
+
 #include <string>
+#include <vector>
 
 class TextBox : public Control {
 
@@ -13,6 +15,8 @@ public:
 
 	void Draw();
 	bool Click(Point*);
+	void OnKeyPress(KeyPress*);
+
 
 
 private:

@@ -1,6 +1,8 @@
 #pragma once
 #include "olcPixelGameEngine.h"
-#include "Point.h"
+#include "Point.h" 
+#include "KeyPress.h"
+
 
 class Control {
 
@@ -28,6 +30,8 @@ public:
 	virtual void Draw() = 0;
 	virtual bool Hover(Point*);
 	virtual bool Click(Point*) = 0;
+	virtual void OnKeyPress(KeyPress*) = 0;
+
 
 	Point normalizePosition(Point*);
 	bool Within(Point*);

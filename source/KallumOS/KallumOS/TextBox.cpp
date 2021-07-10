@@ -1,8 +1,10 @@
 #include "olcPixelGameEngine.h"
 #include "TextBox.h"
 #include "Point.h"
+#include "KeyPress.h"
 
 #include <string>
+#include <iostream>
 
 TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size, std::string _value) : Control(_window, _position, _size) {
 
@@ -56,6 +58,12 @@ bool TextBox::Click(Point* mousePosition) {
 	return false;
 }
 
+//Keypress event
+void TextBox::OnKeyPress(KeyPress* e) {
+
+	std::cout << "Press detected. ";
+}
+
 void TextBox::FindNewCursorPosition(int mouseX) {
 
 	Point* normalizedPosition = new Point();
@@ -69,12 +77,10 @@ void TextBox::FindNewCursorPosition(int mouseX) {
 			cursorPosition = i;
 			return;
 		}
-
 	}
 
 	//if no position was found, then it just sets the cursor to the end
 	cursorPosition = value.size();
-
 }
 
 void TextBox::Append(char input) {

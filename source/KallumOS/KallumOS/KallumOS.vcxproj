@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Control.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="KallumOS.cpp" />
     <ClCompile Include="Login.cpp" />
     <ClCompile Include="main.cpp" />
@@ -30,7 +31,9 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Control.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="KallumOS.h" />
+    <ClInclude Include="KeyPress.h" />
     <ClInclude Include="Login.h" />
     <ClInclude Include="olcPixelGameEngine.h" />
     <ClInclude Include="Point.h" />

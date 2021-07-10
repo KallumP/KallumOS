@@ -3,6 +3,9 @@
 #include "Control.h"
 #include "TextBox.h"
 #include "Login.h"
+#include "KeyPress.h"
+ 
+
 
 KallumOS::KallumOS(olc::PixelGameEngine* _window) {
 
@@ -27,3 +30,8 @@ void KallumOS::Draw() {
 	state->Draw();
 }
 
+
+void KallumOS::OnKeyPress(KeyPress* e) {
+
+	state->OnKeyPress(e);
+}

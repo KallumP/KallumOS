@@ -1,6 +1,7 @@
 #include "olcPixelGameEngine.h"
 #include "Button.h"
 #include "Point.h"
+#include "KeyPress.h"
 
 #include <string>
 
@@ -45,6 +46,10 @@ bool Button::Click(Point* mousePosition) {
 	}
 
 	return false;
+}
+
+//Keypress event
+void Button::OnKeyPress(KeyPress* e) {
 }
 
 bool Button::GetClicked() {

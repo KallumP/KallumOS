@@ -1,9 +1,8 @@
 #include "State.h"
 
 #include "olcPixelGameEngine.h"
-#include "State.h"
 #include "Control.h"
-#include "TextBox.h"
+#include "Point.h"
 
 State::State(olc::PixelGameEngine* _window) {
 

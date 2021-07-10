@@ -5,6 +5,9 @@
 #include "Control.h"
 #include "TextBox.h"
 #include "Button.h"
+#include "KeyPress.h"
+
+
 
 Login::Login(olc::PixelGameEngine* _window) : State(_window) {
 
@@ -50,7 +53,6 @@ void Login::Tick(float ElapsedTime) {
 		mouseClicked = false;
 
 	CheckLoginClicked();
-
 }
 
 
@@ -87,6 +89,11 @@ void Login::MouseMove() {
 		controls[i]->Hover(mousePosition);
 }
 
+//Keypress event
+void Login::OnKeyPress(KeyPress* e) {
+
+	focused->OnKeyPress(e);
+}
 
 void Login::CheckLoginClicked() {
 
