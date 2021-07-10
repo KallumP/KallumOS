@@ -1,19 +1,20 @@
 #pragma once
 #include "olcPixelGameEngine.h"
-
 #include "State.h"
 #include "Button.h"
-#include "Input.h"
+#include "KeyPress.h"
+
 
 class Login : public State
 {
 
 public:
-	Login(olc::PixelGameEngine*, Input*);
+	Login(olc::PixelGameEngine*);
 	~Login();
 
 	void Tick(float);
 	void Draw();
+	void OnKeyPress(KeyPress*);
 
 
 private:
@@ -23,8 +24,5 @@ private:
 
 	Button* loginWatch;
 	olc::Pixel backgroundColor;
-
-	Input* keyboardHandler;
-
 };
 

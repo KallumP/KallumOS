@@ -3,6 +3,7 @@
 #include "Control.h"
 #include "Point.h"
 
+
 #include <string>
 #include <vector>
 
@@ -14,7 +15,8 @@ public:
 
 	void Draw();
 	bool Click(Point*);
-	void KeyboardInput(std::vector<olc::Key>);
+	void OnKeyPress(KeyPress*);
+
 
 
 private:

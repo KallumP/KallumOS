@@ -1,6 +1,7 @@
 #include "olcPixelGameEngine.h"
 #include "Button.h"
 #include "Point.h"
+#include "KeyPress.h"
 
 #include <string>
 
@@ -47,6 +48,10 @@ bool Button::Click(Point* mousePosition) {
 	return false;
 }
 
+//Keypress event
+void Button::OnKeyPress(KeyPress* e) {
+}
+
 bool Button::GetClicked() {
 	return clicked;
 }
@@ -54,13 +59,4 @@ bool Button::GetClicked() {
 
 void Button::InvertClicked() {
 	clicked = !clicked;
-}
-
-void Button::KeyboardInput(std::vector<olc::Key> pressedKeys) {
-
-	for (int i = 0; i < pressedKeys.size(); i++) {
-
-
-
-	}
 }

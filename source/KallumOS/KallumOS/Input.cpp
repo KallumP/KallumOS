@@ -1,133 +1,148 @@
-#include "olcPixelGameEngine.h"
 #include "Input.h"
+#include "olcPixelGameEngine.h"
+#include "KallumOS.h"
+#include "KeyPress.h"
 
-Input::Input() {
-	GenerateKeyList();
+
+
+Input::Input(olc::PixelGameEngine* _window) {
+	window = _window;
+	GenerateKeyPressList();
 }
 
+
+
 //generates the list of all the supported keys
-void Input::GenerateKeyList() {
+void Input::GenerateKeyPressList() {
 
-	allKeys = {
-		olc::Key::NONE,
-		olc::Key::A,
-		olc::Key::B,
-		olc::Key::C,
-		olc::Key::D,
-		olc::Key::E,
-		olc::Key::F,
-		olc::Key::G,
-		olc::Key::H,
-		olc::Key::I,
-		olc::Key::J,
-		olc::Key::K,
-		olc::Key::L,
-		olc::Key::M,
-		olc::Key::N,
-		olc::Key::O,
-		olc::Key::P,
-		olc::Key::Q,
-		olc::Key::R,
-		olc::Key::S,
-		olc::Key::T,
-		olc::Key::U,
-		olc::Key::V,
-		olc::Key::W,
-		olc::Key::X,
-		olc::Key::Y,
-		olc::Key::Z,
+	//textPresses.push_back(KeyPress(olc::Key::NONE, ""));
+	textPresses.push_back(KeyPress(olc::Key::A, "a"));
+	textPresses.push_back(KeyPress(olc::Key::B, "b"));
+	textPresses.push_back(KeyPress(olc::Key::C, "c"));
+	textPresses.push_back(KeyPress(olc::Key::D, "d"));
+	textPresses.push_back(KeyPress(olc::Key::E, "e"));
+	textPresses.push_back(KeyPress(olc::Key::F, "f"));
+	textPresses.push_back(KeyPress(olc::Key::G, "g"));
+	textPresses.push_back(KeyPress(olc::Key::H, "h"));
+	textPresses.push_back(KeyPress(olc::Key::I, "i"));
+	textPresses.push_back(KeyPress(olc::Key::J, "j"));
+	textPresses.push_back(KeyPress(olc::Key::K, "k"));
+	textPresses.push_back(KeyPress(olc::Key::L, "l"));
+	textPresses.push_back(KeyPress(olc::Key::M, "m"));
+	textPresses.push_back(KeyPress(olc::Key::N, "n"));
+	textPresses.push_back(KeyPress(olc::Key::O, "o"));
+	textPresses.push_back(KeyPress(olc::Key::P, "p"));
+	textPresses.push_back(KeyPress(olc::Key::Q, "q"));
+	textPresses.push_back(KeyPress(olc::Key::R, "r"));
+	textPresses.push_back(KeyPress(olc::Key::S, "s"));
+	textPresses.push_back(KeyPress(olc::Key::T, "t"));
+	textPresses.push_back(KeyPress(olc::Key::U, "u"));
+	textPresses.push_back(KeyPress(olc::Key::V, "v"));
+	textPresses.push_back(KeyPress(olc::Key::W, "w"));
+	textPresses.push_back(KeyPress(olc::Key::X, "x"));
+	textPresses.push_back(KeyPress(olc::Key::Y, "y"));
+	textPresses.push_back(KeyPress(olc::Key::Z, "z"));
 
-		olc::Key::K0,
-		olc::Key::K1,
-		olc::Key::K2,
-		olc::Key::K3,
-		olc::Key::K4,
-		olc::Key::K5,
-		olc::Key::K6,
-		olc::Key::K7,
-		olc::Key::K8,
-		olc::Key::K9,
+	textPresses.push_back(KeyPress(olc::Key::K0, ""));
+	textPresses.push_back(KeyPress(olc::Key::K1, ""));
+	textPresses.push_back(KeyPress(olc::Key::K2, ""));
+	textPresses.push_back(KeyPress(olc::Key::K3, ""));
+	textPresses.push_back(KeyPress(olc::Key::K4, ""));
+	textPresses.push_back(KeyPress(olc::Key::K5, ""));
+	textPresses.push_back(KeyPress(olc::Key::K6, ""));
+	textPresses.push_back(KeyPress(olc::Key::K7, ""));
+	textPresses.push_back(KeyPress(olc::Key::K8, ""));
+	textPresses.push_back(KeyPress(olc::Key::K9, ""));
 
-		olc::Key::F1,
-		olc::Key::F2,
-		olc::Key::F3,
-		olc::Key::F4,
-		olc::Key::F5,
-		olc::Key::F6,
-		olc::Key::F7,
-		olc::Key::F8,
-		olc::Key::F9,
-		olc::Key::F10,
-		olc::Key::F11,
-		olc::Key::F12,
+	textPresses.push_back(KeyPress(olc::Key::NP0, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP1, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP2, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP3, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP4, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP5, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP6, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP7, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP8, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP9, ""));
 
-		olc::Key::UP,
-		olc::Key::DOWN,
-		olc::Key::LEFT,
-		olc::Key::RIGHT,
-		olc::Key::SPACE,
-		olc::Key::TAB,
-		olc::Key::SHIFT,
-		olc::Key::CTRL,
-		olc::Key::INS,
-		olc::Key::DEL,
-		olc::Key::HOME,
-		olc::Key::END,
-		olc::Key::PGUP,
-		olc::Key::PGDN,
-		olc::Key::BACK,
-		olc::Key::ESCAPE,
-		olc::Key::RETURN,
-		olc::Key::ENTER,
-		olc::Key::PAUSE,
-		olc::Key::SCROLL,
+	textPresses.push_back(KeyPress(olc::Key::NP_MUL, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP_DIV, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP_ADD, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP_SUB, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP_DECIMAL, ""));
+	textPresses.push_back(KeyPress(olc::Key::PERIOD, ""));
 
-		olc::Key::NP0,
-		olc::Key::NP1,
-		olc::Key::NP2,
-		olc::Key::NP3,
-		olc::Key::NP4,
-		olc::Key::NP5,
-		olc::Key::NP6,
-		olc::Key::NP7,
-		olc::Key::NP8,
-		olc::Key::NP9,
+	textPresses.push_back(KeyPress(olc::Key::EQUALS, ""));
+	textPresses.push_back(KeyPress(olc::Key::COMMA, ""));
+	textPresses.push_back(KeyPress(olc::Key::MINUS, ""));
 
-		olc::Key::NP_MUL,
-		olc::Key::NP_DIV,
-		olc::Key::NP_ADD,
-		olc::Key::NP_SUB,
-		olc::Key::NP_DECIMAL,
-		olc::Key::PERIOD,
 
-		olc::Key::EQUALS,
-		olc::Key::COMMA,
-		olc::Key::MINUS,
+	specialPresses.push_back(KeyPress(olc::Key::F1, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F2, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F3, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F4, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F5, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F6, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F7, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F8, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F9, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F10, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F11, ""));
+	specialPresses.push_back(KeyPress(olc::Key::F12, ""));
 
-		olc::Key::OEM_1,
-		olc::Key::OEM_2,
-		olc::Key::OEM_3,
-		olc::Key::OEM_4,
-		olc::Key::OEM_5,
-		olc::Key::OEM_6,
-		olc::Key::OEM_7,
-		olc::Key::OEM_8,
-		olc::Key::CAPS_LOCK,
-		olc::Key::ENUM_END };
+	specialPresses.push_back(KeyPress(olc::Key::UP, ""));
+	specialPresses.push_back(KeyPress(olc::Key::DOWN, ""));
+	specialPresses.push_back(KeyPress(olc::Key::LEFT, ""));
+	specialPresses.push_back(KeyPress(olc::Key::RIGHT, ""));
+	specialPresses.push_back(KeyPress(olc::Key::SPACE, ""));
+	specialPresses.push_back(KeyPress(olc::Key::TAB, ""));
+	specialPresses.push_back(KeyPress(olc::Key::INS, ""));
+	specialPresses.push_back(KeyPress(olc::Key::DEL, ""));
+	specialPresses.push_back(KeyPress(olc::Key::HOME, ""));
+	specialPresses.push_back(KeyPress(olc::Key::END, ""));
+	specialPresses.push_back(KeyPress(olc::Key::PGUP, ""));
+	specialPresses.push_back(KeyPress(olc::Key::PGDN, ""));
+	specialPresses.push_back(KeyPress(olc::Key::BACK, ""));
+	specialPresses.push_back(KeyPress(olc::Key::ESCAPE, ""));
+	specialPresses.push_back(KeyPress(olc::Key::RETURN, ""));
+	specialPresses.push_back(KeyPress(olc::Key::ENTER, ""));
+	specialPresses.push_back(KeyPress(olc::Key::PAUSE, ""));
+	specialPresses.push_back(KeyPress(olc::Key::SCROLL, ""));
 
+	specialPresses.push_back(KeyPress(olc::Key::OEM_1, ""));
+	specialPresses.push_back(KeyPress(olc::Key::OEM_2, ""));
+	specialPresses.push_back(KeyPress(olc::Key::OEM_3, ""));
+	specialPresses.push_back(KeyPress(olc::Key::OEM_4, ""));
+	specialPresses.push_back(KeyPress(olc::Key::OEM_5, ""));
+	specialPresses.push_back(KeyPress(olc::Key::OEM_6, ""));
+	specialPresses.push_back(KeyPress(olc::Key::OEM_7, ""));
+	specialPresses.push_back(KeyPress(olc::Key::OEM_8, ""));
+	specialPresses.push_back(KeyPress(olc::Key::CAPS_LOCK, ""));
+	specialPresses.push_back(KeyPress(olc::Key::ENUM_END, ""));
+
+
+	modifierPresses.push_back(KeyPress(olc::Key::SHIFT, ""));
+	modifierPresses.push_back(KeyPress(olc::Key::CTRL, ""));
 }
 
 //goes through the list of supported keys and sents the passed control the keypresses
-void Input::GetKeyPress(olc::PixelGameEngine* window, Control* control) {
+void Input::GetKeyPress(KallumOS* caller) {
 
-	std::vector<olc::Key> pressedKeys;
+	std::vector<KeyPress*> pressedKeys;
 
-	if (allKeys.size() != 0) {
+	KeyPress::ctrlPressed == window->GetKey(olc::Key::CTRL).bPressed;
+	KeyPress::shiftPressed == window->GetKey(olc::Key::SHIFT).bPressed;
 
-		for (int i = 0; i < allKeys.size(); i++)
-			if (window->GetKey(allKeys[i]).bPressed || window->GetKey(allKeys[i]).bHeld)
-				pressedKeys.push_back(allKeys[i]);
 
-		control->KeyboardInput(pressedKeys);
-	}
+	for (int i = 0; i < textPresses.size(); i++)
+
+		if (window->GetKey(textPresses[i].GetKeyCode()).bPressed || window->GetKey(textPresses[i].GetKeyCode()).bHeld)
+
+			pressedKeys.push_back(&textPresses[i]);
+
+
+	for (int i = 0; i < pressedKeys.size(); i++)
+
+		caller->OnKeyPress(pressedKeys[i]);
+
 }

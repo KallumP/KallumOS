@@ -1,6 +1,9 @@
 #define OLC_PGE_APPLICATION 0
 #include "olcPixelGameEngine.h"
 #include "KallumOS.h"
+#include "Input.h"
+#include "KeyPress.h"
+
 
 class PixelGameEngine : public olc::PixelGameEngine {
 public:
@@ -8,11 +11,10 @@ public:
 		sAppName = "KallumOS";
 	}
 
-public:
 	bool OnUserCreate() override {
 
 		os = new KallumOS(this);
-
+		keyboardHandler = new Input(this);
 		frameRate = 60;
 		targetFrameTime = 1 / frameRate;
 		return true;
@@ -29,9 +31,10 @@ public:
 			//resets the time since last frame
 			timeSinceLastFrame = 0;
 
+			keyboardHandler->GetKeyPress(os);
+
 			os->Tick(fElapsedTime);
 			os->Draw();
-
 		}
 
 		return true;
@@ -40,6 +43,7 @@ public:
 private:
 
 	KallumOS* os;
+	Input* keyboardHandler;
 	float frameRate;
 	float targetFrameTime;
 	float timeSinceLastFrame;

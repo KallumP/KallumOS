@@ -2,6 +2,7 @@
 #include "olcPixelGameEngine.h"
 #include "Control.h"
 #include "Point.h"
+#include "KeyPress.h"
 
 #include <string>
 
@@ -13,11 +14,10 @@ public:
 
 	void Draw();
 	bool Click(Point*);
+	void OnKeyPress(KeyPress*);
 
 	bool GetClicked();
 	void InvertClicked();
-	void KeyboardInput(std::vector<olc::Key>);
-
 
 private:
 

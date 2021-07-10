@@ -2,8 +2,8 @@
 #include "olcPixelGameEngine.h"
 #include "Control.h"
 #include "State.h"
-#include "Input.h"
-
+#include "KeyPress.h"
+ 
 #include <vector>
 
 class KallumOS {
@@ -15,10 +15,10 @@ public:
 
 	void Tick(float);
 	void Draw();
+	void OnKeyPress(KeyPress*);
 
 private:
 
 	olc::PixelGameEngine* window;
 	State* state;
-	Input keybardHandler;
 };
