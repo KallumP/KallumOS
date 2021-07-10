@@ -21,7 +21,7 @@ public:
 
 private:
 
-	void Append(char input);
+	void Append(std::string input);
 	void DeleteOne();
 	void DeleteWord();
 	void FindNewCursorPosition(int);

@@ -61,7 +61,12 @@ bool TextBox::Click(Point* mousePosition) {
 //Keypress event
 void TextBox::OnKeyPress(KeyPress* e) {
 
-	std::cout << "Press detected. ";
+	if (e->GetKeyCode() == olc::Key::BACK) {
+		DeleteOne();
+		return;
+	}
+
+	Append(e->GetKeyContent());
 }
 
 void TextBox::FindNewCursorPosition(int mouseX) {
@@ -83,11 +88,19 @@ void TextBox::FindNewCursorPosition(int mouseX) {
 	cursorPosition = value.size();
 }
 
-void TextBox::Append(char input) {
-
+void TextBox::Append(std::string input) {
+	value.append(input);
+	std::cout << input << " detected. ";
 }
 void TextBox::DeleteOne() {
+	if (value.length() != 0) {
 
+		value.pop_back();
+		std::cout << "Backspace detected";
+	} else {
+
+		std::cout << "Nothing to delete";
+	}
 }
 void TextBox::DeleteWord() {
 

@@ -5,9 +5,8 @@
 
 class KeyPress {
 
-
-
 public:
+
 	KeyPress(olc::Key _keyCode, std::string _keyContent) {
 		keyCode = _keyCode;
 		keyContent = _keyContent;

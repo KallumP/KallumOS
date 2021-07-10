@@ -43,39 +43,47 @@ void Input::GenerateKeyPressList() {
 	textPresses.push_back(KeyPress(olc::Key::Y, "y"));
 	textPresses.push_back(KeyPress(olc::Key::Z, "z"));
 
-	textPresses.push_back(KeyPress(olc::Key::K0, ""));
-	textPresses.push_back(KeyPress(olc::Key::K1, ""));
-	textPresses.push_back(KeyPress(olc::Key::K2, ""));
-	textPresses.push_back(KeyPress(olc::Key::K3, ""));
-	textPresses.push_back(KeyPress(olc::Key::K4, ""));
-	textPresses.push_back(KeyPress(olc::Key::K5, ""));
-	textPresses.push_back(KeyPress(olc::Key::K6, ""));
-	textPresses.push_back(KeyPress(olc::Key::K7, ""));
-	textPresses.push_back(KeyPress(olc::Key::K8, ""));
-	textPresses.push_back(KeyPress(olc::Key::K9, ""));
+	textPresses.push_back(KeyPress(olc::Key::K0, "0"));
+	textPresses.push_back(KeyPress(olc::Key::K1, "1"));
+	textPresses.push_back(KeyPress(olc::Key::K2, "2"));
+	textPresses.push_back(KeyPress(olc::Key::K3, "3"));
+	textPresses.push_back(KeyPress(olc::Key::K4, "4"));
+	textPresses.push_back(KeyPress(olc::Key::K5, "5"));
+	textPresses.push_back(KeyPress(olc::Key::K6, "6"));
+	textPresses.push_back(KeyPress(olc::Key::K7, "7"));
+	textPresses.push_back(KeyPress(olc::Key::K8, "8"));
+	textPresses.push_back(KeyPress(olc::Key::K9, "9"));
 
-	textPresses.push_back(KeyPress(olc::Key::NP0, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP1, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP2, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP3, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP4, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP5, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP6, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP7, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP8, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP9, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP0, "0"));
+	textPresses.push_back(KeyPress(olc::Key::NP1, "1"));
+	textPresses.push_back(KeyPress(olc::Key::NP2, "2"));
+	textPresses.push_back(KeyPress(olc::Key::NP3, "3"));
+	textPresses.push_back(KeyPress(olc::Key::NP4, "4"));
+	textPresses.push_back(KeyPress(olc::Key::NP5, "5"));
+	textPresses.push_back(KeyPress(olc::Key::NP6, "6"));
+	textPresses.push_back(KeyPress(olc::Key::NP7, "7"));
+	textPresses.push_back(KeyPress(olc::Key::NP8, "8"));
+	textPresses.push_back(KeyPress(olc::Key::NP9, "9"));
 
-	textPresses.push_back(KeyPress(olc::Key::NP_MUL, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP_DIV, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP_ADD, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP_SUB, ""));
-	textPresses.push_back(KeyPress(olc::Key::NP_DECIMAL, ""));
-	textPresses.push_back(KeyPress(olc::Key::PERIOD, ""));
+	textPresses.push_back(KeyPress(olc::Key::NP_MUL, "*"));
+	textPresses.push_back(KeyPress(olc::Key::NP_DIV, "/"));
+	textPresses.push_back(KeyPress(olc::Key::NP_ADD, "+"));
+	textPresses.push_back(KeyPress(olc::Key::NP_SUB, "-"));
+	textPresses.push_back(KeyPress(olc::Key::NP_DECIMAL, "."));
 
-	textPresses.push_back(KeyPress(olc::Key::EQUALS, ""));
-	textPresses.push_back(KeyPress(olc::Key::COMMA, ""));
-	textPresses.push_back(KeyPress(olc::Key::MINUS, ""));
+	textPresses.push_back(KeyPress(olc::Key::PERIOD, "."));
+	textPresses.push_back(KeyPress(olc::Key::EQUALS, "="));
+	textPresses.push_back(KeyPress(olc::Key::COMMA, ","));
+	textPresses.push_back(KeyPress(olc::Key::MINUS, "-"));
 
+	textPresses.push_back(KeyPress(olc::Key::OEM_1, ";"));
+	textPresses.push_back(KeyPress(olc::Key::OEM_2, "/"));
+	textPresses.push_back(KeyPress(olc::Key::OEM_3, "#"));
+	textPresses.push_back(KeyPress(olc::Key::OEM_4, "["));
+	textPresses.push_back(KeyPress(olc::Key::OEM_5, "\\"));
+	textPresses.push_back(KeyPress(olc::Key::OEM_6, "]"));
+	textPresses.push_back(KeyPress(olc::Key::OEM_7, "'"));
+	textPresses.push_back(KeyPress(olc::Key::OEM_8, ""));
 
 	specialPresses.push_back(KeyPress(olc::Key::F1, ""));
 	specialPresses.push_back(KeyPress(olc::Key::F2, ""));
@@ -109,14 +117,6 @@ void Input::GenerateKeyPressList() {
 	specialPresses.push_back(KeyPress(olc::Key::PAUSE, ""));
 	specialPresses.push_back(KeyPress(olc::Key::SCROLL, ""));
 
-	specialPresses.push_back(KeyPress(olc::Key::OEM_1, ""));
-	specialPresses.push_back(KeyPress(olc::Key::OEM_2, ""));
-	specialPresses.push_back(KeyPress(olc::Key::OEM_3, ""));
-	specialPresses.push_back(KeyPress(olc::Key::OEM_4, ""));
-	specialPresses.push_back(KeyPress(olc::Key::OEM_5, ""));
-	specialPresses.push_back(KeyPress(olc::Key::OEM_6, ""));
-	specialPresses.push_back(KeyPress(olc::Key::OEM_7, ""));
-	specialPresses.push_back(KeyPress(olc::Key::OEM_8, ""));
 	specialPresses.push_back(KeyPress(olc::Key::CAPS_LOCK, ""));
 	specialPresses.push_back(KeyPress(olc::Key::ENUM_END, ""));
 
@@ -130,8 +130,8 @@ void Input::GetKeyPress(KallumOS* caller) {
 
 	std::vector<KeyPress*> pressedKeys;
 
-	KeyPress::ctrlPressed == window->GetKey(olc::Key::CTRL).bPressed;
-	KeyPress::shiftPressed == window->GetKey(olc::Key::SHIFT).bPressed;
+	//KeyPress::ctrlPressed = window->GetKey(olc::Key::CTRL).bPressed;
+	//KeyPress::shiftPressed = window->GetKey(olc::Key::SHIFT).bPressed;
 
 
 	for (int i = 0; i < textPresses.size(); i++)
@@ -139,6 +139,12 @@ void Input::GetKeyPress(KallumOS* caller) {
 		if (window->GetKey(textPresses[i].GetKeyCode()).bPressed || window->GetKey(textPresses[i].GetKeyCode()).bHeld)
 
 			pressedKeys.push_back(&textPresses[i]);
+
+	for (int i = 0; i < specialPresses.size(); i++)
+
+		if (window->GetKey(specialPresses[i].GetKeyCode()).bPressed || window->GetKey(specialPresses[i].GetKeyCode()).bHeld)
+
+			pressedKeys.push_back(&specialPresses[i]);
 
 
 	for (int i = 0; i < pressedKeys.size(); i++)
