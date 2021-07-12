@@ -17,6 +17,7 @@ public:
 		keyboardHandler = new Input(this);
 		frameRate = 60;
 		targetFrameTime = 1 / frameRate;
+		timeSinceLastFrame = targetFrameTime;
 		return true;
 	}
 
@@ -26,14 +27,15 @@ public:
 		timeSinceLastFrame += fElapsedTime;
 
 		//checks to see if enough time has passed since the last frame
-		if (timeSinceLastFrame > targetFrameTime) {
+		if (timeSinceLastFrame >= targetFrameTime) {
+
+			float elapsedTime = timeSinceLastFrame;
 
 			//resets the time since last frame
 			timeSinceLastFrame = 0;
 
-			keyboardHandler->GetKeyPress(os);
-
-			os->Tick(fElapsedTime);
+			keyboardHandler->GetKeyPress(elapsedTime, os);
+			os->Tick(elapsedTime);
 			os->Draw();
 		}
 

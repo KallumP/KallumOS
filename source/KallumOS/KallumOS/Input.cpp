@@ -126,29 +126,49 @@ void Input::GenerateKeyPressList() {
 }
 
 //goes through the list of supported keys and sents the passed control the keypresses
-void Input::GetKeyPress(KallumOS* caller) {
+void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 
 	std::vector<KeyPress*> pressedKeys;
 
 	//KeyPress::ctrlPressed = window->GetKey(olc::Key::CTRL).bPressed;
 	//KeyPress::shiftPressed = window->GetKey(olc::Key::SHIFT).bPressed;
 
+	//Decays the time in each entry in the press history
+	for (int i = pressesOnDelay.size() - 1; i >= 0; i--)
+		if (pressesOnDelay[i].Hold(elapsedTime))
+			pressesOnDelay.erase(pressesOnDelay.begin() + i);
 
+	//checks and stores all the pressed text keys
 	for (int i = 0; i < textPresses.size(); i++)
-
 		if (window->GetKey(textPresses[i].GetKeyCode()).bPressed || window->GetKey(textPresses[i].GetKeyCode()).bHeld)
-
 			pressedKeys.push_back(&textPresses[i]);
 
+	//checks and stores all the pressed special keys
 	for (int i = 0; i < specialPresses.size(); i++)
-
 		if (window->GetKey(specialPresses[i].GetKeyCode()).bPressed || window->GetKey(specialPresses[i].GetKeyCode()).bHeld)
-
 			pressedKeys.push_back(&specialPresses[i]);
 
+	//stores all the pressed keys in the history that were not already in the history
+	for (int i = pressedKeys.size() - 1; i >= 0; i--)
+		if (!InHistory(pressedKeys[i]))
+			pressesOnDelay.push_back(pressedKeys[i]);
+		else
+			pressedKeys.erase(pressedKeys.begin() + i);
 
+	//need to go through and remove all history that was not pressed (allows for press, release and repress to not have delay intefere)
+	//separate method that does not do delays
+	//this way controls can take two events delayed and not delayed, these controls choose which to use
+
+	//calls the event method in the caller for keypress
 	for (int i = 0; i < pressedKeys.size(); i++)
-
 		caller->OnKeyPress(pressedKeys[i]);
 
+}
+
+bool Input::InHistory(KeyPress* key) {
+	for (int i = 0; i < pressesOnDelay.size(); i--)
+		if (pressesOnDelay[i].Check(key))
+			return true;
+
+	return false;
 }
