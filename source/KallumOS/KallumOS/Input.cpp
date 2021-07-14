@@ -133,73 +133,81 @@ void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 	//KeyPress::ctrlPressed = window->GetKey(olc::Key::CTRL).bPressed;
 	//KeyPress::shiftPressed = window->GetKey(olc::Key::SHIFT).bPressed;
 
-	//loops through the press history
+	//loops through the delay list
 	for (int i = pressesOnDelay.size() - 1; i >= 0; i--) {
 
-		//checks if the current keypress from history was not held this tick
-		if (window->GetKey(pressesOnDelay[i].GetKeyPress()->GetKeyCode()).bHeld) {
+		//checks if the current keypress from delay list was not held this tick
+		if (window->GetKey(pressesOnDelay[i].GetKeyPress()->GetKeyCode()).bHeld)
 
 			//decays the delay timer (and checks if the delay ran out)
 			if (pressesOnDelay[i].Decay(elapsedTime)) {
 
-				//add this keypress into pressedKeys (it won't be duplicated
+				//add this keypress into pressedKeys (it won't be duplicated because later when adding all keypresses it will check if its already in the delay list)
+				pressedKeys.push_back(pressesOnDelay[i].GetKeyPress());
 
 				//set the delay timer to a smaller value
+				pressesOnDelay[i].SetFasterDelayTime();
 
-				//removes the keypress from history
-				pressesOnDelay.erase(pressesOnDelay.begin() + i);
+			} else {
+
+			}
+
+		//if it wasn't pressed
+		else
+
+			//removes the keypress from delay list
+			pressesOnDelay.erase(pressesOnDelay.begin() + i);
+	}
+
+
+	//loops through all the possible text key presses
+	for (int i = 0; i < textPresses.size(); i++)
+
+		//checks if the current keypress was pressed
+		if (window->GetKey(textPresses[i].GetKeyCode()).bHeld)
+
+			//if the pressed key was not in the delay list
+			if (!InDelayList(&textPresses[i])) {
+
+				//add the key to the delay list
+				pressesOnDelay.push_back(Delayer(&textPresses[i]));
+
+				//stores the keypress
+				pressedKeys.push_back(&textPresses[i]);
 			}
 
 
-			//if it wasn't pressed
-		} else {
 
-			//removes the keypress from history
-			pressesOnDelay.erase(pressesOnDelay.begin() + i);
-
-		}
-	}
-
-	//checks and stores all the pressed text keys
-	for (int i = 0; i < textPresses.size(); i++)
-		if (window->GetKey(textPresses[i].GetKeyCode()).bHeld)
-			pressedKeys.push_back(&textPresses[i]);
-
-	//checks and stores all the pressed special keys
+	//loops through all the possible special key presses
 	for (int i = 0; i < specialPresses.size(); i++)
+
+		//checks if the current keypress was pressed
 		if (window->GetKey(specialPresses[i].GetKeyCode()).bHeld)
-			pressedKeys.push_back(&specialPresses[i]);
 
-	//stores all the pressed keys in the history that were not already in the history
-	for (int i = pressedKeys.size() - 1; i >= 0; i--)
-		if (!InHistory(pressedKeys[i]))
-			pressesOnDelay.push_back(pressedKeys[i]);
-		else
-			pressedKeys.erase(pressedKeys.begin() + i);
+			//if the pressed key was not in the delay list
+			if (!InDelayList(&specialPresses[i])) {
 
-	//need to go through and remove all history that was not pressed (allows for press, release and repress to not have delay intefere)
-	//separate method that does not do delays
-	//this way controls can take two events delayed and not delayed, these controls choose which to use
+				//add the key to the delay list
+				pressesOnDelay.push_back(Delayer(&specialPresses[i]));
 
-
-	//
-	// 
-	//check if keynotpressed (do this by looping through all the history, not all the possible keypresses)
-	//if not pressed, remove from history
-	// 
-	//decay (set the decay time to a smaller value if decay returns true)
-	//
-
+				//stores the keypress
+				pressedKeys.push_back(&specialPresses[i]);
+			}
 
 
 	//calls the event method in the caller for keypress
 	for (int i = 0; i < pressedKeys.size(); i++)
 		caller->OnKeyPress(pressedKeys[i]);
 
+
+	//separate method that does not do delays
+//this way controls can take two events delayed and not delayed, these controls choose which to use
+
 }
 
-bool Input::InHistory(KeyPress* key) {
-	for (int i = 0; i < pressesOnDelay.size(); i--)
+bool Input::InDelayList(KeyPress* key) {
+
+	for (int i = 0; i < pressesOnDelay.size(); i++)
 		if (pressesOnDelay[i].Check(key))
 			return true;
 

@@ -11,14 +11,15 @@
 struct Delayer {
 
 private:
-	float delayTime = 0.2;
+	 float delayTime1 = 0.45;
+	 float delayTime2 = 0.05;
 	KeyPress* key;
 	float remainingTime;
 
 public:
 	Delayer(KeyPress* _key) {
 		key = _key;
-		remainingTime = delayTime;
+		remainingTime = delayTime1;
 	}
 
 	bool Check(KeyPress* _key) {
@@ -43,6 +44,14 @@ public:
 		return key;
 	}
 
+	void SetNewDelayTime(float newDelay) {
+		remainingTime = newDelay;
+	}
+
+	void SetFasterDelayTime() {
+		remainingTime = delayTime2;
+	}
+
 };
 
 class Input {
@@ -54,7 +63,7 @@ public:
 private:
 
 	void GenerateKeyPressList();
-	bool InHistory(KeyPress* key);
+	bool InDelayList(KeyPress* key);
 
 	olc::PixelGameEngine* window;
 
