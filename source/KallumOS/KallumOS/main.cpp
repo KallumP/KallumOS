@@ -1,60 +1,62 @@
 #define OLC_PGE_APPLICATION 0
+#include "olcPixelGameEngine.h"
 #include "KallumOS.h"
+#include "Input.h"
+#include "KeyPress.h"
 
 
-
-// Override base class with your custom functionality
 class PixelGameEngine : public olc::PixelGameEngine {
 public:
 	PixelGameEngine() {
-		// Name you application
 		sAppName = "KallumOS";
 	}
 
-public:
 	bool OnUserCreate() override {
-		// Called once at the start, so create things here
+
+		os = new KallumOS(this);
+		keyboardHandler = new Input(this);
+		frameRate = 60;
+		targetFrameTime = 1 / frameRate;
+		timeSinceLastFrame = targetFrameTime;
 		return true;
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override {
 
-
 		//keeps track of how much time has passed
 		timeSinceLastFrame += fElapsedTime;
 
-		if (timeSinceLastFrame > targetFrameTime) {
+		//checks to see if enough time has passed since the last frame
+		if (timeSinceLastFrame >= targetFrameTime) {
 
-			timeSinceLastFrame -= targetFrameTime;
-			fElapsedTime = targetFrameTime;
+			float elapsedTime = timeSinceLastFrame;
 
-			Clear(olc::DARK_BLUE);
+			//resets the time since last frame
+			timeSinceLastFrame = 0;
 
-			os.Tick(this, fElapsedTime);
-			os.Draw(this);
+			keyboardHandler->GetKeyPress(elapsedTime, os);
+			os->Tick(elapsedTime);
+			os->Draw();
 		}
-
 
 		return true;
 	}
 
 private:
 
-	KallumOS os;
-
-	float frameRate = 60;
-
-	float targetFrameTime = 1 / frameRate;
-
+	KallumOS* os;
+	Input* keyboardHandler;
+	float frameRate;
+	float targetFrameTime;
 	float timeSinceLastFrame;
 };
 
 int main() {
 
-	PixelGameEngine engine;
+	PixelGameEngine* window = new PixelGameEngine();
 
-	if (engine.Construct(256, 240, 4, 4))
-		engine.Start();
+	if (window->Construct(1000, 700, 1, 1))
+		window->Start();
 
 	return 0;
 }

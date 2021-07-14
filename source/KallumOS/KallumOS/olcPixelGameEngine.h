@@ -3037,7 +3037,7 @@ namespace olc
 		{
 			nLastFPS = nFrameCount;
 			fFrameTimer -= 1.0f;
-			std::string sTitle = "OneLoneCoder.com - Pixel Game Engine - " + sAppName + " - FPS: " + std::to_string(nFrameCount);
+			std::string sTitle = sAppName + " - FPS: " + std::to_string(nFrameCount) + " - Powered by OLC's Pixel Game Engine";
 			platform->SetWindowTitle(sTitle);
 			nFrameCount = 0;
 		}
