@@ -126,29 +126,90 @@ void Input::GenerateKeyPressList() {
 }
 
 //goes through the list of supported keys and sents the passed control the keypresses
-void Input::GetKeyPress(KallumOS* caller) {
+void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 
 	std::vector<KeyPress*> pressedKeys;
 
 	//KeyPress::ctrlPressed = window->GetKey(olc::Key::CTRL).bPressed;
 	//KeyPress::shiftPressed = window->GetKey(olc::Key::SHIFT).bPressed;
 
+	//loops through the delay list
+	for (int i = pressesOnDelay.size() - 1; i >= 0; i--) {
 
+		//checks if the current keypress from delay list was not held this tick
+		if (window->GetKey(pressesOnDelay[i].GetKeyPress()->GetKeyCode()).bHeld)
+
+			//decays the delay timer (and checks if the delay ran out)
+			if (pressesOnDelay[i].Decay(elapsedTime)) {
+
+				//add this keypress into pressedKeys (it won't be duplicated because later when adding all keypresses it will check if its already in the delay list)
+				pressedKeys.push_back(pressesOnDelay[i].GetKeyPress());
+
+				//set the delay timer to a smaller value
+				pressesOnDelay[i].SetFasterDelayTime();
+
+			} else {
+
+			}
+
+		//if it wasn't pressed
+		else
+
+			//removes the keypress from delay list
+			pressesOnDelay.erase(pressesOnDelay.begin() + i);
+	}
+
+
+	//loops through all the possible text key presses
 	for (int i = 0; i < textPresses.size(); i++)
 
-		if (window->GetKey(textPresses[i].GetKeyCode()).bPressed || window->GetKey(textPresses[i].GetKeyCode()).bHeld)
+		//checks if the current keypress was pressed
+		if (window->GetKey(textPresses[i].GetKeyCode()).bHeld)
 
-			pressedKeys.push_back(&textPresses[i]);
+			//if the pressed key was not in the delay list
+			if (!InDelayList(&textPresses[i])) {
 
+				//add the key to the delay list
+				pressesOnDelay.push_back(Delayer(&textPresses[i]));
+
+				//stores the keypress
+				pressedKeys.push_back(&textPresses[i]);
+			}
+
+
+
+	//loops through all the possible special key presses
 	for (int i = 0; i < specialPresses.size(); i++)
 
-		if (window->GetKey(specialPresses[i].GetKeyCode()).bPressed || window->GetKey(specialPresses[i].GetKeyCode()).bHeld)
+		//checks if the current keypress was pressed
+		if (window->GetKey(specialPresses[i].GetKeyCode()).bHeld)
 
-			pressedKeys.push_back(&specialPresses[i]);
+			//if the pressed key was not in the delay list
+			if (!InDelayList(&specialPresses[i])) {
+
+				//add the key to the delay list
+				pressesOnDelay.push_back(Delayer(&specialPresses[i]));
+
+				//stores the keypress
+				pressedKeys.push_back(&specialPresses[i]);
+			}
 
 
+	//calls the event method in the caller for keypress
 	for (int i = 0; i < pressedKeys.size(); i++)
-
 		caller->OnKeyPress(pressedKeys[i]);
 
+
+	//separate method that does not do delays
+//this way controls can take two events delayed and not delayed, these controls choose which to use
+
+}
+
+bool Input::InDelayList(KeyPress* key) {
+
+	for (int i = 0; i < pressesOnDelay.size(); i++)
+		if (pressesOnDelay[i].Check(key))
+			return true;
+
+	return false;
 }
