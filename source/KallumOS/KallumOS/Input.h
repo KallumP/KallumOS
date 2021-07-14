@@ -29,7 +29,7 @@ public:
 			return false;
 	}
 
-	bool Hold(float elapsedTime) {
+	bool Decay(float elapsedTime) {
 
 		remainingTime -= elapsedTime;
 
@@ -37,6 +37,10 @@ public:
 			return false;
 		else
 			return true;
+	}
+
+	KeyPress* GetKeyPress() {
+		return key;
 	}
 
 };

@@ -133,19 +133,41 @@ void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 	//KeyPress::ctrlPressed = window->GetKey(olc::Key::CTRL).bPressed;
 	//KeyPress::shiftPressed = window->GetKey(olc::Key::SHIFT).bPressed;
 
-	//Decays the time in each entry in the press history
-	for (int i = pressesOnDelay.size() - 1; i >= 0; i--)
-		if (pressesOnDelay[i].Hold(elapsedTime))
+	//loops through the press history
+	for (int i = pressesOnDelay.size() - 1; i >= 0; i--) {
+
+		//checks if the current keypress from history was not held this tick
+		if (window->GetKey(pressesOnDelay[i].GetKeyPress()->GetKeyCode()).bHeld) {
+
+			//decays the delay timer (and checks if the delay ran out)
+			if (pressesOnDelay[i].Decay(elapsedTime)) {
+
+				//add this keypress into pressedKeys (it won't be duplicated
+
+				//set the delay timer to a smaller value
+
+				//removes the keypress from history
+				pressesOnDelay.erase(pressesOnDelay.begin() + i);
+			}
+
+
+			//if it wasn't pressed
+		} else {
+
+			//removes the keypress from history
 			pressesOnDelay.erase(pressesOnDelay.begin() + i);
+
+		}
+	}
 
 	//checks and stores all the pressed text keys
 	for (int i = 0; i < textPresses.size(); i++)
-		if (window->GetKey(textPresses[i].GetKeyCode()).bPressed || window->GetKey(textPresses[i].GetKeyCode()).bHeld)
+		if (window->GetKey(textPresses[i].GetKeyCode()).bHeld)
 			pressedKeys.push_back(&textPresses[i]);
 
 	//checks and stores all the pressed special keys
 	for (int i = 0; i < specialPresses.size(); i++)
-		if (window->GetKey(specialPresses[i].GetKeyCode()).bPressed || window->GetKey(specialPresses[i].GetKeyCode()).bHeld)
+		if (window->GetKey(specialPresses[i].GetKeyCode()).bHeld)
 			pressedKeys.push_back(&specialPresses[i]);
 
 	//stores all the pressed keys in the history that were not already in the history
@@ -158,6 +180,17 @@ void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 	//need to go through and remove all history that was not pressed (allows for press, release and repress to not have delay intefere)
 	//separate method that does not do delays
 	//this way controls can take two events delayed and not delayed, these controls choose which to use
+
+
+	//
+	// 
+	//check if keynotpressed (do this by looping through all the history, not all the possible keypresses)
+	//if not pressed, remove from history
+	// 
+	//decay (set the decay time to a smaller value if decay returns true)
+	//
+
+
 
 	//calls the event method in the caller for keypress
 	for (int i = 0; i < pressedKeys.size(); i++)
