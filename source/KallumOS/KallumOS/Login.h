@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Button.h"
 #include "KeyPress.h"
+#include "TextBox.h"
 
 
 class Login : public State
@@ -21,8 +22,12 @@ private:
 	void CheckLoginClicked();
 	void Click();
 	void MouseMove();
+	void ValidateLogin();
 
-	Button* loginWatch;
 	olc::Pixel backgroundColor;
+
+	Button* loginTrigger;
+	TextBox* username;
+	TextBox* password;
 };
 

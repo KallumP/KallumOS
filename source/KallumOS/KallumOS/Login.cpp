@@ -11,13 +11,18 @@
 
 Login::Login(olc::PixelGameEngine* _window) : State(_window) {
 
-	controls.push_back(new TextBox(_window, Point(0.5, 0.5), Point(250, 40), "User1"));
-	Focus(controls[0]);
+	backgroundColor = olc::BLUE;
 
-	controls.push_back(new TextBox(_window, Point(0.5, 0.57), Point(250, 40), "Pass1"));
+	username = new TextBox(_window, Point(0.5, 0.5), Point(250, 40), "user1");
+	controls.push_back(username);
 
-	controls.push_back(new Button(_window, Point(0.5, 0.64), Point(250, 40), "Login"));
-	loginWatch = (Button*)controls[controls.size() - 1];
+	password = new TextBox(_window, Point(0.5, 0.57), Point(250, 40), "pass");
+	controls.push_back(password);
+
+	loginTrigger = new Button(_window, Point(0.5, 0.64), Point(250, 40), "Login");
+	controls.push_back(loginTrigger);
+
+	Focus(username);
 }
 
 Login::~Login() {
@@ -92,18 +97,34 @@ void Login::MouseMove() {
 //Keypress event
 void Login::OnKeyPress(KeyPress* e) {
 
-	focused->OnKeyPress(e);
+	if (e->GetKeyCode() == olc::Key::ENTER)
+		ValidateLogin();
+	else
+		focused->OnKeyPress(e);
 }
 
 void Login::CheckLoginClicked() {
 
-	if (loginWatch->GetClicked()) {
+	if (loginTrigger->GetClicked())
 
-		if (backgroundColor == olc::DARK_BLUE)
-			backgroundColor = olc::BLUE;
-		else
-			backgroundColor = olc::DARK_BLUE;
+		ValidateLogin();
 
-		loginWatch->InvertClicked();
-	}
+	
+}
+
+
+void Login::ValidateLogin() {
+
+	//checks if the credentials were good
+	if (username->GetValue() == "user1" && password->GetValue() == "pass")
+
+		backgroundColor = olc::GREEN;
+
+	else
+		backgroundColor = olc::RED;
+
+
+	loginTrigger->InvertClicked();
+
+
 }

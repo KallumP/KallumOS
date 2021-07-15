@@ -17,6 +17,7 @@ public:
 	bool Click(Point*);
 	void OnKeyPress(KeyPress*);
 
+	std::string GetValue();
 
 
 private:
