@@ -105,3 +105,8 @@ void TextBox::DeleteOne() {
 void TextBox::DeleteWord() {
 
 }
+
+
+std::string TextBox::GetValue() {
+	return value;
+}
