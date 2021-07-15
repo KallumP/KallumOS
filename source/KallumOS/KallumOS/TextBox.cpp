@@ -90,16 +90,18 @@ void TextBox::FindNewCursorPosition(int mouseX) {
 
 void TextBox::Append(std::string input) {
 	value.append(input);
-	std::cout << input << " detected. ";
+
+	std::cout << "Pressed: " << input << std::endl;
 }
 void TextBox::DeleteOne() {
 	if (value.length() != 0) {
 
 		value.pop_back();
-		std::cout << "Backspace detected";
+		std::cout << "Pressed: Backspace" << std::endl;
+
 	} else {
 
-		std::cout << "Nothing to delete";
+		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
 	}
 }
 void TextBox::DeleteWord() {

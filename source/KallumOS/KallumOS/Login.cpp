@@ -108,8 +108,6 @@ void Login::CheckLoginClicked() {
 	if (loginTrigger->GetClicked())
 
 		ValidateLogin();
-
-	
 }
 
 

@@ -11,8 +11,8 @@
 struct Delayer {
 
 private:
-	 float delayTime1 = 0.45;
-	 float delayTime2 = 0.05;
+	 float delayTime1 = 0.5f;
+	 float delayTime2 = 0.05f;
 	KeyPress* key;
 	float remainingTime;
 
@@ -51,7 +51,6 @@ public:
 	void SetFasterDelayTime() {
 		remainingTime = delayTime2;
 	}
-
 };
 
 class Input {

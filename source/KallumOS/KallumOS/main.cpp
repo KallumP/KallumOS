@@ -24,10 +24,11 @@ public:
 	bool OnUserUpdate(float fElapsedTime) override {
 
 		//keeps track of how much time has passed
+		runtime += fElapsedTime;
 		timeSinceLastFrame += fElapsedTime;
-		float elapsedTime = timeSinceLastFrame;
 
-		intputHandler->GetKeyPress(elapsedTime, os);
+		intputHandler->GetKeyPress(fElapsedTime, os);
+		
 
 		//checks to see if enough time has passed since the last frame
 		if (timeSinceLastFrame >= targetFrameTime) {
@@ -35,9 +36,12 @@ public:
 			//resets the time since last frame
 			timeSinceLastFrame = 0;
 
-			os->Tick(elapsedTime);
+			os->Tick(fElapsedTime);
 			os->Draw();
 		}
+
+		//debug
+		//DrawString(10, 10, std::to_string(runtime), olc::BLACK, 1);
 
 		return true;
 	}
@@ -49,6 +53,7 @@ private:
 	float frameRate;
 	float targetFrameTime;
 	float timeSinceLastFrame;
+	float runtime;
 };
 
 int main() {
