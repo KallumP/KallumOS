@@ -14,7 +14,7 @@ public:
 	bool OnUserCreate() override {
 
 		os = new KallumOS(this);
-		keyboardHandler = new Input(this);
+		intputHandler = new Input(this);
 		frameRate = 60;
 		targetFrameTime = 1 / frameRate;
 		timeSinceLastFrame = targetFrameTime;
@@ -25,16 +25,16 @@ public:
 
 		//keeps track of how much time has passed
 		timeSinceLastFrame += fElapsedTime;
+		float elapsedTime = timeSinceLastFrame;
+
+		intputHandler->GetKeyPress(elapsedTime, os);
 
 		//checks to see if enough time has passed since the last frame
 		if (timeSinceLastFrame >= targetFrameTime) {
 
-			float elapsedTime = timeSinceLastFrame;
-
 			//resets the time since last frame
 			timeSinceLastFrame = 0;
 
-			keyboardHandler->GetKeyPress(elapsedTime, os);
 			os->Tick(elapsedTime);
 			os->Draw();
 		}
@@ -45,7 +45,7 @@ public:
 private:
 
 	KallumOS* os;
-	Input* keyboardHandler;
+	Input* intputHandler;
 	float frameRate;
 	float targetFrameTime;
 	float timeSinceLastFrame;
