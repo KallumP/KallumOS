@@ -13,10 +13,10 @@ Login::Login(olc::PixelGameEngine* _window) : State(_window) {
 
 	backgroundColor = olc::BLUE;
 
-	username = new TextBox(_window, Point(0.5, 0.5), Point(250, 40), "user1");
+	username = new TextBox(_window, Point(0.5, 0.5), Point(250, 40), "");
 	controls.push_back(username);
 
-	password = new TextBox(_window, Point(0.5, 0.57), Point(250, 40), "pass");
+	password = new TextBox(_window, Point(0.5, 0.57), Point(250, 40), "");
 	controls.push_back(password);
 
 	loginTrigger = new Button(_window, Point(0.5, 0.64), Point(250, 40), "Login");
@@ -99,6 +99,8 @@ void Login::OnKeyPress(KeyPress* e) {
 
 	if (e->GetKeyCode() == olc::Key::ENTER)
 		ValidateLogin();
+	else if (e->GetKeyCode() == olc::Key::TAB)
+		NextFocus();
 	else
 		focused->OnKeyPress(e);
 }

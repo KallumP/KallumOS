@@ -18,6 +18,7 @@ public:
 	void OnKeyPress(KeyPress*);
 
 	std::string GetValue();
+	void InvertFocus();
 
 
 private:

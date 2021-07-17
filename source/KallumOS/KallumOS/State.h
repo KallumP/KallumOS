@@ -29,6 +29,7 @@ public:
 	virtual void OnKeyPress(KeyPress*) = 0;
 
 	void Focus(Control*);
+	void NextFocus();
 
 private:
 

@@ -133,3 +133,11 @@ void TextBox::DeleteWord() {
 std::string TextBox::GetValue() {
 	return value;
 }
+
+void TextBox::InvertFocus() {
+	focused = !focused;
+
+	if (focused) {
+		cursor = value.length();
+	}
+}

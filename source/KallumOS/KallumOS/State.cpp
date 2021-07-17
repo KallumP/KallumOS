@@ -19,12 +19,34 @@ State::~State() {
 void State::Focus(Control* toFocus) {
 
 	//unsets the old focus (in the control) (if there was a focus already)
-	if (focused != nullptr) focused->InvertFocus();
+	if (focused != nullptr) 
+		focused->InvertFocus();
 
 	//reverts the focus in the os
 	toFocus->InvertFocus();
 
 	//sets the focus in the new control
 	focused = toFocus;
+}
+
+void State::NextFocus() {
+
+	//loops through all controls in this state
+	for (int i = 0; i < controls.size(); i++) {
+
+		//checks if the current focus is this one
+		if (controls[i] == focused) {
+
+			//checks if the next focus doesn't go out of array bounds
+			if (i + 1 < controls.size())
+
+				Focus(controls[i + 1]);
+
+			else
+				Focus(controls[0]);
+
+			return;
+		}
+	}
 }
 
