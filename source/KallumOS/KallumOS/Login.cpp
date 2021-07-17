@@ -22,7 +22,7 @@ Login::Login(olc::PixelGameEngine* _window) : State(_window) {
 	loginTrigger = new Button(_window, Point(0.5, 0.64), Point(250, 40), "Login");
 	controls.push_back(loginTrigger);
 
-	Focus(username);
+	Focus(username, false);
 }
 
 Login::~Login() {
@@ -80,7 +80,7 @@ void Login::Click() {
 		if (controls[i]->Click(mousePosition)) {
 
 			//sets the focus to this control
-			Focus(controls[i]);
+			Focus(controls[i], true);
 
 			break;
 		}
@@ -117,14 +117,10 @@ void Login::ValidateLogin() {
 
 	//checks if the credentials were good
 	if (username->GetValue() == "user1" && password->GetValue() == "pass")
-
 		backgroundColor = olc::GREEN;
 
 	else
 		backgroundColor = olc::RED;
 
-
 	loginTrigger->InvertClicked();
-
-
 }

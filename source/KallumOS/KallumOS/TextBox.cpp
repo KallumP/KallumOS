@@ -134,10 +134,10 @@ std::string TextBox::GetValue() {
 	return value;
 }
 
-void TextBox::InvertFocus() {
+void TextBox::InvertFocus(bool click) {
 	focused = !focused;
 
-	if (focused) {
+	if (focused && !click) {
 		cursor = value.length();
 	}
 }

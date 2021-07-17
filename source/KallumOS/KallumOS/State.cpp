@@ -16,14 +16,14 @@ State::~State() {
 }
 
 //Set the focus on the input control (and unsets it from the previous)
-void State::Focus(Control* toFocus) {
+void State::Focus(Control* toFocus, bool click) {
 
 	//unsets the old focus (in the control) (if there was a focus already)
 	if (focused != nullptr) 
-		focused->InvertFocus();
+		focused->InvertFocus(click);
 
 	//reverts the focus in the os
-	toFocus->InvertFocus();
+	toFocus->InvertFocus(click);
 
 	//sets the focus in the new control
 	focused = toFocus;
@@ -40,10 +40,10 @@ void State::NextFocus() {
 			//checks if the next focus doesn't go out of array bounds
 			if (i + 1 < controls.size())
 
-				Focus(controls[i + 1]);
+				Focus(controls[i + 1], false);
 
 			else
-				Focus(controls[0]);
+				Focus(controls[0], false);
 
 			return;
 		}

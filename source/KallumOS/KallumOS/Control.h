@@ -35,7 +35,7 @@ public:
 
 	Point normalizePosition(Point*);
 	bool Within(Point*);
-	virtual void InvertFocus();
+	virtual void InvertFocus(bool);
 
 };
 
