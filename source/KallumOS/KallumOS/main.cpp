@@ -27,11 +27,13 @@ public:
 		runtime += fElapsedTime;
 		timeSinceLastFrame += fElapsedTime;
 
-		intputHandler->GetKeyPress(fElapsedTime, os);
-		
+		//intputHandler->GetKeyPress(fElapsedTime, os);
+
 
 		//checks to see if enough time has passed since the last frame
 		if (timeSinceLastFrame >= targetFrameTime) {
+
+			intputHandler->GetKeyPress(timeSinceLastFrame, os);
 
 			//resets the time since last frame
 			timeSinceLastFrame = 0;

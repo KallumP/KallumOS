@@ -22,12 +22,13 @@ public:
 
 private:
 
-	void Append(std::string input);
+	void Input(std::string input);
 	void DeleteOne();
 	void DeleteWord();
 	void FindNewCursorPosition(int);
+	void MoveCursor(int);
 
-	int cursorPosition;
+	int cursor;
 };
 
 

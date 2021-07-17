@@ -65,10 +65,7 @@ private:
 	bool InDelayList(KeyPress* key);
 
 	olc::PixelGameEngine* window;
-
-	std::vector<KeyPress> textPresses;
-	std::vector<KeyPress> modifierPresses;
-	std::vector<KeyPress> specialPresses;
+	std::vector<KeyPress> allKeyPressOptions;
 
 	std::vector<Delayer> pressesOnDelay;
 

@@ -1,5 +1,0 @@
-Hover over controls (should turn a different color)
-Click in a control (should take focue (shows black outline around control))
-Click within text in textbox (should move cursor behind the clicked character)
-Click to the left of text in text box (should move cursor to the end of the text)
-Click on the button (should trigger the button action)
