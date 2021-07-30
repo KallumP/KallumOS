@@ -18,7 +18,7 @@ TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size, st
 	fontSize = 2;
 
 	value = _value;
-	cursorPosition = 0;
+	cursor = 0;
 }
 
 void TextBox::Draw() {
@@ -39,9 +39,9 @@ void TextBox::Draw() {
 
 		//draws the cursor
 		window->DrawLine(
-			normalizedPosition->GetX() + padding.GetX() + (cursorPosition)*fontSize * 8,
+			normalizedPosition->GetX() + padding.GetX() + (cursor)*fontSize * 8,
 			normalizedPosition->GetY() + padding.GetY(),
-			normalizedPosition->GetX() + padding.GetX() + (cursorPosition)*fontSize * 8,
+			normalizedPosition->GetX() + padding.GetX() + (cursor)*fontSize * 8,
 			normalizedPosition->GetY() + size.GetY() - padding.GetY(),
 			fontColor);
 	}
@@ -58,15 +58,21 @@ bool TextBox::Click(Point* mousePosition) {
 	return false;
 }
 
-//Keypress event
 void TextBox::OnKeyPress(KeyPress* e) {
 
 	if (e->GetKeyCode() == olc::Key::BACK) {
 		DeleteOne();
 		return;
+	} else if (e->GetKeyCode() == olc::Key::LEFT) {
+		MoveCursor(-1);
+		return;
+	} else if (e->GetKeyCode() == olc::Key::RIGHT) {
+		MoveCursor(1);
+		return;
 	}
 
-	Append(e->GetKeyContent());
+	if (e->GetKeyContent().length() != 0)
+		Input(e->GetKeyContent());
 }
 
 void TextBox::FindNewCursorPosition(int mouseX) {
@@ -79,29 +85,59 @@ void TextBox::FindNewCursorPosition(int mouseX) {
 
 		//checks if the click was behind the next character
 		if (mouseX < normalizedPosition->GetX() + padding.GetX() + (i + 1) * fontSize * 8) {
-			cursorPosition = i;
+			cursor = i;
 			return;
 		}
 	}
 
 	//if no position was found, then it just sets the cursor to the end
-	cursorPosition = value.size();
+	cursor = value.size();
 }
 
-void TextBox::Append(std::string input) {
-	value.append(input);
-	std::cout << input << " detected. ";
+void TextBox::MoveCursor(int toMove) {
+	cursor += toMove;
+
+	if (cursor < 0)
+		cursor = 0;
+	else if (cursor > value.length())
+		cursor = value.length();
 }
+
+void TextBox::Input(std::string input) {
+
+	value.insert(cursor, input);
+
+	MoveCursor(1);;
+	std::cout << "Pressed: " << input << std::endl;
+
+}
+
 void TextBox::DeleteOne() {
 	if (value.length() != 0) {
 
 		value.pop_back();
-		std::cout << "Backspace detected";
+		MoveCursor(-1);
+
+		std::cout << "Pressed: Backspace" << std::endl;
+
 	} else {
 
-		std::cout << "Nothing to delete";
+		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
 	}
 }
+
 void TextBox::DeleteWord() {
 
+}
+
+std::string TextBox::GetValue() {
+	return value;
+}
+
+void TextBox::InvertFocus(bool click) {
+	focused = !focused;
+
+	if (focused && !click) {
+		cursor = value.length();
+	}
 }

@@ -17,16 +17,19 @@ public:
 	bool Click(Point*);
 	void OnKeyPress(KeyPress*);
 
+	std::string GetValue();
+	void InvertFocus(bool);
 
 
 private:
 
-	void Append(std::string input);
+	void Input(std::string input);
 	void DeleteOne();
 	void DeleteWord();
 	void FindNewCursorPosition(int);
+	void MoveCursor(int);
 
-	int cursorPosition;
+	int cursor;
 };
 
 
