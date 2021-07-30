@@ -19,6 +19,8 @@ public:
 
 private:
 
+	void SwitchStates();
+
 	olc::PixelGameEngine* window;
 	State* state;
 };
