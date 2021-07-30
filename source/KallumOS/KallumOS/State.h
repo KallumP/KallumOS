@@ -28,7 +28,8 @@ public:
 	virtual void MouseMove() = 0;
 	virtual void OnKeyPress(KeyPress*) = 0;
 
-	void Focus(Control*);
+	void Focus(Control*, bool);
+	void NextFocus();
 
 private:
 
