@@ -11,18 +11,20 @@
 
 Login::Login(olc::PixelGameEngine* _window) : State(_window) {
 
+	int TextboxWidth = 300;
+
 	backgroundColor = olc::BLUE;
 
-	username = new TextBox(_window, Point(0.5, 0.5), Point(250, 40), "");
+	username = new TextBox(_window, Point(0.5, 0.5), Point(TextboxWidth, 40), "", "Username");
 	controls.push_back(username);
 
-	password = new TextBox(_window, Point(0.5, 0.57), Point(250, 40), "");
+	password = new TextBox(_window, Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
 	controls.push_back(password);
 
-	loginTrigger = new Button(_window, Point(0.5, 0.71), Point(250, 40), "Login");
+	loginTrigger = new Button(_window, Point(0.5, 0.71), Point(TextboxWidth, 40), "Login");
 	controls.push_back(loginTrigger);
 
-	switchToCreateTrigger = new Button(_window, Point(0.5, 0.78), Point(250, 40), "Create account");
+	switchToCreateTrigger = new Button(_window, Point(0.5, 0.78), Point(TextboxWidth, 40), "Create account");
 	controls.push_back(switchToCreateTrigger);
 
 	Focus(username, false);

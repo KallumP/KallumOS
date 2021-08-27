@@ -19,6 +19,7 @@ protected:
 
 	std::string value;
 	olc::Pixel fontColor;
+	olc::Pixel fadedFontColor;
 	Point padding;
 	int fontSize;
 
