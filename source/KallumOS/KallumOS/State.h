@@ -30,6 +30,7 @@ public:
 	virtual	void Click() = 0;
 	virtual void MouseMove() = 0;
 	virtual void OnKeyPress(KeyPress*) = 0;
+	virtual void OnMousePress(MousePress*) = 0;
 	virtual States GetNextState();
 
 	void Focus(Control*, bool);

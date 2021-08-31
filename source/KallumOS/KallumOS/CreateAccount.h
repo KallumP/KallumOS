@@ -15,6 +15,8 @@ public:
 	void Tick(float);
 	void Draw();
 	void OnKeyPress(KeyPress*);
+	void OnMousePress(MousePress*);
+
 
 
 private:

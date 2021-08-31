@@ -48,7 +48,8 @@ void KallumOS::OnMouseHold(MousePress* e) {
 }
 
 void KallumOS::OnMousePress(MousePress* e) {
-	std::cout << "Mouse click registered" << std::endl;
+
+	state->OnMousePress(e);
 }
 
 void KallumOS::SwitchStates() {
@@ -62,6 +63,5 @@ void KallumOS::SwitchStates() {
 		state = new CreateAccount(window);
 	else if (toSwitch == States::desktop)
 		std::cout << "No desktop yet";
-
 
 }
