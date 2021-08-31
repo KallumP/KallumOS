@@ -11,7 +11,7 @@ class TextBox : public Control {
 
 public:
 
-	TextBox(olc::PixelGameEngine*, Point, Point, std::string);
+	TextBox(olc::PixelGameEngine*, Point, Point, std::string, std::string);
 
 	void Draw();
 	bool Click(Point*);
@@ -30,6 +30,7 @@ private:
 	void MoveCursor(int);
 
 	int cursor;
+	std::string placeholder;
 };
 
 

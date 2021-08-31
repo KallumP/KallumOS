@@ -6,18 +6,20 @@
 #include <string>
 #include <iostream>
 
-TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size, std::string _value) : Control(_window, _position, _size) {
+TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size, std::string _value, std::string _placeholder) : Control(_window, _position, _size) {
 
 	defaultColor = olc::WHITE;
 	hoverColor = olc::GREY;
 	backColor = defaultColor;
 
 	fontColor = olc::BLACK;
+	fadedFontColor = olc::DARK_GREY;
 
 	padding = Point(10, 10);
 	fontSize = 2;
 
 	value = _value;
+	placeholder = _placeholder;
 	cursor = 0;
 }
 
@@ -29,9 +31,11 @@ void TextBox::Draw() {
 	//draws the text box
 	window->FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
 
-	//draws the textbox value
-	window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
-
+	if (value != "")
+		//draws the textbox value
+		window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
+	else
+		window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), placeholder, fadedFontColor, fontSize);
 	if (focused) {
 
 		//draws the focus outline
