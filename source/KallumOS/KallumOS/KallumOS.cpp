@@ -3,8 +3,9 @@
 #include "Control.h"
 #include "TextBox.h"
 #include "Login.h"
+#include "CreateAccount.h"
 #include "KeyPress.h"
- 
+
 
 
 KallumOS::KallumOS(olc::PixelGameEngine* _window) {
@@ -20,7 +21,14 @@ KallumOS::~KallumOS() {
 //Tick event
 void KallumOS::Tick(float ElapsedTime) {
 
-	state->Tick(ElapsedTime);
+	if (state->GetNextState() != States::null)
+
+		SwitchStates();
+
+	else
+
+		state->Tick(ElapsedTime);
+
 
 }
 
@@ -34,4 +42,19 @@ void KallumOS::Draw() {
 void KallumOS::OnKeyPress(KeyPress* e) {
 
 	state->OnKeyPress(e);
+}
+
+void KallumOS::SwitchStates() {
+
+	States toSwitch = state->GetNextState();
+	delete state;
+
+	if (toSwitch == States::login)
+		state = new Login(window);
+	else if (toSwitch == States::createAccount)
+		state = new CreateAccount(window);
+	else if (toSwitch == States::desktop)
+		std::cout << "No desktop yet";
+
+
 }

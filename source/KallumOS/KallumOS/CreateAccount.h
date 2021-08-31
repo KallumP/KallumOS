@@ -6,11 +6,11 @@
 #include "TextBox.h"
 
 
-class Login : public State {
+class CreateAccount : public State {
 
 public:
-	Login(olc::PixelGameEngine*);
-	~Login();
+	CreateAccount(olc::PixelGameEngine*);
+	~CreateAccount();
 
 	void Tick(float);
 	void Draw();
@@ -18,18 +18,18 @@ public:
 
 
 private:
-	void CheckLoginClicked();
-	void CheckSwitchToCreateClicked();
+	void CheckCreateClicked();
+	void CheckSwitchToLoginClicked();
 
 	void Click();
 	void MouseMove();
-	void ValidateLogin();
+	void ValidateCredentials();
 
 	olc::Pixel backgroundColor;
 
-	Button* loginTrigger;
-	Button* switchToCreateTrigger;
+	Button* createTrigger;
+	Button* switchToLoginTrigger;
 	TextBox* username;
 	TextBox* password;
+	TextBox* password2;
 };
-

@@ -9,6 +9,7 @@ State::State(olc::PixelGameEngine* _window) {
 	window = _window;
 	mousePosition = new Point();
 	mouseClicked = false;
+	nextState = States::null;
 }
 
 State::~State() {
@@ -50,3 +51,8 @@ void State::NextFocus() {
 	}
 }
 
+
+States State::GetNextState() {
+
+	return nextState;
+}

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Control.cpp" />
+    <ClCompile Include="CreateAccount.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KallumOS.cpp" />
     <ClCompile Include="Login.cpp" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Control.h" />
+    <ClInclude Include="CreateAccount.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="KallumOS.h" />
     <ClInclude Include="KeyPress.h" />
