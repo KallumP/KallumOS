@@ -2,7 +2,6 @@
 #include "olcPixelGameEngine.h"
 #include "KallumOS.h"
 #include "Input.h"
-#include "KeyPress.h"
 
 
 class PixelGameEngine : public olc::PixelGameEngine {
@@ -34,6 +33,7 @@ public:
 		if (timeSinceLastFrame >= targetFrameTime) {
 
 			intputHandler->GetKeyPress(timeSinceLastFrame, os);
+			intputHandler->GetMouseInputs(timeSinceLastFrame, os);
 
 			//resets the time since last frame
 			timeSinceLastFrame = 0;

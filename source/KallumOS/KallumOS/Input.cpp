@@ -1,13 +1,14 @@
 #include "Input.h"
 #include "olcPixelGameEngine.h"
 #include "KallumOS.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 
 
 
 Input::Input(olc::PixelGameEngine* _window) {
 	window = _window;
 	GenerateKeyPressList();
+	GenerateMousePressList();
 }
 
 //generates the list of all the supported keys
@@ -62,18 +63,18 @@ void Input::GenerateKeyPressList() {
 	allKeyPressOptions.push_back(KeyPress(olc::Key::NP7, "7"));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::NP8, "8"));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::NP9, "9"));
-	
+
 	allKeyPressOptions.push_back(KeyPress(olc::Key::NP_MUL, "*"));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::NP_DIV, "/"));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::NP_ADD, "+"));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::NP_SUB, "-"));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::NP_DECIMAL, "."));
-	
+
 	allKeyPressOptions.push_back(KeyPress(olc::Key::PERIOD, "."));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::EQUALS, "="));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::COMMA, ","));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::MINUS, "-"));
-	
+
 	allKeyPressOptions.push_back(KeyPress(olc::Key::OEM_1, ";"));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::OEM_2, "/"));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::OEM_3, "#"));
@@ -132,21 +133,22 @@ void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 	//KeyPress::shiftPressed = window->GetKey(olc::Key::SHIFT).bPressed;
 
 	//loops through the delay list
-	for (int i = pressesOnDelay.size() - 1; i >= 0; i--) {
+	for (int i = keyPressesOnDelay.size() - 1; i >= 0; i--) {
 
-		//checks if the current keypress from delay list was not held this tick
-		if (window->GetKey(pressesOnDelay[i].GetKeyPress()->GetKeyCode()).bHeld)
+		//checks if the current keypress from delay list was held this tick
+		if (window->GetKey(keyPressesOnDelay[i].GetKeyPress()->GetKeyCode()).bHeld)
 
 			//decays the delay timer (and checks if the delay ran out)
-			if (pressesOnDelay[i].Decay(elapsedTime)) {
+			if (keyPressesOnDelay[i].Decay(elapsedTime)) {
 
 				//add this keypress into pressedKeys (it won't be duplicated because later when adding all keypresses it will check if its already in the delay list)
-				pressedKeys.push_back(pressesOnDelay[i].GetKeyPress());
+				pressedKeys.push_back(keyPressesOnDelay[i].GetKeyPress());
 
 				//set the delay timer to a smaller value
-				pressesOnDelay[i].SetFasterDelayTime();
+				keyPressesOnDelay[i].SetFasterDelayTime();
 
-			} else {
+			}
+			else {
 
 			}
 
@@ -154,7 +156,7 @@ void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 		else
 
 			//removes the keypress from delay list
-			pressesOnDelay.erase(pressesOnDelay.begin() + i);
+			keyPressesOnDelay.erase(keyPressesOnDelay.begin() + i);
 	}
 
 
@@ -165,10 +167,10 @@ void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 		if (window->GetKey(allKeyPressOptions[i].GetKeyCode()).bHeld)
 
 			//if the pressed key was not in the delay list
-			if (!InDelayList(&allKeyPressOptions[i])) {
+			if (!InKeyDelayList(&allKeyPressOptions[i])) {
 
 				//add the key to the delay list
-				pressesOnDelay.push_back(Delayer(&allKeyPressOptions[i]));
+				keyPressesOnDelay.push_back(KeyDelayer(&allKeyPressOptions[i]));
 
 				//stores the keypress
 				pressedKeys.push_back(&allKeyPressOptions[i]);
@@ -181,14 +183,77 @@ void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 
 
 	//separate method that does not do delays
-	//this way controls can take two events delayed and not delayed, these controls choose which to use
+	//this way controls can take two events delayed and not delayed, and the control objecst choose which to use
 
 }
 
-bool Input::InDelayList(KeyPress* key) {
+//returns if the passed in key was present in the delay list
+bool Input::InKeyDelayList(KeyPress* key) {
 
-	for (int i = 0; i < pressesOnDelay.size(); i++)
-		if (pressesOnDelay[i].Check(key))
+	for (int i = 0; i < keyPressesOnDelay.size(); i++)
+		if (keyPressesOnDelay[i].Check(key))
+			return true;
+
+	return false;
+}
+
+//populates the list of all possible mouse presses
+void Input::GenerateMousePressList() {
+
+	//adds the three mouse buttons
+	for (int i = 0; i < 4; i++)
+		allMousePressOptions.push_back(i);
+
+}
+
+//Finds all the mouse inputs and calls the corresponding event handlers
+void Input::GetMouseInputs(float elapsedTime, KallumOS* caller) {
+
+	//loops through the already registered presses
+	for (int i = mousePresses.size() - 1; i >= 0; i--) {
+
+		//checks if the current press from list was held this tick
+		if (window->GetMouse(mousePresses[i].GetMouseCode()).bHeld)
+
+			//calls the mouse held method
+			caller->OnMouseHold(&mousePresses[i]);
+
+		//if it wasn't pressed
+		else {
+
+			//calls the released method
+			
+
+			//removes the press from list
+			mousePresses.erase(mousePresses.begin() + i);
+		}
+	}
+
+	//loops through all the possible mouse buttons
+	for (int i = 0; i < allMousePressOptions.size(); i++) {
+
+		//checks if the current press from list was held this tick
+		if (window->GetMouse(allMousePressOptions[i].GetMouseCode()).bHeld) {
+
+			//checks if the press wasn't already registered
+			if (!InMousePressedList(allMousePressOptions[i])) {
+
+				caller->OnMousePress(&allMousePressOptions[i]);
+				mousePresses.push_back(allMousePressOptions[i]);
+			}
+		}
+	}
+}
+
+
+//returns if the passed in key was present in the delay list
+bool Input::InMousePressedList(MousePress press) {
+
+	//loops through the list of registered presses
+	for (int i = 0; i < mousePresses.size(); i++)
+
+		//checks if the presses are the same
+		if (mousePresses[i].GetMouseCode() == press.GetMouseCode())
 			return true;
 
 	return false;

@@ -2,7 +2,7 @@
 #include "olcPixelGameEngine.h"
 #include "Control.h"
 #include "Point.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 
 #include <vector>
 

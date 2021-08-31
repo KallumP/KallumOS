@@ -1,7 +1,7 @@
 #pragma once
 #include "olcPixelGameEngine.h"
 #include "Point.h" 
-#include "KeyPress.h"
+#include "InputPress.h"
 
 
 class Control {

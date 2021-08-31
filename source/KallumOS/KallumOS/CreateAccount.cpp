@@ -5,7 +5,7 @@
 #include "Control.h"
 #include "TextBox.h"
 #include "Button.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 
 CreateAccount::CreateAccount(olc::PixelGameEngine* _window) : State(_window) {
 

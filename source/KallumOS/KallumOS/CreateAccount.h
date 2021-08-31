@@ -2,7 +2,7 @@
 #include "olcPixelGameEngine.h"
 #include "State.h"
 #include "Button.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 #include "TextBox.h"
 
 

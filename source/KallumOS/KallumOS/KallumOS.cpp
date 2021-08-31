@@ -4,7 +4,7 @@
 #include "TextBox.h"
 #include "Login.h"
 #include "CreateAccount.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 
 
 
@@ -42,6 +42,13 @@ void KallumOS::Draw() {
 void KallumOS::OnKeyPress(KeyPress* e) {
 
 	state->OnKeyPress(e);
+}
+
+void KallumOS::OnMouseHold(MousePress* e) {
+}
+
+void KallumOS::OnMousePress(MousePress* e) {
+	std::cout << "Mouse click registered" << std::endl;
 }
 
 void KallumOS::SwitchStates() {
