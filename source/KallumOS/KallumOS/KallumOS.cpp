@@ -4,7 +4,7 @@
 #include "TextBox.h"
 #include "Login.h"
 #include "CreateAccount.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 
 
 
@@ -44,6 +44,14 @@ void KallumOS::OnKeyPress(KeyPress* e) {
 	state->OnKeyPress(e);
 }
 
+void KallumOS::OnMouseHold(MousePress* e) {
+}
+
+void KallumOS::OnMousePress(MousePress* e) {
+
+	state->OnMousePress(e);
+}
+
 void KallumOS::SwitchStates() {
 
 	States toSwitch = state->GetNextState();
@@ -55,6 +63,5 @@ void KallumOS::SwitchStates() {
 		state = new CreateAccount(window);
 	else if (toSwitch == States::desktop)
 		std::cout << "No desktop yet";
-
 
 }

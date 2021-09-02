@@ -71,7 +71,7 @@
     <ClInclude Include="Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KeyPress.h">
+    <ClInclude Include="InputPress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CreateAccount.h">

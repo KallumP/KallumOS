@@ -5,7 +5,7 @@
 #include "Control.h"
 #include "TextBox.h"
 #include "Button.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 
 CreateAccount::CreateAccount(olc::PixelGameEngine* _window) : State(_window) {
 
@@ -45,21 +45,6 @@ void CreateAccount::Tick(float) {
 		mousePosition->Set(newMouse);
 		MouseMove();
 	}
-
-	//if the user has held the right mouse button
-	if (window->GetMouse(0).bHeld) {
-
-		//checks if the os thinks the mouse has already been clicked 
-		if (!mouseClicked) {
-
-			mouseClicked = true;
-			Click();
-		} else {
-
-			//no need to do anything if the mouse was already clicked down
-		}
-	} else
-		mouseClicked = false;
 
 	CheckCreateClicked();
 	CheckSwitchToLoginClicked();
@@ -104,6 +89,11 @@ void CreateAccount::OnKeyPress(KeyPress* e) {
 		NextFocus();
 	else
 		focused->OnKeyPress(e);
+}
+
+void CreateAccount::OnMousePress(MousePress* e) {
+
+	Click();
 }
 
 void CreateAccount::CheckCreateClicked() {

@@ -2,7 +2,7 @@
 #include "olcPixelGameEngine.h"
 #include "State.h"
 #include "Button.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 #include "TextBox.h"
 
 
@@ -15,6 +15,7 @@ public:
 	void Tick(float);
 	void Draw();
 	void OnKeyPress(KeyPress*);
+	void OnMousePress(MousePress*);
 
 
 private:

@@ -1,7 +1,7 @@
 #include "olcPixelGameEngine.h"
 #include "TextBox.h"
 #include "Point.h"
-#include "KeyPress.h"
+#include "InputPress.h"
 
 #include <string>
 #include <iostream>
