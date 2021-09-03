@@ -32,16 +32,15 @@ CreateAccount::CreateAccount(olc::PixelGameEngine* _window, std::string _account
 
 	Focus(username, false);
 
-	ReadAllUsers();
+	GetAllUsers();
 }
 
 CreateAccount::~CreateAccount() {
 
 }
 
-void CreateAccount::ReadAllUsers() {
+void CreateAccount::GetAllUsers() {
 
-	//opens the file
 	std::ifstream toRead;
 	toRead.open(accountsFilePath, std::ios_base::in);
 
@@ -166,11 +165,10 @@ bool CreateAccount::UsernameExists(std::string _username) {
 	return false;
 }
 
-
 void CreateAccount::SaveCredentials() {
 
 	std::ofstream toWrite;
-	toWrite.open(accountsFilePath, std::ios_base::out);
+	toWrite.open(accountsFilePath, std::ios_base::app);
 
 	toWrite << username->GetValue() << std::endl;
 	toWrite << password->GetValue() << std::endl;

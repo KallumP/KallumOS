@@ -5,17 +5,6 @@
 #include "InputPress.h"
 #include "TextBox.h"
 
-struct Credentials {
-
-	Credentials(std::string _username, std::string _password) {
-		username = _username;
-		password = _password;
-	}
-
-	std::string username;
-	std::string password;
-};
-
 class CreateAccount : public State {
 
 public:
@@ -37,7 +26,7 @@ private:
 	void CheckCreateClicked();
 	void CheckSwitchToLoginClicked();
 
-	void ReadAllUsers();
+	void GetAllUsers();
 	void ValidateCredentials();
 	bool UsernameExists(std::string);
 	void SaveCredentials();

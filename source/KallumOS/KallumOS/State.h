@@ -8,6 +8,18 @@
 
 enum class States { null, login, createAccount, desktop };
 
+
+struct Credentials {
+
+	Credentials(std::string _username, std::string _password) {
+		username = _username;
+		password = _password;
+	}
+
+	std::string username;
+	std::string password;
+};
+
 class State {
 protected:
 	olc::PixelGameEngine* window;

@@ -21,10 +21,12 @@ public:
 private:
 	void CheckLoginClicked();
 	void CheckSwitchToCreateClicked();
+	void GetAllUsers();
 
 	void Click();
 	void MouseMove();
 	void ValidateLogin();
+	bool ValidateCredentials(std::string, std::string, Credentials);
 
 	olc::Pixel backgroundColor;
 
@@ -34,6 +36,6 @@ private:
 	TextBox* password;
 
 	std::string accountsFilePath;
-
+	std::vector<Credentials> allAccounts;
 };
 
