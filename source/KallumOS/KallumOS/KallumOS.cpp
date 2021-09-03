@@ -11,7 +11,7 @@
 KallumOS::KallumOS(olc::PixelGameEngine* _window) {
 
 	window = _window;
-	state = new Login(_window);
+	state = new Login(_window, "accounts");
 }
 
 KallumOS::~KallumOS() {
@@ -58,9 +58,9 @@ void KallumOS::SwitchStates() {
 	delete state;
 
 	if (toSwitch == States::login)
-		state = new Login(window);
+		state = new Login(window, "accounts");
 	else if (toSwitch == States::createAccount)
-		state = new CreateAccount(window);
+		state = new CreateAccount(window, "accounts");
 	else if (toSwitch == States::desktop)
 		std::cout << "No desktop yet";
 

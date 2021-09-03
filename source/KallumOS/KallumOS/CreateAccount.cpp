@@ -7,7 +7,9 @@
 #include "Button.h"
 #include "InputPress.h"
 
-CreateAccount::CreateAccount(olc::PixelGameEngine* _window) : State(_window) {
+CreateAccount::CreateAccount(olc::PixelGameEngine* _window, std::string _accountsFilePath) : State(_window) {
+
+	accountsFilePath = _accountsFilePath;
 
 	int TextboxWidth = 300;
 
@@ -17,8 +19,8 @@ CreateAccount::CreateAccount(olc::PixelGameEngine* _window) : State(_window) {
 	controls.push_back(username);
 
 	password = new TextBox(_window, Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
-	controls.push_back(password);	
-	
+	controls.push_back(password);
+
 	password2 = new TextBox(_window, Point(0.5, 0.64), Point(TextboxWidth, 40), "", "Validate password");
 	controls.push_back(password2);
 
@@ -29,9 +31,34 @@ CreateAccount::CreateAccount(olc::PixelGameEngine* _window) : State(_window) {
 	controls.push_back(switchToLoginTrigger);
 
 	Focus(username, false);
+
+	ReadAllUsers();
 }
 
 CreateAccount::~CreateAccount() {
+
+}
+
+void CreateAccount::ReadAllUsers() {
+
+	//opens the file
+	std::ifstream toRead;
+	toRead.open(accountsFilePath, std::ios_base::in);
+
+	while (toRead.good()) {
+
+		std::string fileUsername;
+		std::getline(toRead, fileUsername);
+		std::cout << fileUsername << std::endl;
+
+		std::string filePassword;
+		std::getline(toRead, filePassword);
+		std::cout << filePassword << std::endl;
+
+		allAccounts.push_back(Credentials(fileUsername, filePassword));
+	}
+
+	toRead.close();
 
 }
 
@@ -60,6 +87,8 @@ void CreateAccount::Draw() {
 }
 
 void CreateAccount::Click() {
+
+	//loops through all of the controls
 	for (int i = 0; i < (int)controls.size(); i++) {
 
 		//checks if the control being checked was clicked
@@ -98,27 +127,64 @@ void CreateAccount::OnMousePress(MousePress* e) {
 
 void CreateAccount::CheckCreateClicked() {
 
-	if (createTrigger->GetClicked())
+	if (createTrigger->GetClicked()) {
+
+		//unclicks the button
+		createTrigger->InvertClicked();
 
 		ValidateCredentials();
+	}
+
 }
 
 void CreateAccount::ValidateCredentials() {
 
+	//checks if the credentials are not empty, passwords match and the username is not taken
 	if (username->GetValue() != "" &&
 		password->GetValue() != "" &&
-		password->GetValue() == password2->GetValue()) {
+		password->GetValue() == password2->GetValue() &&
+		!UsernameExists(username->GetValue())) {
 
+		SaveCredentials();
 		backgroundColor = olc::GREEN;
-	} else 		{
+	}
+	else {
 		backgroundColor = olc::RED;
 	}
-
 }
+
+bool CreateAccount::UsernameExists(std::string _username) {
+
+	//loops through all the accounts
+	for (int i = 0; i < allAccounts.size(); i++)
+
+		//checks if the usernames are the same
+		if (allAccounts[i].username == _username)
+
+			return true;
+	
+	return false;
+}
+
+
+void CreateAccount::SaveCredentials() {
+
+	std::ofstream toWrite;
+	toWrite.open(accountsFilePath, std::ios_base::out);
+
+	toWrite << username->GetValue() << std::endl;
+	toWrite << password->GetValue() << std::endl;
+
+	toWrite.close();
+}
+
 void CreateAccount::CheckSwitchToLoginClicked() {
 
-	if (switchToLoginTrigger->GetClicked())
+	if (switchToLoginTrigger->GetClicked()) {
+
+		//unclicks the button
+		switchToLoginTrigger->InvertClicked();
 
 		nextState = States::login;
+	}
 }
-

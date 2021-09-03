@@ -9,7 +9,9 @@
 
 
 
-Login::Login(olc::PixelGameEngine* _window) : State(_window) {
+Login::Login(olc::PixelGameEngine* _window, std::string _accountsFilePath) : State(_window) {
+
+	accountsFilePath = _accountsFilePath;
 
 	int TextboxWidth = 300;
 
@@ -107,9 +109,13 @@ void Login::OnMousePress(MousePress* e) {
 
 void Login::CheckLoginClicked() {
 
-	if (loginTrigger->GetClicked())
+	if (loginTrigger->GetClicked()) {
+
+		//unclicks the button
+		loginTrigger->InvertClicked();
 
 		ValidateLogin();
+	}
 }
 
 void Login::ValidateLogin() {
@@ -131,7 +137,11 @@ void Login::ValidateLogin() {
 
 void Login::CheckSwitchToCreateClicked() {
 
-	if (switchToCreateTrigger->GetClicked())
+	if (switchToCreateTrigger->GetClicked()) {
+
+		//unclicks the button
+		switchToCreateTrigger->InvertClicked();
 
 		nextState = States::createAccount;
+	}
 }

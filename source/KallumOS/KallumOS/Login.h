@@ -9,7 +9,7 @@
 class Login : public State {
 
 public:
-	Login(olc::PixelGameEngine*);
+	Login(olc::PixelGameEngine*, std::string);
 	~Login();
 
 	void Tick(float);
@@ -32,5 +32,8 @@ private:
 	Button* switchToCreateTrigger;
 	TextBox* username;
 	TextBox* password;
+
+	std::string accountsFilePath;
+
 };
 
