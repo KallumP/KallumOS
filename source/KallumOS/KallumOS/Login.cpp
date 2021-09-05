@@ -22,6 +22,7 @@ Login::Login(olc::PixelGameEngine* _window, std::string _accountsFilePath) : Sta
 
 	password = new TextBox(_window, Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
 	controls.push_back(password);
+	password->SetObfuscation("*");
 
 	loginTrigger = new Button(_window, Point(0.5, 0.71), Point(TextboxWidth, 40), "Login");
 	controls.push_back(loginTrigger);
