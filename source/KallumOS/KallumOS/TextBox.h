@@ -13,6 +13,7 @@ public:
 
 	TextBox(olc::PixelGameEngine*, Point, Point, std::string, std::string);
 
+	void SetObfuscation(std::string);
 	void Draw();
 	bool Click(Point*);
 	void OnKeyPress(KeyPress*);
@@ -31,6 +32,7 @@ private:
 
 	int cursor;
 	std::string placeholder;
+	std::string obfuscation;
 };
 
 

@@ -23,6 +23,10 @@ TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size, st
 	cursor = 0;
 }
 
+void TextBox::SetObfuscation(std::string _obfuscation) {
+	obfuscation = _obfuscation;
+}
+
 void TextBox::Draw() {
 
 	Point* normalizedPosition = new Point();
@@ -32,8 +36,26 @@ void TextBox::Draw() {
 	window->FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
 
 	if (value != "")
-		//draws the textbox value
-		window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
+
+		if (obfuscation == "") {
+
+
+			//draws the textbox value
+			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
+		} else {
+
+				std::string obfuscatedString;
+			for (int i = 0; i < value.size(); i++) {
+
+
+				obfuscatedString.append(obfuscation);
+
+
+			}
+				window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), obfuscatedString, fontColor, fontSize);
+
+		}
+
 	else
 		window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), placeholder, fadedFontColor, fontSize);
 	if (focused) {
@@ -67,10 +89,12 @@ void TextBox::OnKeyPress(KeyPress* e) {
 	if (e->GetKeyCode() == olc::Key::BACK) {
 		DeleteOne();
 		return;
-	} else if (e->GetKeyCode() == olc::Key::LEFT) {
+	}
+	else if (e->GetKeyCode() == olc::Key::LEFT) {
 		MoveCursor(-1);
 		return;
-	} else if (e->GetKeyCode() == olc::Key::RIGHT) {
+	}
+	else if (e->GetKeyCode() == olc::Key::RIGHT) {
 		MoveCursor(1);
 		return;
 	}
@@ -124,7 +148,8 @@ void TextBox::DeleteOne() {
 
 		std::cout << "Pressed: Backspace" << std::endl;
 
-	} else {
+	}
+	else {
 
 		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
 	}

@@ -20,9 +20,11 @@ CreateAccount::CreateAccount(olc::PixelGameEngine* _window, std::string _account
 
 	password = new TextBox(_window, Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
 	controls.push_back(password);
+	password->SetObfuscation("*");
 
 	password2 = new TextBox(_window, Point(0.5, 0.64), Point(TextboxWidth, 40), "", "Validate password");
 	controls.push_back(password2);
+	password2->SetObfuscation("*");
 
 	createTrigger = new Button(_window, Point(0.5, 0.71), Point(TextboxWidth, 40), "Create");
 	controls.push_back(createTrigger);
