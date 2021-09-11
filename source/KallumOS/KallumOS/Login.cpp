@@ -9,7 +9,9 @@
 
 
 
-Login::Login(olc::PixelGameEngine* _window) : State(_window) {
+Login::Login(olc::PixelGameEngine* _window, std::string _accountsFilePath) : State(_window) {
+
+	accountsFilePath = _accountsFilePath;
 
 	int TextboxWidth = 300;
 
@@ -28,6 +30,30 @@ Login::Login(olc::PixelGameEngine* _window) : State(_window) {
 	controls.push_back(switchToCreateTrigger);
 
 	Focus(username, false);
+
+	GetAllUsers();
+}
+
+void Login::GetAllUsers() {
+
+	std::ifstream toRead;
+	toRead.open(accountsFilePath, std::ios_base::in);
+
+	while (toRead.good()) {
+
+		std::string fileUsername;
+		std::getline(toRead, fileUsername);
+		//std::cout << fileUsername << std::endl;
+
+		std::string filePassword;
+		std::getline(toRead, filePassword);
+		//std::cout << filePassword << std::endl;
+
+		allAccounts.push_back(Credentials(fileUsername, filePassword));
+	}
+
+	toRead.close();
+
 }
 
 Login::~Login() {
@@ -107,31 +133,54 @@ void Login::OnMousePress(MousePress* e) {
 
 void Login::CheckLoginClicked() {
 
-	if (loginTrigger->GetClicked())
+	if (loginTrigger->GetClicked()) {
+
+		//unclicks the button
+		loginTrigger->InvertClicked();
 
 		ValidateLogin();
+	}
 }
 
 void Login::ValidateLogin() {
 
-	//checks if the credentials were good
-	if (username->GetValue() == "user1" && password->GetValue() == "pass") {
+	//loops through all the user accounts
+	for (int i = 0; i < allAccounts.size(); i++)
+	{
 
-		backgroundColor = olc::GREEN;
+		//checks if the credentials were good
+		if (ValidateCredentials(username->GetValue(), password->GetValue(), allAccounts[i])) {
 
-		//nextState = States::desktop;
+			backgroundColor = olc::GREEN;
 
-	} else {
-		backgroundColor = olc::RED;
+			//nextState = States::desktop;
 
+			break;
+
+		}
+		else {
+			backgroundColor = olc::RED;
+
+		}
 	}
-	loginTrigger->InvertClicked();
 
+}
+
+bool Login::ValidateCredentials(std::string _username, std::string _password, Credentials toCheck) {
+
+	if (toCheck.username == _username && toCheck.password == _password)
+		return true;
+
+	return false;
 }
 
 void Login::CheckSwitchToCreateClicked() {
 
-	if (switchToCreateTrigger->GetClicked())
+	if (switchToCreateTrigger->GetClicked()) {
+
+		//unclicks the button
+		switchToCreateTrigger->InvertClicked();
 
 		nextState = States::createAccount;
+	}
 }

@@ -5,11 +5,10 @@
 #include "InputPress.h"
 #include "TextBox.h"
 
-
 class CreateAccount : public State {
 
 public:
-	CreateAccount(olc::PixelGameEngine*);
+	CreateAccount(olc::PixelGameEngine*, std::string);
 	~CreateAccount();
 
 	void Tick(float);
@@ -20,12 +19,18 @@ public:
 
 
 private:
-	void CheckCreateClicked();
-	void CheckSwitchToLoginClicked();
 
 	void Click();
 	void MouseMove();
+
+	void CheckCreateClicked();
+	void CheckSwitchToLoginClicked();
+
+	void GetAllUsers();
 	void ValidateCredentials();
+	bool UsernameExists(std::string);
+	void SaveCredentials();
+
 
 	olc::Pixel backgroundColor;
 
@@ -34,4 +39,8 @@ private:
 	TextBox* username;
 	TextBox* password;
 	TextBox* password2;
+
+	std::string accountsFilePath;
+	std::vector<Credentials> allAccounts;
 };
+
