@@ -22,6 +22,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="CreateAccount.cpp" />
+    <ClCompile Include="Desktop.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KallumOS.cpp" />
     <ClCompile Include="Login.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="CreateAccount.h" />
+    <ClInclude Include="Desktop.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="KallumOS.h" />
     <ClInclude Include="InputPress.h" />

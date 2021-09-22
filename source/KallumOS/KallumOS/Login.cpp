@@ -154,7 +154,7 @@ void Login::ValidateLogin() {
 
 			backgroundColor = olc::GREEN;
 
-			//nextState = States::desktop;
+			nextState = States::desktop;
 
 			break;
 
