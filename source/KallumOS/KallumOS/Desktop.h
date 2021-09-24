@@ -4,6 +4,7 @@
 #include "Button.h"
 #include "InputPress.h"
 #include "TextBox.h"
+#include "Taskbar.h"
 
 class Desktop : public State {
 
@@ -24,5 +25,6 @@ private:
 
 	olc::Pixel backgroundColor;
 
+	Taskbar taskbar;
 };
 

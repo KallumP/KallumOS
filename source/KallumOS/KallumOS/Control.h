@@ -26,6 +26,7 @@ protected:
 
 public:
 
+	Control();
 	Control(olc::PixelGameEngine*, Point, Point);
 
 	virtual void Draw() = 0;

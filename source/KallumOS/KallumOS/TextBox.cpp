@@ -42,9 +42,10 @@ void TextBox::Draw() {
 
 			//draws the textbox value
 			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
-		} else {
+		}
+		else {
 
-				std::string obfuscatedString;
+			std::string obfuscatedString;
 			for (int i = 0; i < value.size(); i++) {
 
 
@@ -52,7 +53,7 @@ void TextBox::Draw() {
 
 
 			}
-				window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), obfuscatedString, fontColor, fontSize);
+			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), obfuscatedString, fontColor, fontSize);
 
 		}
 
