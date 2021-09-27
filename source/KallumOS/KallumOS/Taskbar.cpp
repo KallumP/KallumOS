@@ -15,7 +15,13 @@ Taskbar::Taskbar(olc::PixelGameEngine* _window) : Control(_window, Point(), Poin
 
 void Taskbar::Draw() { 
 
-	window->FillRect(0, 0, window->ScreenWidth(), 10, olc::CYAN);
+	int height = 50;
+	window->FillRect(0, 0, window->ScreenWidth(), height, olc::CYAN);
+
+	for (int i = 0; i < processes.size(); i++) {
+		window->DrawRect(0, 0, height, height, olc::BLACK);
+
+	}
 
 }
 bool Taskbar::Click(Point*) {
@@ -25,4 +31,10 @@ void Taskbar::OnKeyPress(KeyPress*) {
 }
 Process Taskbar::GetClickedProcess() { 
 	return Process();
+}
+
+void Taskbar::TakeNewProcess(Process* toTake) {
+
+	processes.push_back(toTake);
+
 }

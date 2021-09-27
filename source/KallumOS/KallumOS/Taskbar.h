@@ -20,11 +20,12 @@ public:
 	void Draw();
 	bool Click(Point*);
 	void OnKeyPress(KeyPress*);
+	void TakeNewProcess(Process*);
 	Process GetClickedProcess();
 
 private:
 	Positions position;
-	std::vector<Process> processes;
+	std::vector<Process*> processes;
 	Process* clickedProcess;
 	Process* focusedProcess;
 };

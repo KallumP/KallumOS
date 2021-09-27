@@ -23,8 +23,11 @@ private:
 	void Click();
 	void MouseMove();
 
+	void StartProcess();
+
 	olc::Pixel backgroundColor;
 
 	Taskbar taskbar;
+	std::vector<Process> processes;
 };
 
