@@ -1,15 +1,20 @@
 #include "Desktop.h"
 #include "Taskbar.h"
+#include "TaskManager.h"
 
 
 Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
-	
+
 
 	taskbar = Taskbar(_window);
 
-	Process test = Process("based");
+	Process test = Process(window, "based");
 	processes.push_back(test);
 	taskbar.TakeNewProcess(&test);
+
+	TaskManager manager = TaskManager(window, "Manager", &processes);
+	processes.push_back(manager);
+	taskbar.TakeNewProcess(&manager);
 
 	backgroundColor = olc::DARK_MAGENTA;
 }
@@ -31,6 +36,10 @@ void Desktop::Draw() {
 	//clears all graphics on the window
 	window->Clear(backgroundColor);
 	taskbar.Draw();
+
+	for (int i = 0; i < processes.size(); i++) {
+		processes[i].Draw();
+	}
 }
 
 void Desktop::OnKeyPress(KeyPress*) {

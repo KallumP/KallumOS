@@ -30,6 +30,7 @@
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Taskbar.cpp" />
+    <ClCompile Include="TaskManager.cpp" />
     <ClCompile Include="TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +47,7 @@
     <ClInclude Include="Process.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="Taskbar.h" />
+    <ClInclude Include="TaskManager.h" />
     <ClInclude Include="TextBox.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

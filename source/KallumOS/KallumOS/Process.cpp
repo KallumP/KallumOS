@@ -6,6 +6,11 @@ Process::Process() {
 }
 
 
-Process::Process(std::string _name) {
+Process::Process(olc::PixelGameEngine* _window, std::string _name) {
+	window = _window;
 	name = _name;
+}
+
+void Process::Draw() {
+
 }

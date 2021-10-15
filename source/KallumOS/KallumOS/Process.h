@@ -1,17 +1,21 @@
 #pragma once
-
+#include "olcPixelGameEngine.h"
 
 #include <iostream>
 
 class Process
 {
 
-public:
-	Process();
-	Process(std::string);
-
-private:
+protected:
+	olc::PixelGameEngine* window;
 	std::string name;
 
+
+
+public:
+	Process();
+	Process(olc::PixelGameEngine*, std::string);
+
+	virtual void Draw();
 };
 
