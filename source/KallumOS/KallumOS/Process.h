@@ -17,5 +17,6 @@ public:
 	Process(olc::PixelGameEngine*, std::string);
 
 	virtual void Draw();
+	virtual void Tick();
 };
 

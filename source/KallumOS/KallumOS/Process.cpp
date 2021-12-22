@@ -12,5 +12,10 @@ Process::Process(olc::PixelGameEngine* _window, std::string _name) {
 }
 
 void Process::Draw() {
+	//std::cout << "Base process \n";
+
+}
+
+void Process::Tick() {
 
 }
