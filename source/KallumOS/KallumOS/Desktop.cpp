@@ -8,11 +8,11 @@ Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
 
 	taskbar = Taskbar(_window);
 
-	//Process test = Process(window, "based");
-	//processes.push_back(test);
-	//taskbar.TakeNewProcess(&test);
+	Process* test = new Process(window, "based", Point(), Point());
+	processes.push_back(test);
+	taskbar.TakeNewProcess(test);
 
-	TaskManager* manager = new TaskManager(window, "Manager", &processes, Point(300,100), Point(450,300));
+	TaskManager* manager = new TaskManager(window, "Manager", &processes, Point(10,10), Point(450,300));
 	processes.push_back(manager);
 	taskbar.TakeNewProcess(manager);
 
@@ -35,10 +35,14 @@ void Desktop::Tick(float) {
 void Desktop::Draw() {
 	//clears all graphics on the window
 	window->Clear(backgroundColor);
+
+
 	taskbar.Draw();
+	Point drawOffset = Point(0, taskbar.height);
+
 
 	for (int i = 0; i < processes.size(); i++) 
-		processes[i]->Draw();
+		processes[i]->Draw(drawOffset);
 	
 }
 

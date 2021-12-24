@@ -23,6 +23,8 @@ public:
 	void TakeNewProcess(Process*);
 	Process GetClickedProcess();
 
+	int height;
+
 private:
 	Positions position;
 	std::vector<Process*> processes;

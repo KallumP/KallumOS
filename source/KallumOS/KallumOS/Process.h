@@ -1,5 +1,6 @@
 #pragma once
 #include "olcPixelGameEngine.h"
+#include "Point.h"
 
 #include <iostream>
 
@@ -9,14 +10,19 @@ class Process
 protected:
 	olc::PixelGameEngine* window;
 	std::string name;
+	Point position;
+	Point size;
 
 
+	int barHeight = 30; //px
+	int buttonWidth = 40; //px
+	void DrawBoxBar(Point offset);
 
 public:
 	Process();
-	Process(olc::PixelGameEngine*, std::string);
+	Process(olc::PixelGameEngine* _window, std::string _name, Point _position, Point _size);
 
-	virtual void Draw();
+	virtual void Draw(Point offset);
 	virtual void Tick();
 };
 

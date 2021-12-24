@@ -6,15 +6,18 @@ TaskManager::TaskManager() {
 }
 
 
-TaskManager::TaskManager(olc::PixelGameEngine* _window, std::string _name, std::vector<Process*>* _processes, Point _position, Point _size) : Process(_window, _name) {
+TaskManager::TaskManager(olc::PixelGameEngine* _window, std::string _name, std::vector<Process*>* _processes, Point _position, Point _size) : Process(_window, _name, _position, _size) {
 
 	processes = _processes;
-	position = _position;
-	size = _size;
 }
 
-void TaskManager::Draw() {
-	window->DrawRect(position.GetX(), position.GetY(), size.GetX(), size.GetY() , olc::WHITE);
-	//std::cout << "Task manager \n";
+void TaskManager::Draw(Point offset) {
+
+	DrawBoxBar(offset);
+
+	offset.Set(new Point(offset.GetX() + position.GetX() , offset.GetY() + +position.GetY() + barHeight));
+	
+	//process output
+	//window->DrawRect(30 + offset.GetX(), 40 + offset.GetY(), 50, 50, olc::GREEN);
 
 }

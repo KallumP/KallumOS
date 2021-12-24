@@ -11,11 +11,12 @@ Taskbar::Taskbar(olc::PixelGameEngine* _window) : Control(_window, Point(), Poin
 	position = Positions::Top;
 	focused = false;
 
+	height = 50;
+
 }
 
 void Taskbar::Draw() {
 
-	int height = 50;
 	window->FillRect(0, 0, window->ScreenWidth(), height, olc::CYAN);
 
 	for (int i = 0; i < processes.size(); i++)

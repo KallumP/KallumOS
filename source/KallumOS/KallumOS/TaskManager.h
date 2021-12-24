@@ -12,13 +12,9 @@ public:
 	TaskManager(olc::PixelGameEngine*, std::string, std::vector<Process*>*, Point, Point);
 
 
-	void Draw();
+	void Draw(Point offset);
 
 private:
-	
-	Point position;
-	Point size;
-
 	std::vector<Process*>* processes;
 };
 
