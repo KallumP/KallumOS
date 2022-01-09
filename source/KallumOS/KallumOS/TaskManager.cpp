@@ -14,10 +14,39 @@ TaskManager::TaskManager(olc::PixelGameEngine* _window, std::string _name, std::
 void TaskManager::Draw(Point offset) {
 
 	DrawBoxBar(offset);
+	offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + +position.GetY() + barHeight));
 
-	offset.Set(new Point(offset.GetX() + position.GetX() , offset.GetY() + +position.GetY() + barHeight));
-	
-	//process output
-	//window->DrawRect(30 + offset.GetX(), 40 + offset.GetY(), 50, 50, olc::GREEN);
 
+	//loops through all the processes
+	for (int i = 0; i < processes->size(); i++) {
+
+
+		int processBoxHeight = 30;
+
+		//outputs a rectangle for the current process
+		window->DrawRect(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, olc::GREEN);
+
+		//saves the name of the curretn process
+		//std::string processName = *processes[i]->GetName(); WHY DOESN'T THIS WORK
+		std::vector<Process*> processesDeref = *processes;
+		std::string processName = processesDeref[i]->GetName();
+
+		//outputs the name of the process
+		window->DrawString(10 + offset.GetX(), 5 + i * processBoxHeight + offset.GetY(), std::to_string(i) + ": " + processName, olc::BLACK, 2);
+
+	}
+}
+
+void TaskManager::OnKeyPress(KeyPress* e) {
+
+	if (e->GetKeyContent() == "x") {
+
+		if (!processes->empty()) {
+
+
+			processes->erase(processes->begin());
+
+
+		}
+	}
 }

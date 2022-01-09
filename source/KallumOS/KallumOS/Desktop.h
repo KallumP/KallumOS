@@ -8,7 +8,7 @@
 
 class Desktop : public State {
 
-public: 
+public:
 	Desktop(olc::PixelGameEngine*);
 	//~Desktop();
 
@@ -29,5 +29,7 @@ private:
 
 	Taskbar taskbar;
 	std::vector<Process*> processes;
+	Process* focused;
+
 };
 

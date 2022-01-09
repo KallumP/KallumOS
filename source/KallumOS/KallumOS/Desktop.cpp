@@ -8,13 +8,15 @@ Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
 
 	taskbar = Taskbar(_window);
 
-	Process* test = new Process(window, "based", Point(), Point());
+	Process* test = new Process(window, "test", Point(), Point());
 	processes.push_back(test);
 	taskbar.TakeNewProcess(test);
 
-	TaskManager* manager = new TaskManager(window, "Manager", &processes, Point(10,10), Point(450,300));
+	TaskManager* manager = new TaskManager(window, "Task manager", &processes, Point(10,10), Point(450,300));
 	processes.push_back(manager);
 	taskbar.TakeNewProcess(manager);
+
+	focused = manager;
 
 	backgroundColor = olc::DARK_MAGENTA;
 }
@@ -46,8 +48,12 @@ void Desktop::Draw() {
 	
 }
 
-void Desktop::OnKeyPress(KeyPress*) {
+void Desktop::OnKeyPress(KeyPress* kp) {
 	backgroundColor = olc::DARK_GREY;
+
+	for (int i = 0; i < processes.size(); i++)
+		processes[i]->OnKeyPress(kp);
+
 }
 
 void Desktop::OnMousePress(MousePress* e) {

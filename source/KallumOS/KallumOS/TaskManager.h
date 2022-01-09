@@ -13,6 +13,7 @@ public:
 
 
 	void Draw(Point offset);
+	void OnKeyPress(KeyPress* e);
 
 private:
 	std::vector<Process*>* processes;

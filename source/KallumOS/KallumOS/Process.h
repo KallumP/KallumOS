@@ -1,6 +1,7 @@
 #pragma once
 #include "olcPixelGameEngine.h"
 #include "Point.h"
+#include "InputPress.h"
 
 #include <iostream>
 
@@ -22,7 +23,12 @@ public:
 	Process();
 	Process(olc::PixelGameEngine* _window, std::string _name, Point _position, Point _size);
 
-	virtual void Draw(Point offset);
-	virtual void Tick();
+	virtual void Draw(Point offset) {}
+	virtual void Tick() {}
+	virtual std::string GetName();
+
+	virtual void OnKeyPress(KeyPress* e) {}
+	virtual void OnMousePress(MousePress* e) {}
+	
 };
 
