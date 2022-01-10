@@ -28,7 +28,7 @@ public:
 	virtual std::string GetName();
 
 	virtual void OnKeyPress(KeyPress* e) {}
-	virtual void OnMousePress(MousePress* e) {}
+	virtual void OnMousePress(MousePress* e, int taskbarHeight) {}
 	
 };
 
