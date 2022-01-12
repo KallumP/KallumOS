@@ -4,32 +4,31 @@ Taskbar::Taskbar() {
 
 }
 
-Taskbar::Taskbar(olc::PixelGameEngine* _window) : Control(_window, Point(), Point()) { 
+Taskbar::Taskbar(olc::PixelGameEngine* _window) : Control(_window, Point(), Point()) {
 
 	clickedProcess = nullptr;
 	focusedProcess = nullptr;
 	position = Positions::Top;
 	focused = false;
 
+	height = 50;
+
 }
 
-void Taskbar::Draw() { 
+void Taskbar::Draw() {
 
-	int height = 50;
 	window->FillRect(0, 0, window->ScreenWidth(), height, olc::CYAN);
 
-	for (int i = 0; i < processes.size(); i++) {
-		window->DrawRect(0, 0, height, height, olc::BLACK);
-
-	}
-
+	for (int i = 0; i < processes.size(); i++)
+		window->DrawRect(height * i, 0, height, height, olc::BLACK);
 }
+
 bool Taskbar::Click(Point*) {
 	return false;
 }
-void Taskbar::OnKeyPress(KeyPress*) { 
+void Taskbar::OnKeyPress(KeyPress*) {
 }
-Process Taskbar::GetClickedProcess() { 
+Process Taskbar::GetClickedProcess() {
 	return Process();
 }
 

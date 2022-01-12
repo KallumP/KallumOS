@@ -8,9 +8,9 @@
 
 class Desktop : public State {
 
-public: 
+public:
 	Desktop(olc::PixelGameEngine*);
-	~Desktop();
+	//~Desktop();
 
 	void Tick(float);
 	void Draw();
@@ -23,11 +23,13 @@ private:
 	void Click();
 	void MouseMove();
 
-	void StartProcess();
+	//void StartProcess();
 
 	olc::Pixel backgroundColor;
 
 	Taskbar taskbar;
-	std::vector<Process> processes;
+	std::vector<Process*> processes;
+	Process* focused;
+
 };
 
