@@ -14,6 +14,7 @@ protected:
 	Point position;
 	Point size;
 
+	bool display;
 
 	int barHeight = 30; //px
 	int buttonWidth = 40; //px
@@ -22,8 +23,9 @@ protected:
 public:
 	Process();
 	Process(olc::PixelGameEngine* _window, std::string _name, Point _position, Point _size);
+	Process(olc::PixelGameEngine* _window, std::string _name);
 
-	virtual void Draw(Point offset) {}
+	virtual void Draw(Point offset);
 	virtual void Tick() {}
 	virtual std::string GetName();
 

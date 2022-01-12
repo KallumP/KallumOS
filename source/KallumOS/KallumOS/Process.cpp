@@ -7,13 +7,32 @@ Process::Process() {
 }
 
 
+Process::Process(olc::PixelGameEngine* _window, std::string _name) {
+
+	window = _window;
+	name = _name;
+
+	display = false;
+
+}
+
 Process::Process(olc::PixelGameEngine* _window, std::string _name, Point _position, Point _size) {
 	window = _window;
 	name = _name;
 
 	position = _position;
 	size = _size;
+
+	display = true;
 }
+
+void Process:: Draw(Point offset) {
+
+	if (display)
+
+		DrawBoxBar(offset);
+}
+
 
 void Process::DrawBoxBar(Point offset) {
 

@@ -2,14 +2,18 @@
 #include "Taskbar.h"
 #include "TaskManager.h"
 
-
 Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
 
 	taskbar = Taskbar(_window);
 
-	Process* test = new Process(window, "test", Point(), Point());
+	Process* test = new Process(window, "no display test");
 	processes.push_back(test);
 	taskbar.TakeNewProcess(test);
+
+	test = new Process(window, "display test", Point(500,50), Point(400,200));
+	processes.push_back(test);
+	taskbar.TakeNewProcess(test);
+
 
 	TaskManager* manager = new TaskManager(window, "Task manager", &processes, Point(10,60), Point(450,300));
 	processes.push_back(manager);
