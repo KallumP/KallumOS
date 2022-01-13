@@ -4,21 +4,20 @@
 
 Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
 
-	taskbar = Taskbar(_window);
+	taskbar = Taskbar(_window, &processes);
 
-	Process* test = new Process(window, "no display test");
+	Process* test;
+
+	test = new Process(window, "process w/ display", Point(500, 50), Point(400, 200));
 	processes.push_back(test);
-	taskbar.TakeNewProcess(test);
 
-	test = new Process(window, "display test", Point(500,50), Point(400,200));
+	test = new Process(window, "process w/ no display");
 	processes.push_back(test);
-	taskbar.TakeNewProcess(test);
 
-
-	TaskManager* manager = new TaskManager(window, "Task manager", &processes, Point(10,60), Point(450,300));
+	TaskManager* manager = new TaskManager(window, &processes, Point(10, 60), Point(450, 300));
 	processes.push_back(manager);
-	taskbar.TakeNewProcess(manager);
 
+	taskbar.SetFocused(manager);
 	focused = manager;
 
 	backgroundColor = olc::DARK_MAGENTA;
@@ -34,6 +33,7 @@ void Desktop::Tick(float) {
 		mousePosition->Set(newMouse);
 		MouseMove();
 	}
+
 }
 
 void Desktop::Draw() {
@@ -44,8 +44,12 @@ void Desktop::Draw() {
 	taskbar.Draw();
 	Point drawOffset = Point(0, taskbar.height);
 
-	for (int i = 0; i < processes.size(); i++) 
+	for (int i = 0; i < processes.size(); i++)
 		processes[i]->Draw(drawOffset);
+
+	if (focused != nullptr)
+	window->DrawString(10, 5 +taskbar.height, "Focused: " + focused->GetName(), olc::BLACK, 2);
+
 }
 
 void Desktop::OnKeyPress(KeyPress* e) {
@@ -55,24 +59,40 @@ void Desktop::OnKeyPress(KeyPress* e) {
 }
 
 void Desktop::OnMousePress(MousePress* e) {
-	Click();
+
+	//passes the click event to the taskbar
+	if (taskbar.Click(mousePosition)) 
+		TaskBarClickHandle();
 
 	for (int i = 0; i < processes.size(); i++)
 		processes[i]->OnMousePress(e, taskbar.height);
-}
-
-
-
-void Desktop::Click() {
-
-	//passes the click event to the taskbar
-	if (taskbar.Click(mousePosition)) {
-
-	}
 }
 
 void Desktop::MouseMove() {
 
 
 
+}
+
+void Desktop::TaskBarClickHandle() {
+
+	//checks if the clicked icon was the focused process
+	if (focused == taskbar.GetClickedProcess()) {
+
+		//sets to process to stop display
+		focused->ToggleDisplay();
+
+		//unfocuses the process
+		focused = nullptr;
+		taskbar.SetFocused(nullptr);
+
+	} else {
+
+		focused = taskbar.GetClickedProcess();
+
+		//checks if the process was not being displayed
+		if (!taskbar.GetClickedProcess()->GetDisplay())
+
+			focused->ToggleDisplay();
+	}
 }

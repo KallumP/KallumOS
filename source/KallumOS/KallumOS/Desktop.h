@@ -20,9 +20,10 @@ public:
 
 private:
 
-	void Click();
+	void Click() {};
 	void MouseMove();
-
+	
+	void TaskBarClickHandle();
 	//void StartProcess();
 
 	olc::Pixel backgroundColor;

@@ -9,7 +9,7 @@ class TaskManager : public Process {
 
 public:
 	TaskManager();
-	TaskManager(olc::PixelGameEngine*, std::string, std::vector<Process*>*, Point, Point);
+	TaskManager(olc::PixelGameEngine* _window, std::vector<Process*>* _processes, Point _position, Point _size);
 
 
 	void Draw(Point offset);

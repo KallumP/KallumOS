@@ -6,7 +6,7 @@ TaskManager::TaskManager() {
 }
 
 
-TaskManager::TaskManager(olc::PixelGameEngine* _window, std::string _name, std::vector<Process*>* _processes, Point _position, Point _size) : Process(_window, _name, _position, _size) {
+TaskManager::TaskManager(olc::PixelGameEngine* _window, std::vector<Process*>* _processes, Point _position, Point _size) : Process(_window, "Task manager", _position, _size) {
 
 	processes = _processes;
 }
@@ -50,37 +50,44 @@ void TaskManager::Draw(Point offset) {
 
 void TaskManager::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyContent() == "x")
+	if (display) {
 
-		if (!processes->empty())
+		if (e->GetKeyContent() == "x")
 
-			EndTask(selected);
+			if (!processes->empty())
+
+				EndTask(selected);
+	}
 }
 
 
 void TaskManager::OnMousePress(MousePress* e, int taskbarHeight) {
 
-	int checkOffset;
+	if (display) {
 
-	//saves the height of the mouse
-	Point normalisedMouse = Point(window->GetMouseX() - position.GetX(), window->GetMouseY() - position.GetY() - taskbarHeight);
+		CheckIfMinimizeClicked(NormaliseMousePos(taskbarHeight));
 
-	//loops through all the processes
-	for (int i = 0; i < processes->size(); i++) {
+		int checkOffset;
 
-		//offset of the box bar, list padding and the padding between each process
-		checkOffset = barHeight + processListPadding + processPadding * (i + 1) + processBoxHeight * i;
+		//saves the height of the mouse
+		Point normalisedMouse = NormaliseMousePos(taskbarHeight);
 
-		//checks if the mouse y was within one of the process squares
-		if (normalisedMouse.GetY() > checkOffset && normalisedMouse.GetY() < checkOffset + processBoxHeight)
+		//loops through all the processes
+		for (int i = 0; i < processes->size(); i++) {
 
-			//checks if the mouse x was within the end task button
-			if (normalisedMouse.GetX() > size.GetX() - endProcWidth && normalisedMouse.GetX() < size.GetX())
-				EndTask(i);
-			else
-				selected = i;
+			//offset of the box bar, list padding and the padding between each process
+			checkOffset = barHeight + processListPadding + processPadding * (i + 1) + processBoxHeight * i;
+
+			//checks if the mouse y was within one of the process squares
+			if (normalisedMouse.GetY() > checkOffset && normalisedMouse.GetY() < checkOffset + processBoxHeight)
+
+				//checks if the mouse x was within the end task button
+				if (normalisedMouse.GetX() > size.GetX() - endProcWidth && normalisedMouse.GetX() < size.GetX())
+					EndTask(i);
+				else
+					selected = i;
+		}
 	}
-
 }
 
 //takes an index of a task to end

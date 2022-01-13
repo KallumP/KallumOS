@@ -5,8 +5,7 @@
 
 #include <iostream>
 
-class Process
-{
+class Process {
 
 protected:
 	olc::PixelGameEngine* window;
@@ -14,11 +13,17 @@ protected:
 	Point position;
 	Point size;
 
+	bool hidden;
 	bool display;
+
 
 	int barHeight = 30; //px
 	int buttonWidth = 40; //px
 	void DrawBoxBar(Point offset);
+	void CheckIfMinimizeClicked(Point normMousePos);
+	Point NormaliseMousePos(int taskbarHeight);
+
+
 
 public:
 	Process();
@@ -30,7 +35,11 @@ public:
 	virtual std::string GetName();
 
 	virtual void OnKeyPress(KeyPress* e) {}
-	virtual void OnMousePress(MousePress* e, int taskbarHeight) {}
-	
+	virtual void OnMousePress(MousePress* e, int taskbarHeight);
+
+	bool GetHidden() { return hidden; }
+	bool GetDisplay() { return display; }
+	void ToggleDisplay() { display = !display; }
+
 };
 
