@@ -34,9 +34,7 @@ void TaskManager::Draw(Point offset) {
 				window->FillRect(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, olc::GREEN);
 
 			//saves the name of the curretn process
-			//std::string processName = *processes[i]->GetName(); WHY DOESN'T THIS WORK
-			std::vector<Process*> processesDeref = *processes;
-			std::string processName = processesDeref[i]->GetName();
+			std::string processName = (*processes)[i]->GetName();
 
 			//outputs the name of the process
 			window->DrawString(10 + offset.GetX(), 5 + i * processBoxHeight + offset.GetY(), std::to_string(i) + ": " + processName, olc::BLACK, 2);

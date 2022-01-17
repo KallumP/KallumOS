@@ -68,17 +68,14 @@ void Taskbar::HandleClickedProcess() {
 	//loops through all processes
 	for (int i = 0; i < processes->size(); i++) {
 
-		//stores the list of derefferenced processes
-		std::vector<Process*> processesDeref = *processes;
-
 		//checks if the current process should be displayed
-		if (!processesDeref[i]->GetHidden()) {
+		if (!(*processes)[i]->GetHidden()) {
 
 			//checks if the current process' icon was clicked
 			if (mouseX > height * nonHiddenIndex && mouseX < height * (nonHiddenIndex + 1)) {
 
-				SetFocused(processesDeref[i]);
-				clickedProcess = processesDeref[i];
+				SetFocused((*processes)[i]);
+				clickedProcess = (*processes)[i];
 
 				break;
 			}
