@@ -34,6 +34,9 @@ void Desktop::Tick(float) {
 		MouseMove();
 	}
 
+	if (focused != nullptr) {
+
+	}
 }
 
 void Desktop::Draw() {
@@ -47,8 +50,9 @@ void Desktop::Draw() {
 	for (int i = 0; i < processes.size(); i++)
 		processes[i]->Draw(drawOffset);
 
-	if (focused != nullptr)
-	window->DrawString(10, 5 +taskbar.height, "Focused: " + focused->GetName(), olc::BLACK, 2);
+	if (focused != nullptr) {
+		window->DrawString(10, 5 + taskbar.height, "Focused: " + focused->GetName(), olc::BLACK, 2);
+	}
 
 }
 
@@ -56,16 +60,34 @@ void Desktop::OnKeyPress(KeyPress* e) {
 
 	for (int i = 0; i < processes.size(); i++)
 		processes[i]->OnKeyPress(e);
+
 }
 
 void Desktop::OnMousePress(MousePress* e) {
 
 	//passes the click event to the taskbar
-	if (taskbar.Click(mousePosition)) 
+	if (taskbar.Click(mousePosition))
 		TaskBarClickHandle();
 
-	for (int i = 0; i < processes.size(); i++)
-		processes[i]->OnMousePress(e, taskbar.height);
+
+	if (focused != nullptr) {
+
+		focused->OnMousePress(e, taskbar.height);
+
+		bool focusToDisplay = focused->GetDisplay();
+
+		if (!focused->GetDisplay()) {
+
+			focused = nullptr;
+			taskbar.SetFocused(nullptr);
+		}
+	}
+
+
+	//loop through the other non focus processes
+	//for (int i = 0; i < processes.size(); i++)
+	//	processes[i]->OnMousePress(e, taskbar.height);
+
 }
 
 void Desktop::MouseMove() {
