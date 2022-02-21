@@ -1,4 +1,5 @@
 #include "Desktop.h"
+#include "IPFetch.h"
 #include "Taskbar.h"
 #include "TaskManager.h"
 
@@ -8,14 +9,14 @@ Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
 
 	Process* test;
 
-	test = new Process(window, "process w/ display", Point(500, 50), Point(400, 200));
-	processes.push_back(test);
-
 	test = new Process(window, "process w/ no display");
 	processes.push_back(test);
 
 	TaskManager* manager = new TaskManager(window, &processes, Point(10, 60), Point(450, 300));
 	processes.push_back(manager);
+
+	IPFetch* ipFetcher = new IPFetch(window, Point(500, 50), Point(400, 400));
+	processes.push_back(ipFetcher);
 
 	taskbar.SetFocused(manager);
 	focused = manager;
