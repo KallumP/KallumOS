@@ -15,7 +15,8 @@ void TaskManager::Draw(Point offset) {
 
 	if (display) {
 
-		DrawBoxBar(offset);
+		
+		DrawBoxBar(offset, true);
 		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
 
 

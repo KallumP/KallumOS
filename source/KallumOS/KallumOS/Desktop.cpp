@@ -1,6 +1,7 @@
 #include "Desktop.h"
 #include "Taskbar.h"
 #include "TaskManager.h"
+#include "TextEditor.h"
 
 Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
 
@@ -8,17 +9,21 @@ Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
 
 	Process* test;
 
-	test = new Process(window, "process w/ display", Point(500, 50), Point(400, 200));
-	processes.push_back(test);
+	//test = new Process(window, "process w/ display", Point(500, 50), Point(400, 200));
+	//processes.push_back(test);
 
-	test = new Process(window, "process w/ no display");
-	processes.push_back(test);
+	//test = new Process(window, "process w/ no display");
+	//processes.push_back(test);
 
 	TaskManager* manager = new TaskManager(window, &processes, Point(10, 60), Point(450, 300));
 	processes.push_back(manager);
 
-	taskbar.SetFocused(manager);
-	focused = manager;
+	TextEditor* editor = new TextEditor(window, Point(500, 50), Point(400, 200));
+	processes.push_back(editor);
+
+
+	taskbar.SetFocused(editor);
+	focused = editor;
 
 	backgroundColor = olc::DARK_MAGENTA;
 }

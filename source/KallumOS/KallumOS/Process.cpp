@@ -32,18 +32,20 @@ void Process::Draw(Point offset) {
 
 	if (display)
 
-		DrawBoxBar(offset);
+		DrawBoxBar(offset, true);
 }
 
 
-void Process::DrawBoxBar(Point offset) {
+void Process::DrawBoxBar(Point offset, bool fill) {
 
 	//draws the box around which the process output will be displayed
 	window->DrawRect(position.GetX() + offset.GetX(), position.GetY() + barHeight + offset.GetY(), size.GetX(), size.GetY(), olc::WHITE);
+	if (fill)
+		window->FillRect(position.GetX() + offset.GetX(), position.GetY() + barHeight + offset.GetY(), size.GetX(), size.GetY(), olc::WHITE);
 
 	//draws the control bar
-	window->FillRect(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, olc::WHITE);
-	window->DrawRect(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, olc::WHITE);
+	window->FillRect(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, olc::GREY);
+	window->DrawRect(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, olc::GREY);
 
 	//draws the name of the process
 	window->DrawString(position.GetX() + 10 + offset.GetX(), position.GetY() + offset.GetY() + 7, name, olc::BLACK, 2);
@@ -83,7 +85,7 @@ void Process::CheckIfMinimizeClicked(Point normMousePos) {
 	//checks if the mouse was within the control bar
 	if (normMousePos.GetY() < barHeight) {
 
-		if (normMousePos.GetX() > size.GetX() - buttonWidth * 2 && 
+		if (normMousePos.GetX() > size.GetX() - buttonWidth * 2 &&
 			normMousePos.GetX() < size.GetX() - buttonWidth * 1) {
 
 			display = false;

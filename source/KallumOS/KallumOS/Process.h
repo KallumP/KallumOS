@@ -19,7 +19,7 @@ protected:
 
 	int barHeight = 30; //px
 	int buttonWidth = 40; //px
-	void DrawBoxBar(Point offset);
+	void DrawBoxBar(Point offset, bool fill);
 	void CheckIfMinimizeClicked(Point normMousePos);
 	Point NormaliseMousePos(int taskbarHeight);
 

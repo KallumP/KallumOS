@@ -102,7 +102,7 @@ void Input::GenerateKeyPressList() {
 	allKeyPressOptions.push_back(KeyPress(olc::Key::DOWN, ""));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::LEFT, ""));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::RIGHT, ""));
-	allKeyPressOptions.push_back(KeyPress(olc::Key::SPACE, ""));
+	allKeyPressOptions.push_back(KeyPress(olc::Key::SPACE, " "));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::TAB, ""));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::INS, ""));
 	allKeyPressOptions.push_back(KeyPress(olc::Key::DEL, ""));
