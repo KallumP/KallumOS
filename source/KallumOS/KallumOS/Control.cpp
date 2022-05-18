@@ -3,6 +3,10 @@
 #include "Point.h"
 
 
+Control::Control() {
+	
+}
+
 Control::Control(olc::PixelGameEngine* _window, Point _position, Point _size) {
 	window = _window;
 

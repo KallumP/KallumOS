@@ -5,6 +5,7 @@
 #include "Login.h"
 #include "CreateAccount.h"
 #include "InputPress.h"
+#include "Desktop.h"
 
 
 
@@ -55,13 +56,13 @@ void KallumOS::OnMousePress(MousePress* e) {
 void KallumOS::SwitchStates() {
 
 	States toSwitch = state->GetNextState();
-	delete state;
 
 	if (toSwitch == States::login)
 		state = new Login(window, "accounts");
 	else if (toSwitch == States::createAccount)
 		state = new CreateAccount(window, "accounts");
 	else if (toSwitch == States::desktop)
-		std::cout << "No desktop yet";
+		state = new Desktop(window);
+
 
 }
