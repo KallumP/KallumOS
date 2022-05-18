@@ -1,0 +1,2 @@
+bugs
+CLicking on a box does not set it to focused
