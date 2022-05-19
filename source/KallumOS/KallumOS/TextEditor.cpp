@@ -4,7 +4,6 @@
 TextEditor::TextEditor(Point _position, Point _size) : Process("Text Editor", _position, _size) {
 
 	text = "";
-	fontSize = 2;
 
 }
 
@@ -18,12 +17,12 @@ void TextEditor::Draw(Point offset) {
 
 	//gets properties about the lines to draw to the window
 	int textLength = text.size();
-	int charsPerLine = (size.GetX() - padding * 2) / (fontSize * 8);
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
 	int linesToDraw = std::ceil(textLength / (float)charsPerLine);
 
 	//if there wasn't enough characters to fill a line
 	if (text.size() < charsPerLine) {
-		DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), fontSize, BLACK);
+		DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), defaultFontSize, BLACK);
 
 	} else {
 
@@ -32,7 +31,7 @@ void TextEditor::Draw(Point offset) {
 			std::string line;
 			line = text.substr(i * charsPerLine, charsPerLine);
 
-			DrawText(line.c_str(), padding + offset.GetX(), padding + (i * (fontSize * 8)) + offset.GetY(), fontSize, BLACK);
+			DrawText(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize)) + offset.GetY(), defaultFontSize, BLACK);
 		}
 	}
 }
@@ -41,19 +40,19 @@ void TextEditor::Draw(Point offset) {
 
 void TextEditor::OnKeyPress(KeyPress* e) {
 
-	//if (e->GetKeyCode() == olc::Key::BACK) {
-	//	DeleteChar();
-	//	return;
-	//} else if (e->GetKeyCode() == olc::Key::LEFT) {
-	//	//MoveCursor(-1);
-	//	return;
-	//} else if (e->GetKeyCode() == olc::Key::RIGHT) {
-	//	//MoveCursor(1);
-	//	return;
-	//}
+	if (e->GetKeyCode() == KEY_BACKSPACE) {
+		DeleteChar();
+		return;
+	} else if (e->GetKeyCode() == KEY_LEFT) {
+		//MoveCursor(-1);
+		return;
+	} else if (e->GetKeyCode() == KEY_RIGHT) {
+		//MoveCursor(1);
+		return;
+	}
 
-	//if (e->GetKeyContent().length() != 0)
-	//	Input(e->GetKeyContent());
+	if (e->GetKeyContent().length() != 0)
+		Input(e->GetKeyContent());
 }
 
 

@@ -39,7 +39,7 @@ void TaskManager::Draw(Point offset) {
 
 			//outputs the name of the process
 			std::string processNameBuffer = std::to_string(i) + ": " + processName;
-			DrawText(processNameBuffer.c_str(), 10 + offset.GetX(), 5 + i * processBoxHeight + offset.GetY(), 2, BLACK);
+			DrawText(processNameBuffer.c_str(), 10 + offset.GetX(), 5 + i * processBoxHeight + offset.GetY(), defaultFontSize, BLACK);
 
 			//draws the end process button
 			DrawRectangleLines(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, RED);

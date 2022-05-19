@@ -18,7 +18,7 @@ Button::Button(Point _position, Point _size, std::string _value) : Control(_posi
 	value = _value;
 
 	padding = Point(10, 10);
-	fontSize = 2;
+	fontSize = 20;
 }
 
 void Button::Draw() {
@@ -34,7 +34,7 @@ void Button::Draw() {
 
 	//draws the focus outline
 	if (focused)
-		DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
+		DrawRectangleLines(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 }
 
 bool Button::Click(Point* mousePosition) {

@@ -4,6 +4,7 @@
 
 Process::Process() {
 	name = "";
+	defaultFontSize = 20;
 }
 
 
@@ -13,6 +14,7 @@ Process::Process( std::string _name) {
 
 	hidden = true;
 	display = false;
+	defaultFontSize = 20;
 
 }
 
@@ -48,7 +50,7 @@ void Process::DrawBoxBar(Point offset, bool fill) {
 	DrawRectangleLines(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, GRAY);
 
 	//draws the name of the process
-	DrawText(name.c_str(), position.GetX() + 10 + offset.GetX(), position.GetY() + offset.GetY() + 7, 2, BLACK);
+	DrawText(name.c_str(), position.GetX() + 10 + offset.GetX(), position.GetY() + offset.GetY() + 7, defaultFontSize, BLACK);
 
 
 	//draws the controls

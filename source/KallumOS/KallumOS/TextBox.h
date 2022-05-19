@@ -31,6 +31,8 @@ private:
 	void FindNewCursorPosition(int);
 	void MoveCursor(int);
 
+	float singleCharWidth;
+
 	int cursor;
 	std::string placeholder;
 	std::string obfuscation;

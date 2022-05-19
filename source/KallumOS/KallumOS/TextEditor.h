@@ -18,7 +18,6 @@ private:
 	void DeleteChar();
 
 	std::string text;
-	int fontSize;
 
 	int cursor;
 };

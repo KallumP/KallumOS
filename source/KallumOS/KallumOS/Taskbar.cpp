@@ -19,7 +19,7 @@ Taskbar::Taskbar(std::vector<Process*>* _processes) : Control(Point(), Point()) 
 
 void Taskbar::Draw() {
 
-	//window->FillRect(0, 0, window->ScreenWidth(), height, olc::CYAN);
+	DrawRectangle(0, 0, GetScreenWidth(), height, SKYBLUE);
 
 	int nonHiddenIndex = 0;
 
@@ -32,15 +32,15 @@ void Taskbar::Draw() {
 		//checks if the current process should be displayed
 		if (!processesDeref[i]->GetHidden()) {
 
+			if (processesDeref[i] == focusedProcess) 
+				DrawRectangle(height * nonHiddenIndex, 0, height, height, BLUE);
+
 			//draws a square for the current process
-			//window->DrawRect(height * nonHiddenIndex, 0, height, height, olc::BLACK);
+			DrawRectangleLines(height * nonHiddenIndex, 0, height, height, BLACK);
 
-			if (processesDeref[i] == focusedProcess) {
-				//window->FillRect(height * nonHiddenIndex, 0, height, height, olc::BLUE);
-			}
-
+			
 			//draws the index of the current process
-			//window->DrawString(nonHiddenIndex * height + 10, height / 2, std::to_string(i), olc::BLACK, 2);
+			DrawText(std::to_string(i).c_str(), nonHiddenIndex * height + 10, height / 2, 2, BLACK);
 
 			nonHiddenIndex++;
 		}

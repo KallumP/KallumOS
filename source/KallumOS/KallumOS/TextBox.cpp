@@ -17,10 +17,11 @@ TextBox::TextBox(Point _position, Point _size, std::string _value, std::string _
 	fadedFontColor = DARKGRAY;
 
 	padding = Point(10, 10);
-	fontSize = 2;
+	fontSize = 20;
 
 	value = _value;
 	placeholder = _placeholder;
+
 	cursor = 0;
 }
 
@@ -59,11 +60,15 @@ void TextBox::Draw() {
 		//draws the focus outline
 		DrawRectangleLines(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 
+		int textWidthToCursor = 0;
+		if (value.length() > 0)
+			textWidthToCursor = MeasureText(value.substr(0, cursor).c_str(), fontSize);
+
 		//draws the cursor
 		DrawLine(
-			normalizedPosition->GetX() + padding.GetX() + (cursor)*fontSize * 8,
+			normalizedPosition->GetX() + padding.GetX() + textWidthToCursor,
 			normalizedPosition->GetY() + padding.GetY(),
-			normalizedPosition->GetX() + padding.GetX() + (cursor)*fontSize * 8,
+			normalizedPosition->GetX() + padding.GetX() + textWidthToCursor,
 			normalizedPosition->GetY() + size.GetY() - padding.GetY(),
 			fontColor);
 	}
@@ -82,16 +87,16 @@ bool TextBox::Click(Point* mousePosition) {
 
 void TextBox::OnKeyPress(KeyPress* e) {
 
-	//if (e->GetKeyCode() == olc::Key::BACK) {
-	//	DeleteOne();
-	//	return;
-	//} else if (e->GetKeyCode() == olc::Key::LEFT) {
-	//	MoveCursor(-1);
-	//	return;
-	//} else if (e->GetKeyCode() == olc::Key::RIGHT) {
-	//	MoveCursor(1);
-	//	return;
-	//}
+	if (e->GetKeyCode() == KEY_BACK) {
+		DeleteOne();
+		return;
+	} else if (e->GetKeyCode() == KEY_LEFT) {
+		MoveCursor(-1);
+		return;
+	} else if (e->GetKeyCode() == KEY_RIGHT) {
+		MoveCursor(1);
+		return;
+	}
 
 	if (e->GetKeyContent().length() != 0)
 		Input(e->GetKeyContent());
@@ -106,7 +111,7 @@ void TextBox::FindNewCursorPosition(int mouseX) {
 	for (int i = 0; i < value.size(); i++) {
 
 		//checks if the click was behind the next character
-		if (mouseX < normalizedPosition->GetX() + padding.GetX() + (i + 1) * fontSize * 8) {
+		if (mouseX < singleCharWidth * i) {
 			cursor = i;
 			return;
 		}

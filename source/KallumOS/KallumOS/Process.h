@@ -14,6 +14,8 @@ protected:
 	Point position;
 	Point size;
 
+	int defaultFontSize;
+
 	bool hidden;
 	bool display;
 
