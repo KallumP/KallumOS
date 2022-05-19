@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "Control.h"
 #include "Point.h"
 
@@ -11,7 +12,7 @@ class TextBox : public Control {
 
 public:
 
-	TextBox(olc::PixelGameEngine*, Point, Point, std::string, std::string);
+	TextBox(Point _position, Point _size, std::string _value, std::string _placeholder);
 
 	void SetObfuscation(std::string);
 	void Draw();

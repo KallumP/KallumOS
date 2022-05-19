@@ -6,7 +6,7 @@
 #include <string>
 
 
-Button::Button(olc::PixelGameEngine* _window, Point _position, Point _size, std::string _value) : Control(_window, _position, _size) {
+Button::Button(Point _position, Point _size, std::string _value) : Control(_position, _size) {
 
 	defaultColor = olc::WHITE;
 	hoverColor = olc::GREY;

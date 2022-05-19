@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "State.h"
 #include "Button.h"
 #include "InputPress.h"
@@ -9,13 +10,13 @@
 class Desktop : public State {
 
 public:
-	Desktop(olc::PixelGameEngine*);
+	Desktop();
 	//~Desktop();
 
 	void Tick(float);
 	void Draw();
-	void OnKeyPress(KeyPress*);
-	void OnMousePress(MousePress*);
+	void OnKeyPress(KeyPress* e);
+	void OnMousePress(MousePress* e);
 
 
 private:
@@ -26,7 +27,7 @@ private:
 	void TaskBarClickHandle();
 	//void StartProcess();
 
-	olc::Pixel backgroundColor;
+
 
 	Taskbar taskbar;
 	std::vector<Process*> processes;

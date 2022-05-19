@@ -6,7 +6,7 @@ TaskManager::TaskManager() {
 }
 
 
-TaskManager::TaskManager(olc::PixelGameEngine* _window, std::vector<Process*>* _processes, Point _position, Point _size) : Process(_window, "Task manager", _position, _size) {
+TaskManager::TaskManager(std::vector<Process*>* _processes, Point _position, Point _size) : Process("Task manager", _position, _size) {
 
 	processes = _processes;
 }

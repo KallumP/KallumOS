@@ -6,14 +6,14 @@
 #include <string>
 #include <iostream>
 
-TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size, std::string _value, std::string _placeholder) : Control(_window, _position, _size) {
+TextBox::TextBox(Point _position, Point _size, std::string _value, std::string _placeholder) : Control(_position, _size) {
 
-	defaultColor = olc::WHITE;
-	hoverColor = olc::GREY;
+	defaultColor = WHITE;
+	hoverColor = GRAY;
 	backColor = defaultColor;
 
-	fontColor = olc::BLACK;
-	fadedFontColor = olc::DARK_GREY;
+	fontColor = BLACK;
+	fadedFontColor = DARKGRAY;
 
 	padding = Point(10, 10);
 	fontSize = 2;
@@ -39,22 +39,17 @@ void TextBox::Draw() {
 
 		if (obfuscation == "") {
 
-
 			//draws the textbox value
 			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
 		}
 		else {
 
 			std::string obfuscatedString;
-			for (int i = 0; i < value.size(); i++) {
-
+			for (int i = 0; i < value.size(); i++)
 
 				obfuscatedString.append(obfuscation);
-
-
-			}
+			
 			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), obfuscatedString, fontColor, fontSize);
-
 		}
 
 	else
@@ -62,7 +57,7 @@ void TextBox::Draw() {
 	if (focused) {
 
 		//draws the focus outline
-		window->DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), olc::BLACK);
+		window->DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 
 		//draws the cursor
 		window->DrawLine(
@@ -107,7 +102,7 @@ void TextBox::OnKeyPress(KeyPress* e) {
 void TextBox::FindNewCursorPosition(int mouseX) {
 
 	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(window->ScreenWidth(), window->ScreenHeight()));
+	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
 
 	//loops through each of the characters in the string
 	for (int i = 0; i < value.size(); i++) {

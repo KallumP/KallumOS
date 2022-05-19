@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Process.h"
 
 
@@ -8,7 +7,7 @@ class TextEditor : public Process {
 public:
 
 	TextEditor();
-	TextEditor(olc::PixelGameEngine* _window, Point _position, Point _size);
+	TextEditor(Point _position, Point _size);
 
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
@@ -22,6 +21,5 @@ private:
 	int fontSize;
 
 	int cursor;
-
 };
 

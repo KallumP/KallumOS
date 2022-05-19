@@ -19,7 +19,7 @@ Taskbar::Taskbar(olc::PixelGameEngine* _window, std::vector<Process*>* _processe
 
 void Taskbar::Draw() {
 
-	window->FillRect(0, 0, window->ScreenWidth(), height, olc::CYAN);
+	//window->FillRect(0, 0, window->ScreenWidth(), height, olc::CYAN);
 
 	int nonHiddenIndex = 0;
 
@@ -33,21 +33,21 @@ void Taskbar::Draw() {
 		if (!processesDeref[i]->GetHidden()) {
 
 			//draws a square for the current process
-			window->DrawRect(height * nonHiddenIndex, 0, height, height, olc::BLACK);
+			//window->DrawRect(height * nonHiddenIndex, 0, height, height, olc::BLACK);
 
 			if (processesDeref[i] == focusedProcess) {
-				window->FillRect(height * nonHiddenIndex, 0, height, height, olc::BLUE);
+				//window->FillRect(height * nonHiddenIndex, 0, height, height, olc::BLUE);
 			}
 
 			//draws the index of the current process
-			window->DrawString(nonHiddenIndex * height + 10, height / 2, std::to_string(i), olc::BLACK, 2);
+			//window->DrawString(nonHiddenIndex * height + 10, height / 2, std::to_string(i), olc::BLACK, 2);
 
 			nonHiddenIndex++;
 		}
 	}
 }
 
-bool Taskbar::Click(Point*) {
+bool Taskbar::Click(Point* mousePosition) {
 
 	if (window->GetMouseY() < height) {
 

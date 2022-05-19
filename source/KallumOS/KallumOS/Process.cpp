@@ -7,9 +7,8 @@ Process::Process() {
 }
 
 
-Process::Process(olc::PixelGameEngine* _window, std::string _name) {
+Process::Process( std::string _name) {
 
-	window = _window;
 	name = _name;
 
 	hidden = true;
@@ -17,8 +16,8 @@ Process::Process(olc::PixelGameEngine* _window, std::string _name) {
 
 }
 
-Process::Process(olc::PixelGameEngine* _window, std::string _name, Point _position, Point _size) {
-	window = _window;
+Process::Process( std::string _name, Point _position, Point _size) {
+
 	name = _name;
 
 	position = _position;

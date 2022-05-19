@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "State.h"
 #include "Button.h"
 #include "InputPress.h"
@@ -28,11 +29,8 @@ private:
 
 	void GetAllUsers();
 	void ValidateCredentials();
-	bool UsernameExists(std::string);
+	bool UsernameExists(std::string _username);
 	void SaveCredentials();
-
-
-	olc::Pixel backgroundColor;
 
 	Button* createTrigger;
 	Button* switchToLoginTrigger;

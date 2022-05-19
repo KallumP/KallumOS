@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "Control.h"
 #include "Point.h"
 #include "Process.h"
@@ -17,11 +18,11 @@ public:
 
 
 	Taskbar();
-	Taskbar(olc::PixelGameEngine* _window, std::vector<Process*>* _processes);
+	Taskbar(std::vector<Process*>* _processes);
 
 	void Draw();
-	bool Click(Point*);
-	void OnKeyPress(KeyPress*) {}
+	bool Click(Point* mousePosition);
+	void OnKeyPress(KeyPress* e) {}
 
 	Process* GetClickedProcess();
 	void SetFocused(Process* toSet);

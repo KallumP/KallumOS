@@ -1,69 +1,96 @@
 #define OLC_PGE_APPLICATION 0
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "KallumOS.h"
 #include "Input.h"
 
 
-class PixelGameEngine : public olc::PixelGameEngine {
-public:
-	PixelGameEngine() {
-		sAppName = "KallumOS";
-	}
 
-	bool OnUserCreate() override {
-
-		os = new KallumOS(this);
-		intputHandler = new Input(this);
-		frameRate = 60;
-		targetFrameTime = 1 / frameRate;
-		timeSinceLastFrame = targetFrameTime;
-		return true;
-	}
-
-	bool OnUserUpdate(float fElapsedTime) override {
-
-		//keeps track of how much time has passed
-		runtime += fElapsedTime;
-		timeSinceLastFrame += fElapsedTime;
-
-		//intputHandler->GetKeyPress(fElapsedTime, os);
-
-
-		//checks to see if enough time has passed since the last frame
-		if (timeSinceLastFrame >= targetFrameTime) {
-
-			intputHandler->GetKeyPress(timeSinceLastFrame, os);
-			intputHandler->GetMouseInputs(timeSinceLastFrame, os);
-
-			//resets the time since last frame
-			timeSinceLastFrame = 0;
-
-			os->Tick(fElapsedTime);
-			os->Draw();
-		}
-
-		//debug
-		//DrawString(10, 10, std::to_string(runtime), olc::BLACK, 1);
-
-		return true;
-	}
-
-private:
-
-	KallumOS* os;
-	Input* intputHandler;
-	float frameRate;
-	float targetFrameTime;
-	float timeSinceLastFrame;
-	float runtime;
-};
+//class PixelGameEngine : public olc::PixelGameEngine {
+//public:
+//	PixelGameEngine() {
+//		sAppName = "KallumOS";
+//	}
+//
+//	bool OnUserCreate() override {
+//
+//		os = new KallumOS(this);
+//		intputHandler = new Input(this);
+//		frameRate = 60;
+//		targetFrameTime = 1 / frameRate;
+//		timeSinceLastFrame = targetFrameTime;
+//		return true;
+//	}
+//
+//	bool OnUserUpdate(float fElapsedTime) override {
+//
+//		//keeps track of how much time has passed
+//		runtime += fElapsedTime;
+//		timeSinceLastFrame += fElapsedTime;
+//
+//		//intputHandler->GetKeyPress(fElapsedTime, os);
+//
+//
+//		//checks to see if enough time has passed since the last frame
+//		if (timeSinceLastFrame >= targetFrameTime) {
+//
+//			intputHandler->GetKeyPress(timeSinceLastFrame, os);
+//			intputHandler->GetMouseInputs(timeSinceLastFrame, os);
+//
+//			//resets the time since last frame
+//			timeSinceLastFrame = 0;
+//
+//			os->Tick(fElapsedTime);
+//			os->Draw();
+//		}
+//
+//		//debug
+//		//DrawString(10, 10, std::to_string(runtime), olc::BLACK, 1);
+//
+//		return true;
+//	}
+//
+//private:
+//
+//	KallumOS* os;
+//	Input* intputHandler;
+//	float frameRate;
+//	float targetFrameTime;
+//	float timeSinceLastFrame;
+//	float runtime;
+//};
 
 int main() {
 
-	PixelGameEngine* window = new PixelGameEngine();
+	//PixelGameEngine* window = new PixelGameEngine();
 
-	if (window->Construct(1000, 700, 1, 1))
-		window->Start();
+	//if (window->Construct(1000, 700, 1, 1))
+	//	window->Start();
+
+	KallumOS* os = new KallumOS();
+	Input* intputHandler = new Input();
+
+	float targetFrameRate = 60;
+	float targetFrameTime = 1 / targetFrameRate;
+	float timeSinceLastFrame;
+	float runtime;
+
+
+	while (!WindowShouldClose()) {
+
+		timeSinceLastFrame = GetFrameTime();
+		runtime += timeSinceLastFrame;
+
+		intputHandler->GetKeyPress(timeSinceLastFrame, os);
+		intputHandler->GetMouseInputs(timeSinceLastFrame, os);
+
+		//resets the time since last frame
+		timeSinceLastFrame = 0;
+
+		os->Tick(timeSinceLastFrame);
+		os->Draw();
+
+	}
 
 	return 0;
 }

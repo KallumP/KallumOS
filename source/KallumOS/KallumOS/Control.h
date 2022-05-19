@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "Point.h" 
 #include "InputPress.h"
 
@@ -10,16 +11,15 @@ protected:
 
 	Point position;
 	Point size;
-	olc::PixelGameEngine* window;
 	bool focused;
 
-	olc::Pixel hoverColor;
-	olc::Pixel defaultColor;
-	olc::Pixel backColor;
+	Color hoverColor;
+	Color defaultColor;
+	Color backColor;
 
 	std::string value;
-	olc::Pixel fontColor;
-	olc::Pixel fadedFontColor;
+	Color fontColor;
+	Color fadedFontColor;
 	Point padding;
 	int fontSize;
 
@@ -27,17 +27,17 @@ protected:
 public:
 
 	Control();
-	Control(olc::PixelGameEngine*, Point, Point);
+	Control(Point _position, Point _size);
 
 	virtual void Draw() = 0;
-	virtual bool Hover(Point*);
-	virtual bool Click(Point*) = 0;
-	virtual void OnKeyPress(KeyPress*) = 0;
+	virtual bool Hover(Point* mousePosition);
+	virtual bool Click(Point* mousePosition) = 0;
+	virtual void OnKeyPress(KeyPress* e) = 0;
 
 
-	Point normalizePosition(Point*);
-	bool Within(Point*);
-	virtual void InvertFocus(bool);
+	Point normalizePosition(Point* screenSize);
+	bool Within(Point* mousePosition);
+	virtual void InvertFocus(bool click);
 
 };
 

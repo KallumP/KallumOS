@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "KallumOS.h"
 #include "Control.h"
 #include "InputPress.h" 
@@ -56,16 +57,16 @@ public:
 class Input {
 
 public:
-	Input(olc::PixelGameEngine*);
-	void GetKeyPress(float, KallumOS*);
-	void GetMouseInputs(float, KallumOS*);
+	Input();
+	void GetKeyPress(float elapsedTime, KallumOS* caller);
+	void GetMouseInputs(float elapsedTime, KallumOS* caller);
 
 private:
 
 	void GenerateKeyPressList();
 	void GenerateMousePressList();
-	bool InKeyDelayList(KeyPress*);
-	bool InMousePressedList(MousePress);
+	bool InKeyDelayList(KeyPress* key);
+	bool InMousePressedList(MousePress press);
 
 
 	olc::PixelGameEngine* window;

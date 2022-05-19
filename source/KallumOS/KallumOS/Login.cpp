@@ -1,6 +1,6 @@
 #include "Login.h"
+#include "raylib.h"
 
-#include "olcPixelGameEngine.h"
 #include "State.h"
 #include "Control.h"
 #include "TextBox.h"
@@ -9,25 +9,26 @@
 
 
 
-Login::Login(olc::PixelGameEngine* _window, std::string _accountsFilePath) : State(_window) {
+
+Login::Login(std::string _accountsFilePath) : State() {
 
 	accountsFilePath = _accountsFilePath;
 
 	int TextboxWidth = 300;
 
-	backgroundColor = olc::BLUE;
+	backgroundColor = BLUE;
 
-	username = new TextBox(_window, Point(0.5, 0.5), Point(TextboxWidth, 40), "", "Username");
+	username = new TextBox(Point(0.5, 0.5), Point(TextboxWidth, 40), "", "Username");
 	controls.push_back(username);
 
-	password = new TextBox(_window, Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
+	password = new TextBox(Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
 	controls.push_back(password);
 	password->SetObfuscation("*");
 
-	loginTrigger = new Button(_window, Point(0.5, 0.71), Point(TextboxWidth, 40), "Login");
+	loginTrigger = new Button(Point(0.5, 0.71), Point(TextboxWidth, 40), "Login");
 	controls.push_back(loginTrigger);
 
-	switchToCreateTrigger = new Button(_window, Point(0.5, 0.78), Point(TextboxWidth, 40), "Create account");
+	switchToCreateTrigger = new Button(Point(0.5, 0.78), Point(TextboxWidth, 40), "Create account");
 	controls.push_back(switchToCreateTrigger);
 
 	Focus(username, false);
@@ -81,6 +82,8 @@ void Login::Tick(float ElapsedTime) {
 
 //Draw event
 void Login::Draw() {
+
+	ClearBackground(backgroundColor);
 
 	//clears all graphics on the window
 	window->Clear(backgroundColor);
@@ -146,21 +149,19 @@ void Login::CheckLoginClicked() {
 void Login::ValidateLogin() {
 
 	//loops through all the user accounts
-	for (int i = 0; i < allAccounts.size(); i++)
-	{
+	for (int i = 0; i < allAccounts.size(); i++) {
 
 		//checks if the credentials were good
 		if (ValidateCredentials(username->GetValue(), password->GetValue(), allAccounts[i])) {
 
-			backgroundColor = olc::GREEN;
+			backgroundColor = GREEN;
 
 			nextState = States::desktop;
 
 			break;
 
-		}
-		else {
-			backgroundColor = olc::RED;
+		} else {
+			backgroundColor = RED;
 
 		}
 	}

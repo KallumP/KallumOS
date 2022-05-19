@@ -3,9 +3,9 @@
 #include "TaskManager.h"
 #include "TextEditor.h"
 
-Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
+Desktop::Desktop() : State() {
 
-	taskbar = Taskbar(_window, &processes);
+	taskbar = Taskbar(processes);
 
 	Process* test;
 
@@ -25,7 +25,7 @@ Desktop::Desktop(olc::PixelGameEngine* _window) : State(_window) {
 	taskbar.SetFocused(editor);
 	focused = editor;
 
-	backgroundColor = olc::DARK_MAGENTA;
+	backgroundColor = MAGENTA;
 }
 
 void Desktop::Tick(float) {
@@ -47,7 +47,7 @@ void Desktop::Tick(float) {
 void Desktop::Draw() {
 
 	//clears all graphics on the window
-	window->Clear(backgroundColor);
+	//window->Clear(backgroundColor);
 
 	taskbar.Draw();
 	Point drawOffset = Point(0, taskbar.height);

@@ -1,12 +1,13 @@
+#include "raylib.h"
+
 #include "Input.h"
-#include "olcPixelGameEngine.h"
 #include "KallumOS.h"
 #include "InputPress.h"
 
 
 
-Input::Input(olc::PixelGameEngine* _window) {
-	window = _window;
+Input::Input() {
+
 	GenerateKeyPressList();
 	GenerateMousePressList();
 }
