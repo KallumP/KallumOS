@@ -9,13 +9,13 @@
 class CreateAccount : public State {
 
 public:
-	CreateAccount(olc::PixelGameEngine*, std::string);
+	CreateAccount(std::string _accountsFilePath);
 	~CreateAccount();
 
 	void Tick(float);
 	void Draw();
-	void OnKeyPress(KeyPress*);
-	void OnMousePress(MousePress*);
+	void OnKeyPress(KeyPress* e);
+	void OnMousePress(MousePress* e);
 
 
 

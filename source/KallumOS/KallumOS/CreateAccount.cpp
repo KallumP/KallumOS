@@ -7,7 +7,10 @@
 #include "Button.h"
 #include "InputPress.h"
 
-CreateAccount::CreateAccount(olc::PixelGameEngine* _window, std::string _accountsFilePath) : State(_window) {
+#include <iostream>
+#include <fstream>
+
+CreateAccount::CreateAccount(std::string _accountsFilePath) : State() {
 
 	accountsFilePath = _accountsFilePath;
 
@@ -44,17 +47,17 @@ CreateAccount::~CreateAccount() {
 void CreateAccount::GetAllUsers() {
 
 	std::ifstream toRead;
-	toRead.open(accountsFilePath, std::ios_base::in);
+	toRead.open(accountsFilePath);
 
 	while (toRead.good()) {
 
 		std::string fileUsername;
 		std::getline(toRead, fileUsername);
-		std::cout << fileUsername << std::endl;
+		//std::cout << fileUsername << std::endl;
 
 		std::string filePassword;
 		std::getline(toRead, filePassword);
-		std::cout << filePassword << std::endl;
+		//std::cout << filePassword << std::endl;
 
 		allAccounts.push_back(Credentials(fileUsername, filePassword));
 	}
@@ -63,10 +66,10 @@ void CreateAccount::GetAllUsers() {
 
 }
 
-void CreateAccount::Tick(float) {
+void CreateAccount::Tick(float elapsedTime) {
 
 	//turns the window mouse values into a point
-	Point* newMouse = new Point(window->GetMouseX(), window->GetMouseY());
+	Point* newMouse = new Point(GetMouseX(), GetMouseY());
 
 	//checks if the new mouse is different from the old
 	if (mousePosition->Different(newMouse)) {
@@ -81,7 +84,7 @@ void CreateAccount::Tick(float) {
 void CreateAccount::Draw() {
 
 	//clears all graphics on the window
-	window->Clear(backgroundColor);
+	ClearBackground(backgroundColor);
 
 	for (int i = 0; i < (int)controls.size(); i++)
 		controls[i]->Draw();
@@ -109,13 +112,14 @@ void CreateAccount::MouseMove() {
 }
 
 void CreateAccount::OnKeyPress(KeyPress* e) {
-	if (e->GetKeyCode() == olc::Key::ENTER)
+
+	if (e->GetKeyCode() == KEY_ENTER)
 		if (focused != switchToLoginTrigger)
 			ValidateCredentials();
 		else
 			nextState = States::login;
 
-	else if (e->GetKeyCode() == olc::Key::TAB)
+	else if (e->GetKeyCode() == KEY_TAB)
 		NextFocus();
 	else
 		focused->OnKeyPress(e);
@@ -148,8 +152,7 @@ void CreateAccount::ValidateCredentials() {
 
 		SaveCredentials();
 		backgroundColor = GREEN;
-	}
-	else {
+	} else {
 		backgroundColor = RED;
 	}
 }
@@ -163,7 +166,7 @@ bool CreateAccount::UsernameExists(std::string _username) {
 		if (allAccounts[i].username == _username)
 
 			return true;
-	
+
 	return false;
 }
 

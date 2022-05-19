@@ -69,7 +69,6 @@ private:
 	bool InMousePressedList(MousePress press);
 
 
-	olc::PixelGameEngine* window;
 	std::vector<KeyPress> allKeyPressOptions;
 	std::vector<MousePress> allMousePressOptions;
 

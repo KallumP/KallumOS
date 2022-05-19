@@ -4,7 +4,7 @@ Taskbar::Taskbar() {
 
 }
 
-Taskbar::Taskbar(olc::PixelGameEngine* _window, std::vector<Process*>* _processes) : Control(_window, Point(), Point()) {
+Taskbar::Taskbar(std::vector<Process*>* _processes) : Control(Point(), Point()) {
 
 	clickedProcess = nullptr;
 	focusedProcess = nullptr;
@@ -49,7 +49,7 @@ void Taskbar::Draw() {
 
 bool Taskbar::Click(Point* mousePosition) {
 
-	if (window->GetMouseY() < height) {
+	if (GetMouseY() < height) {
 
 		HandleClickedProcess();
 
@@ -61,7 +61,7 @@ bool Taskbar::Click(Point* mousePosition) {
 
 void Taskbar::HandleClickedProcess() {
 
-	int mouseX = window->GetMouseX();
+	int mouseX = GetMouseX();
 
 	int nonHiddenIndex = 0;
 

@@ -7,11 +7,11 @@ class KeyPress {
 
 public:
 
-	KeyPress(olc::Key _keyCode, std::string _keyContent) {
+	KeyPress(int _keyCode, std::string _keyContent) {
 		keyCode = _keyCode;
 		keyContent = _keyContent;
 	}
-	olc::Key GetKeyCode() {
+	int GetKeyCode() {
 		return keyCode;
 	}
 
@@ -20,7 +20,7 @@ public:
 	}
 
 private:
-	olc::Key keyCode;
+	int keyCode;
 	std::string keyContent;
 
 };
@@ -39,7 +39,7 @@ public:
 
 private:
 	int mouseButton;
-	olc::HWButton state;
+	//olc::HWButton state;
 
 	//mouse buttons are as follows
 	//left: 0, right: 1, middle: 2

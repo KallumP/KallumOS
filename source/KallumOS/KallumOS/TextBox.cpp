@@ -1,4 +1,5 @@
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "TextBox.h"
 #include "Point.h"
 #include "InputPress.h"
@@ -30,37 +31,36 @@ void TextBox::SetObfuscation(std::string _obfuscation) {
 void TextBox::Draw() {
 
 	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(window->ScreenWidth(), window->ScreenHeight()));
+	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
 
 	//draws the text box
-	window->FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
+	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
 
 	if (value != "")
 
 		if (obfuscation == "") {
 
 			//draws the textbox value
-			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
-		}
-		else {
+			DrawText(value.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+		} else {
 
 			std::string obfuscatedString;
 			for (int i = 0; i < value.size(); i++)
-
 				obfuscatedString.append(obfuscation);
-			
-			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), obfuscatedString, fontColor, fontSize);
+
+			DrawText(obfuscatedString.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 		}
 
 	else
-		window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), placeholder, fadedFontColor, fontSize);
+		DrawText(placeholder.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+
 	if (focused) {
 
 		//draws the focus outline
-		window->DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
+		DrawRectangleLines(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 
 		//draws the cursor
-		window->DrawLine(
+		DrawLine(
 			normalizedPosition->GetX() + padding.GetX() + (cursor)*fontSize * 8,
 			normalizedPosition->GetY() + padding.GetY(),
 			normalizedPosition->GetX() + padding.GetX() + (cursor)*fontSize * 8,
@@ -82,18 +82,16 @@ bool TextBox::Click(Point* mousePosition) {
 
 void TextBox::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyCode() == olc::Key::BACK) {
-		DeleteOne();
-		return;
-	}
-	else if (e->GetKeyCode() == olc::Key::LEFT) {
-		MoveCursor(-1);
-		return;
-	}
-	else if (e->GetKeyCode() == olc::Key::RIGHT) {
-		MoveCursor(1);
-		return;
-	}
+	//if (e->GetKeyCode() == olc::Key::BACK) {
+	//	DeleteOne();
+	//	return;
+	//} else if (e->GetKeyCode() == olc::Key::LEFT) {
+	//	MoveCursor(-1);
+	//	return;
+	//} else if (e->GetKeyCode() == olc::Key::RIGHT) {
+	//	MoveCursor(1);
+	//	return;
+	//}
 
 	if (e->GetKeyContent().length() != 0)
 		Input(e->GetKeyContent());
@@ -144,8 +142,7 @@ void TextBox::DeleteOne() {
 
 		std::cout << "Pressed: Backspace" << std::endl;
 
-	}
-	else {
+	} else {
 
 		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
 	}

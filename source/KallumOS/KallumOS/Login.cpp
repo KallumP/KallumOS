@@ -7,6 +7,8 @@
 #include "Button.h"
 #include "InputPress.h"
 
+#include <fstream>
+
 
 
 
@@ -67,7 +69,7 @@ Login::~Login() {
 void Login::Tick(float ElapsedTime) {
 
 	//turns the window mouse values into a point
-	Point* newMouse = new Point(window->GetMouseX(), window->GetMouseY());
+	Point* newMouse = new Point(GetMouseX(), GetMouseY());
 
 	//checks if the new mouse is different from the old
 	if (mousePosition->Different(newMouse)) {
@@ -83,10 +85,8 @@ void Login::Tick(float ElapsedTime) {
 //Draw event
 void Login::Draw() {
 
-	ClearBackground(backgroundColor);
-
 	//clears all graphics on the window
-	window->Clear(backgroundColor);
+	ClearBackground(backgroundColor);
 
 	for (int i = 0; i < (int)controls.size(); i++)
 		controls[i]->Draw();
@@ -118,13 +118,13 @@ void Login::MouseMove() {
 //Keypress event
 void Login::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyCode() == olc::Key::ENTER)
+	if (e->GetKeyCode() == KEY_ENTER)
 		if (focused != switchToCreateTrigger)
 			ValidateLogin();
 		else
 			nextState = States::createAccount;
 
-	else if (e->GetKeyCode() == olc::Key::TAB)
+	else if (e->GetKeyCode() == KEY_TAB)
 		NextFocus();
 	else
 		focused->OnKeyPress(e);

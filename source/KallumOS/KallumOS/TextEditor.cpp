@@ -1,7 +1,7 @@
 #include "TextEditor.h"
 
 
-TextEditor::TextEditor(olc::PixelGameEngine* _window, Point _position, Point _size) : Process(_window, "Text Editor", _position, _size) {
+TextEditor::TextEditor(Point _position, Point _size) : Process("Text Editor", _position, _size) {
 
 	text = "";
 	fontSize = 2;
@@ -23,7 +23,7 @@ void TextEditor::Draw(Point offset) {
 
 	//if there wasn't enough characters to fill a line
 	if (text.size() < charsPerLine) {
-		window->DrawString(padding + offset.GetX(), 10 + offset.GetY(), text, olc::BLACK, fontSize);
+		DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), fontSize, BLACK);
 
 	} else {
 
@@ -31,8 +31,8 @@ void TextEditor::Draw(Point offset) {
 
 			std::string line;
 			line = text.substr(i * charsPerLine, charsPerLine);
-				window->DrawString(padding + offset.GetX(), padding + (i * (fontSize * 8)) + offset.GetY(), line, olc::BLACK, fontSize);
 
+			DrawText(line.c_str(), padding + offset.GetX(), padding + (i * (fontSize * 8)) + offset.GetY(), fontSize, BLACK);
 		}
 	}
 }
@@ -41,19 +41,19 @@ void TextEditor::Draw(Point offset) {
 
 void TextEditor::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyCode() == olc::Key::BACK) {
-		DeleteChar();
-		return;
-	} else if (e->GetKeyCode() == olc::Key::LEFT) {
-		//MoveCursor(-1);
-		return;
-	} else if (e->GetKeyCode() == olc::Key::RIGHT) {
-		//MoveCursor(1);
-		return;
-	}
+	//if (e->GetKeyCode() == olc::Key::BACK) {
+	//	DeleteChar();
+	//	return;
+	//} else if (e->GetKeyCode() == olc::Key::LEFT) {
+	//	//MoveCursor(-1);
+	//	return;
+	//} else if (e->GetKeyCode() == olc::Key::RIGHT) {
+	//	//MoveCursor(1);
+	//	return;
+	//}
 
-	if (e->GetKeyContent().length() != 0)
-		Input(e->GetKeyContent());
+	//if (e->GetKeyContent().length() != 0)
+	//	Input(e->GetKeyContent());
 }
 
 

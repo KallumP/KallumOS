@@ -54,9 +54,9 @@ void KallumOS::SwitchStates() {
 	States toSwitch = state->GetNextState();
 
 	if (toSwitch == States::login)
-		state = new Login(window, "accounts");
+		state = new Login( "accounts");
 	else if (toSwitch == States::createAccount)
-		state = new CreateAccount(window, "accounts");
+		state = new CreateAccount( "accounts");
 	else if (toSwitch == States::desktop)
-		state = new Desktop(window);
+		state = new Desktop();
 }
