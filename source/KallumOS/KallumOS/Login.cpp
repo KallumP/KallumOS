@@ -1,33 +1,36 @@
 #include "Login.h"
+#include "raylib.h"
 
-#include "olcPixelGameEngine.h"
 #include "State.h"
 #include "Control.h"
 #include "TextBox.h"
 #include "Button.h"
 #include "InputPress.h"
 
+#include <fstream>
 
 
-Login::Login(olc::PixelGameEngine* _window, std::string _accountsFilePath) : State(_window) {
+
+
+Login::Login(std::string _accountsFilePath) : State() {
 
 	accountsFilePath = _accountsFilePath;
 
 	int TextboxWidth = 300;
 
-	backgroundColor = olc::BLUE;
+	backgroundColor = BLUE;
 
-	username = new TextBox(_window, Point(0.5, 0.5), Point(TextboxWidth, 40), "", "Username");
+	username = new TextBox(Point(0.5, 0.5), Point(TextboxWidth, 40), "", "Username");
 	controls.push_back(username);
 
-	password = new TextBox(_window, Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
+	password = new TextBox(Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
 	controls.push_back(password);
 	password->SetObfuscation("*");
 
-	loginTrigger = new Button(_window, Point(0.5, 0.71), Point(TextboxWidth, 40), "Login");
+	loginTrigger = new Button(Point(0.5, 0.71), Point(TextboxWidth, 40), "Login");
 	controls.push_back(loginTrigger);
 
-	switchToCreateTrigger = new Button(_window, Point(0.5, 0.78), Point(TextboxWidth, 40), "Create account");
+	switchToCreateTrigger = new Button(Point(0.5, 0.78), Point(TextboxWidth, 40), "Create account");
 	controls.push_back(switchToCreateTrigger);
 
 	Focus(username, false);
@@ -66,7 +69,7 @@ Login::~Login() {
 void Login::Tick(float ElapsedTime) {
 
 	//turns the window mouse values into a point
-	Point* newMouse = new Point(window->GetMouseX(), window->GetMouseY());
+	Point* newMouse = new Point(GetMouseX(), GetMouseY());
 
 	//checks if the new mouse is different from the old
 	if (mousePosition->Different(newMouse)) {
@@ -83,7 +86,7 @@ void Login::Tick(float ElapsedTime) {
 void Login::Draw() {
 
 	//clears all graphics on the window
-	window->Clear(backgroundColor);
+	ClearBackground(backgroundColor);
 
 	for (int i = 0; i < (int)controls.size(); i++)
 		controls[i]->Draw();
@@ -115,13 +118,13 @@ void Login::MouseMove() {
 //Keypress event
 void Login::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyCode() == olc::Key::ENTER)
+	if (e->GetKeyCode() == KEY_ENTER)
 		if (focused != switchToCreateTrigger)
 			ValidateLogin();
 		else
 			nextState = States::createAccount;
 
-	else if (e->GetKeyCode() == olc::Key::TAB)
+	else if (e->GetKeyCode() == KEY_TAB)
 		NextFocus();
 	else
 		focused->OnKeyPress(e);
@@ -146,21 +149,19 @@ void Login::CheckLoginClicked() {
 void Login::ValidateLogin() {
 
 	//loops through all the user accounts
-	for (int i = 0; i < allAccounts.size(); i++)
-	{
+	for (int i = 0; i < allAccounts.size(); i++) {
 
 		//checks if the credentials were good
 		if (ValidateCredentials(username->GetValue(), password->GetValue(), allAccounts[i])) {
 
-			backgroundColor = olc::GREEN;
+			backgroundColor = GREEN;
 
 			nextState = States::desktop;
 
 			break;
 
-		}
-		else {
-			backgroundColor = olc::RED;
+		} else {
+			backgroundColor = RED;
 
 		}
 	}

@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "State.h"
 #include "Button.h"
 #include "InputPress.h"
@@ -9,13 +10,13 @@
 class Login : public State {
 
 public:
-	Login(olc::PixelGameEngine*, std::string);
+	Login(std::string _accountsFilePath);
 	~Login();
 
 	void Tick(float);
 	void Draw();
-	void OnKeyPress(KeyPress*);
-	void OnMousePress(MousePress*);
+	void OnKeyPress(KeyPress* e);
+	void OnMousePress(MousePress* e);
 
 
 private:
@@ -26,9 +27,7 @@ private:
 	void Click();
 	void MouseMove();
 	void ValidateLogin();
-	bool ValidateCredentials(std::string, std::string, Credentials);
-
-	olc::Pixel backgroundColor;
+	bool ValidateCredentials(std::string _username, std::string _password, Credentials toCheck);
 
 	Button* loginTrigger;
 	Button* switchToCreateTrigger;

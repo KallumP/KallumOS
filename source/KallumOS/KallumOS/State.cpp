@@ -1,12 +1,11 @@
 #include "State.h"
+#include "raylib.h"
 
-#include "olcPixelGameEngine.h"
 #include "Control.h"
 #include "Point.h"
 
-State::State(olc::PixelGameEngine* _window) {
+State::State() {
 
-	window = _window;
 	mousePosition = new Point();
 	mouseClicked = false;
 	nextState = States::null;

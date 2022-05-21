@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "Process.h"
 #include "Point.h"
 
@@ -9,7 +10,7 @@ class TaskManager : public Process {
 
 public:
 	TaskManager();
-	TaskManager(olc::PixelGameEngine* _window, std::vector<Process*>* _processes, Point _position, Point _size);
+	TaskManager(std::vector<Process*>* _processes, Point _position, Point _size);
 
 
 	void Draw(Point offset);

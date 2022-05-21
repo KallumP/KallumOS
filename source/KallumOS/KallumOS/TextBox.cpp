@@ -1,4 +1,5 @@
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "TextBox.h"
 #include "Point.h"
 #include "InputPress.h"
@@ -6,20 +7,21 @@
 #include <string>
 #include <iostream>
 
-TextBox::TextBox(olc::PixelGameEngine* _window, Point _position, Point _size, std::string _value, std::string _placeholder) : Control(_window, _position, _size) {
+TextBox::TextBox(Point _position, Point _size, std::string _value, std::string _placeholder) : Control(_position, _size) {
 
-	defaultColor = olc::WHITE;
-	hoverColor = olc::GREY;
+	defaultColor = WHITE;
+	hoverColor = GRAY;
 	backColor = defaultColor;
 
-	fontColor = olc::BLACK;
-	fadedFontColor = olc::DARK_GREY;
+	fontColor = BLACK;
+	fadedFontColor = DARKGRAY;
 
 	padding = Point(10, 10);
-	fontSize = 2;
+	fontSize = 20;
 
 	value = _value;
 	placeholder = _placeholder;
+
 	cursor = 0;
 }
 
@@ -30,45 +32,43 @@ void TextBox::SetObfuscation(std::string _obfuscation) {
 void TextBox::Draw() {
 
 	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(window->ScreenWidth(), window->ScreenHeight()));
+	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
 
 	//draws the text box
-	window->FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
+	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
 
 	if (value != "")
 
 		if (obfuscation == "") {
 
-
 			//draws the textbox value
-			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
-		}
-		else {
+			DrawText(value.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+		} else {
 
 			std::string obfuscatedString;
-			for (int i = 0; i < value.size(); i++) {
-
-
+			for (int i = 0; i < value.size(); i++)
 				obfuscatedString.append(obfuscation);
 
-
-			}
-			window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), obfuscatedString, fontColor, fontSize);
-
+			DrawText(obfuscatedString.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 		}
 
 	else
-		window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), placeholder, fadedFontColor, fontSize);
+		DrawText(placeholder.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+
 	if (focused) {
 
 		//draws the focus outline
-		window->DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), olc::BLACK);
+		DrawRectangleLines(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
+
+		int textWidthToCursor = 0;
+		if (value.length() > 0)
+			textWidthToCursor = MeasureText(value.substr(0, cursor).c_str(), fontSize);
 
 		//draws the cursor
-		window->DrawLine(
-			normalizedPosition->GetX() + padding.GetX() + (cursor)*fontSize * 8,
+		DrawLine(
+			normalizedPosition->GetX() + padding.GetX() + textWidthToCursor,
 			normalizedPosition->GetY() + padding.GetY(),
-			normalizedPosition->GetX() + padding.GetX() + (cursor)*fontSize * 8,
+			normalizedPosition->GetX() + padding.GetX() + textWidthToCursor,
 			normalizedPosition->GetY() + size.GetY() - padding.GetY(),
 			fontColor);
 	}
@@ -87,15 +87,13 @@ bool TextBox::Click(Point* mousePosition) {
 
 void TextBox::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyCode() == olc::Key::BACK) {
+	if (e->GetKeyCode() == KEY_BACK) {
 		DeleteOne();
 		return;
-	}
-	else if (e->GetKeyCode() == olc::Key::LEFT) {
+	} else if (e->GetKeyCode() == KEY_LEFT) {
 		MoveCursor(-1);
 		return;
-	}
-	else if (e->GetKeyCode() == olc::Key::RIGHT) {
+	} else if (e->GetKeyCode() == KEY_RIGHT) {
 		MoveCursor(1);
 		return;
 	}
@@ -107,13 +105,13 @@ void TextBox::OnKeyPress(KeyPress* e) {
 void TextBox::FindNewCursorPosition(int mouseX) {
 
 	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(window->ScreenWidth(), window->ScreenHeight()));
+	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
 
 	//loops through each of the characters in the string
 	for (int i = 0; i < value.size(); i++) {
 
 		//checks if the click was behind the next character
-		if (mouseX < normalizedPosition->GetX() + padding.GetX() + (i + 1) * fontSize * 8) {
+		if (mouseX < singleCharWidth * i) {
 			cursor = i;
 			return;
 		}
@@ -149,8 +147,7 @@ void TextBox::DeleteOne() {
 
 		std::cout << "Pressed: Backspace" << std::endl;
 
-	}
-	else {
+	} else {
 
 		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
 	}

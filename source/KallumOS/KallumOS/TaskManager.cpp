@@ -6,7 +6,7 @@ TaskManager::TaskManager() {
 }
 
 
-TaskManager::TaskManager(olc::PixelGameEngine* _window, std::vector<Process*>* _processes, Point _position, Point _size) : Process(_window, "Task manager", _position, _size) {
+TaskManager::TaskManager(std::vector<Process*>* _processes, Point _position, Point _size) : Process("Task manager", _position, _size) {
 
 	processes = _processes;
 }
@@ -29,20 +29,21 @@ void TaskManager::Draw(Point offset) {
 
 
 			//outputs a rectangle for the current process
-			window->DrawRect(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, olc::GREEN);
+			DrawRectangleLines(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, GREEN);
 
 			if (selected == i)
-				window->FillRect(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, olc::GREEN);
+				DrawRectangle(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, GREEN);
 
 			//saves the name of the curretn process
 			std::string processName = (*processes)[i]->GetName();
 
 			//outputs the name of the process
-			window->DrawString(10 + offset.GetX(), 5 + i * processBoxHeight + offset.GetY(), std::to_string(i) + ": " + processName, olc::BLACK, 2);
+			std::string processNameBuffer = std::to_string(i) + ": " + processName;
+			DrawText(processNameBuffer.c_str(), 10 + offset.GetX(), 5 + i * processBoxHeight + offset.GetY(), defaultFontSize, BLACK);
 
 			//draws the end process button
-			window->DrawRect(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, olc::RED);
-			window->FillRect(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, olc::RED);
+			DrawRectangleLines(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, RED);
+			DrawRectangle(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, RED);
 		}
 	}
 }
@@ -51,11 +52,11 @@ void TaskManager::OnKeyPress(KeyPress* e) {
 
 	if (display) {
 
-		if (e->GetKeyContent() == "x")
+		//if (e->GetKeyContent() == "x")
 
-			if (!processes->empty())
+		//	if (!processes->empty())
 
-				EndTask(selected);
+		//		EndTask(selected);
 	}
 }
 

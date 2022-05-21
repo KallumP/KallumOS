@@ -1,35 +1,38 @@
+#include "raylib.h"
 #include "CreateAccount.h"
 
-#include "olcPixelGameEngine.h"
 #include "State.h"
 #include "Control.h"
 #include "TextBox.h"
 #include "Button.h"
 #include "InputPress.h"
 
-CreateAccount::CreateAccount(olc::PixelGameEngine* _window, std::string _accountsFilePath) : State(_window) {
+#include <iostream>
+#include <fstream>
+
+CreateAccount::CreateAccount(std::string _accountsFilePath) : State() {
 
 	accountsFilePath = _accountsFilePath;
 
 	int TextboxWidth = 300;
 
-	backgroundColor = olc::BLUE;
+	backgroundColor = BLUE;
 
-	username = new TextBox(_window, Point(0.5, 0.5), Point(TextboxWidth, 40), "", "Username");
+	username = new TextBox(Point(0.5, 0.5), Point(TextboxWidth, 40), "", "Username");
 	controls.push_back(username);
 
-	password = new TextBox(_window, Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
+	password = new TextBox(Point(0.5, 0.57), Point(TextboxWidth, 40), "", "Password");
 	controls.push_back(password);
 	password->SetObfuscation("*");
 
-	password2 = new TextBox(_window, Point(0.5, 0.64), Point(TextboxWidth, 40), "", "Validate password");
+	password2 = new TextBox(Point(0.5, 0.64), Point(TextboxWidth, 40), "", "Validate password");
 	controls.push_back(password2);
 	password2->SetObfuscation("*");
 
-	createTrigger = new Button(_window, Point(0.5, 0.71), Point(TextboxWidth, 40), "Create");
+	createTrigger = new Button(Point(0.5, 0.71), Point(TextboxWidth, 40), "Create");
 	controls.push_back(createTrigger);
 
-	switchToLoginTrigger = new Button(_window, Point(0.5, 0.78), Point(TextboxWidth, 40), "Back to Login");
+	switchToLoginTrigger = new Button(Point(0.5, 0.78), Point(TextboxWidth, 40), "Back to Login");
 	controls.push_back(switchToLoginTrigger);
 
 	Focus(username, false);
@@ -44,17 +47,17 @@ CreateAccount::~CreateAccount() {
 void CreateAccount::GetAllUsers() {
 
 	std::ifstream toRead;
-	toRead.open(accountsFilePath, std::ios_base::in);
+	toRead.open(accountsFilePath);
 
 	while (toRead.good()) {
 
 		std::string fileUsername;
 		std::getline(toRead, fileUsername);
-		std::cout << fileUsername << std::endl;
+		//std::cout << fileUsername << std::endl;
 
 		std::string filePassword;
 		std::getline(toRead, filePassword);
-		std::cout << filePassword << std::endl;
+		//std::cout << filePassword << std::endl;
 
 		allAccounts.push_back(Credentials(fileUsername, filePassword));
 	}
@@ -63,10 +66,10 @@ void CreateAccount::GetAllUsers() {
 
 }
 
-void CreateAccount::Tick(float) {
+void CreateAccount::Tick(float elapsedTime) {
 
 	//turns the window mouse values into a point
-	Point* newMouse = new Point(window->GetMouseX(), window->GetMouseY());
+	Point* newMouse = new Point(GetMouseX(), GetMouseY());
 
 	//checks if the new mouse is different from the old
 	if (mousePosition->Different(newMouse)) {
@@ -81,7 +84,7 @@ void CreateAccount::Tick(float) {
 void CreateAccount::Draw() {
 
 	//clears all graphics on the window
-	window->Clear(backgroundColor);
+	ClearBackground(backgroundColor);
 
 	for (int i = 0; i < (int)controls.size(); i++)
 		controls[i]->Draw();
@@ -109,13 +112,14 @@ void CreateAccount::MouseMove() {
 }
 
 void CreateAccount::OnKeyPress(KeyPress* e) {
-	if (e->GetKeyCode() == olc::Key::ENTER)
+
+	if (e->GetKeyCode() == KEY_ENTER)
 		if (focused != switchToLoginTrigger)
 			ValidateCredentials();
 		else
 			nextState = States::login;
 
-	else if (e->GetKeyCode() == olc::Key::TAB)
+	else if (e->GetKeyCode() == KEY_TAB)
 		NextFocus();
 	else
 		focused->OnKeyPress(e);
@@ -147,10 +151,9 @@ void CreateAccount::ValidateCredentials() {
 		!UsernameExists(username->GetValue())) {
 
 		SaveCredentials();
-		backgroundColor = olc::GREEN;
-	}
-	else {
-		backgroundColor = olc::RED;
+		backgroundColor = GREEN;
+	} else {
+		backgroundColor = RED;
 	}
 }
 
@@ -163,7 +166,7 @@ bool CreateAccount::UsernameExists(std::string _username) {
 		if (allAccounts[i].username == _username)
 
 			return true;
-	
+
 	return false;
 }
 

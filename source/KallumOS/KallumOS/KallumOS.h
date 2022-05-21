@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "Control.h"
 #include "State.h"
 #include "InputPress.h"
@@ -10,19 +11,18 @@ class KallumOS {
 
 public:
 
-	KallumOS(olc::PixelGameEngine*);
+	KallumOS();
 	~KallumOS();
 
-	void Tick(float);
+	void Tick(float elapsedTime);
 	void Draw();
-	void OnKeyPress(KeyPress*);
-	void OnMouseHold(MousePress*);
-	void OnMousePress(MousePress*);
+	void OnKeyPress(KeyPress* e);
+	void OnMouseHold(MousePress* e);
+	void OnMousePress(MousePress* e);
 
 private:
 
 	void SwitchStates();
 
-	olc::PixelGameEngine* window;
 	State* state;
 };

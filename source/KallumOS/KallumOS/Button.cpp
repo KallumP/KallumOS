@@ -1,4 +1,4 @@
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
 #include "Button.h"
 #include "Point.h"
 #include "InputPress.h"
@@ -6,36 +6,35 @@
 #include <string>
 
 
-Button::Button(olc::PixelGameEngine* _window, Point _position, Point _size, std::string _value) : Control(_window, _position, _size) {
+Button::Button(Point _position, Point _size, std::string _value) : Control(_position, _size) {
 
-	defaultColor = olc::WHITE;
-	hoverColor = olc::GREY;
+	clicked = false;
+	defaultColor = WHITE;
+	hoverColor = GRAY;
 	backColor = defaultColor;
 
-	fontColor = olc::BLACK;
+	fontColor = BLACK;
 
 	value = _value;
 
 	padding = Point(10, 10);
-	fontSize = 2;
+	fontSize = 20;
 }
 
 void Button::Draw() {
 
 	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(window->ScreenWidth(), window->ScreenHeight()));
+	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
 
 	//draws the button
-	window->FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
+	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
 
 	//draws the textbox value
-	window->DrawString(normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), value, fontColor, fontSize);
+	DrawText(value.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 
-
+	//draws the focus outline
 	if (focused)
-
-		//draws the focus outline
-		window->DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), olc::BLACK);
+		DrawRectangleLines(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 }
 
 bool Button::Click(Point* mousePosition) {

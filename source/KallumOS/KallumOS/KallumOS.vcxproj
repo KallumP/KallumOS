@@ -43,7 +43,6 @@
     <ClInclude Include="KallumOS.h" />
     <ClInclude Include="InputPress.h" />
     <ClInclude Include="Login.h" />
-    <ClInclude Include="olcPixelGameEngine.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="State.h" />

@@ -1,4 +1,5 @@
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "KallumOS.h"
 #include "Control.h"
 #include "TextBox.h"
@@ -9,10 +10,9 @@
 
 
 
-KallumOS::KallumOS(olc::PixelGameEngine* _window) {
+KallumOS::KallumOS() {
 
-	window = _window;
-	state = new Login(_window, "accounts");
+	state = new Login("accounts");
 }
 
 KallumOS::~KallumOS() {
@@ -20,17 +20,13 @@ KallumOS::~KallumOS() {
 }
 
 //Tick event
-void KallumOS::Tick(float ElapsedTime) {
+void KallumOS::Tick(float elapsedTime) {
 
 	if (state->GetNextState() != States::null)
-
 		SwitchStates();
 
 	else
-
-		state->Tick(ElapsedTime);
-
-
+		state->Tick(elapsedTime);
 }
 
 //Draw event
@@ -58,11 +54,9 @@ void KallumOS::SwitchStates() {
 	States toSwitch = state->GetNextState();
 
 	if (toSwitch == States::login)
-		state = new Login(window, "accounts");
+		state = new Login( "accounts");
 	else if (toSwitch == States::createAccount)
-		state = new CreateAccount(window, "accounts");
+		state = new CreateAccount( "accounts");
 	else if (toSwitch == States::desktop)
-		state = new Desktop(window);
-
-
+		state = new Desktop();
 }

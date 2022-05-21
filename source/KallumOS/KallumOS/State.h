@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "Control.h"
 #include "Point.h"
 #include "InputPress.h"
@@ -22,7 +23,8 @@ struct Credentials {
 
 class State {
 protected:
-	olc::PixelGameEngine* window;
+	Color backgroundColor;
+
 	std::vector<Control*> controls;
 
 	Point* mousePosition;
@@ -33,19 +35,19 @@ protected:
 
 public:
 
-	State(olc::PixelGameEngine*);
+	State();
 	~State();
 
-	virtual void Tick(float) = 0;
+	virtual void Tick(float elapsedTime) = 0;
 	virtual void Draw() = 0;
 
 	virtual	void Click() = 0;
 	virtual void MouseMove() = 0;
-	virtual void OnKeyPress(KeyPress*) = 0;
-	virtual void OnMousePress(MousePress*) = 0;
+	virtual void OnKeyPress(KeyPress* e) = 0;
+	virtual void OnMousePress(MousePress* e) = 0;
 	virtual States GetNextState();
 
-	void Focus(Control*, bool);
+	void Focus(Control* toFocus, bool click);
 	void NextFocus();
 
 private:

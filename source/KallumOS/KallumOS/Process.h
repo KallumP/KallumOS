@@ -1,5 +1,6 @@
 #pragma once
-#include "olcPixelGameEngine.h"
+#include "raylib.h"
+
 #include "Point.h"
 #include "InputPress.h"
 
@@ -8,10 +9,12 @@
 class Process {
 
 protected:
-	olc::PixelGameEngine* window;
+
 	std::string name;
 	Point position;
 	Point size;
+
+	int defaultFontSize;
 
 	bool hidden;
 	bool display;
@@ -27,8 +30,8 @@ protected:
 
 public:
 	Process();
-	Process(olc::PixelGameEngine* _window, std::string _name, Point _position, Point _size);
-	Process(olc::PixelGameEngine* _window, std::string _name);
+	Process( std::string _name, Point _position, Point _size);
+	Process( std::string _name);
 
 	virtual void Draw(Point offset);
 	virtual void Tick() {}
@@ -40,6 +43,5 @@ public:
 	bool GetHidden() { return hidden; }
 	bool GetDisplay() { return display; }
 	void ToggleDisplay() { display = !display; }
-
 };
 

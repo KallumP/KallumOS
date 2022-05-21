@@ -1,10 +1,9 @@
 #include "TextEditor.h"
 
 
-TextEditor::TextEditor(olc::PixelGameEngine* _window, Point _position, Point _size) : Process(_window, "Text Editor", _position, _size) {
+TextEditor::TextEditor(Point _position, Point _size) : Process("Text Editor", _position, _size) {
 
 	text = "";
-	fontSize = 2;
 
 }
 
@@ -18,12 +17,12 @@ void TextEditor::Draw(Point offset) {
 
 	//gets properties about the lines to draw to the window
 	int textLength = text.size();
-	int charsPerLine = (size.GetX() - padding * 2) / (fontSize * 8);
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
 	int linesToDraw = std::ceil(textLength / (float)charsPerLine);
 
 	//if there wasn't enough characters to fill a line
 	if (text.size() < charsPerLine) {
-		window->DrawString(padding + offset.GetX(), 10 + offset.GetY(), text, olc::BLACK, fontSize);
+		DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), defaultFontSize, BLACK);
 
 	} else {
 
@@ -31,8 +30,8 @@ void TextEditor::Draw(Point offset) {
 
 			std::string line;
 			line = text.substr(i * charsPerLine, charsPerLine);
-				window->DrawString(padding + offset.GetX(), padding + (i * (fontSize * 8)) + offset.GetY(), line, olc::BLACK, fontSize);
 
+			DrawText(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize)) + offset.GetY(), defaultFontSize, BLACK);
 		}
 	}
 }
@@ -41,13 +40,13 @@ void TextEditor::Draw(Point offset) {
 
 void TextEditor::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyCode() == olc::Key::BACK) {
+	if (e->GetKeyCode() == KEY_BACKSPACE) {
 		DeleteChar();
 		return;
-	} else if (e->GetKeyCode() == olc::Key::LEFT) {
+	} else if (e->GetKeyCode() == KEY_LEFT) {
 		//MoveCursor(-1);
 		return;
-	} else if (e->GetKeyCode() == olc::Key::RIGHT) {
+	} else if (e->GetKeyCode() == KEY_RIGHT) {
 		//MoveCursor(1);
 		return;
 	}
