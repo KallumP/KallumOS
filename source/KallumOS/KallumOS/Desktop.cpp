@@ -58,9 +58,6 @@ void Desktop::Draw() {
 
 	for (int i = 0; i < processes.size(); i++)
 		processes[i]->Draw(drawOffset);
-
-
-
 }
 
 void Desktop::OnKeyPress(KeyPress* e) {
@@ -76,17 +73,27 @@ void Desktop::OnMousePress(MousePress* e) {
 	if (taskbar.Click(mousePosition))
 		TaskBarClickHandle();
 
-
+	//if there was a focused window
 	if (focused != nullptr) {
 
+		//send the click to the focused process
 		focused->OnMousePress(e, taskbar.height);
 
-		bool focusToDisplay = focused->GetDisplay();
-
+		//checks if the process is no longer displayed
 		if (!focused->GetDisplay()) {
 
 			focused = nullptr;
 			taskbar.SetFocused(nullptr);
+
+
+			//checks if the process should close
+		} else if (focused->GetClose()) {
+
+			auto it = find(processes.begin(), processes.end(), focused);
+
+			processes.erase(it);
+			delete focused;
+			focused = nullptr;
 		}
 	}
 
@@ -94,6 +101,8 @@ void Desktop::OnMousePress(MousePress* e) {
 	//loop through the other non focus processes
 	//for (int i = 0; i < processes.size(); i++)
 	//	processes[i]->OnMousePress(e, taskbar.height);
+
+
 
 }
 

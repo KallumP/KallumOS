@@ -65,7 +65,7 @@ void TaskManager::OnMousePress(MousePress* e, int taskbarHeight) {
 
 	if (display) {
 
-		CheckIfMinimizeClicked(NormaliseMousePos(taskbarHeight));
+		CheckBarButtonsClicked(NormaliseMousePos(taskbarHeight));
 
 		int checkOffset;
 
@@ -92,7 +92,6 @@ void TaskManager::OnMousePress(MousePress* e, int taskbarHeight) {
 
 //takes an index of a task to end
 void TaskManager::EndTask(int indexToRemove) {
-
 
 	processes->erase(processes->begin() + indexToRemove);
 }

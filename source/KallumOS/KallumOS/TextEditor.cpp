@@ -10,28 +10,31 @@ TextEditor::TextEditor(Point _position, Point _size) : Process("Text Editor", _p
 
 void TextEditor::Draw(Point offset) {
 
-	DrawBoxBar(offset, true);
-	offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
+	if (display) {
 
-	int padding = 10;
+		DrawBoxBar(offset, true);
+		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
 
-	//gets properties about the lines to draw to the window
-	int textLength = text.size();
-	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
-	int linesToDraw = std::ceil(textLength / (float)charsPerLine);
+		int padding = 10;
 
-	//if there wasn't enough characters to fill a line
-	if (text.size() < charsPerLine) {
-		DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), defaultFontSize, BLACK);
+		//gets properties about the lines to draw to the window
+		int textLength = text.size();
+		int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
+		int linesToDraw = std::ceil(textLength / (float)charsPerLine);
 
-	} else {
+		//if there wasn't enough characters to fill a line
+		if (text.size() < charsPerLine) {
+			DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), defaultFontSize, BLACK);
 
-		for (int i = 0; i < linesToDraw; i++) {
+		} else {
 
-			std::string line;
-			line = text.substr(i * charsPerLine, charsPerLine);
+			for (int i = 0; i < linesToDraw; i++) {
 
-			DrawText(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize)) + offset.GetY(), defaultFontSize, BLACK);
+				std::string line;
+				line = text.substr(i * charsPerLine, charsPerLine);
+
+				DrawText(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize)) + offset.GetY(), defaultFontSize, BLACK);
+			}
 		}
 	}
 }
@@ -60,7 +63,7 @@ void TextEditor::OnMousePress(MousePress* e, int taskbarHeight) {
 
 	if (display) {
 
-		CheckIfMinimizeClicked(NormaliseMousePos(taskbarHeight));
+		CheckBarButtonsClicked(NormaliseMousePos(taskbarHeight));
 
 		int checkOffset;
 
