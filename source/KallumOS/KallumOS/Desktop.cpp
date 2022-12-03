@@ -1,6 +1,7 @@
 #include "Desktop.h"
 #include "Taskbar.h"
 #include "TaskManager.h"
+#include "TicTak.h"
 #include "TextEditor.h"
 
 Desktop::Desktop() : State() {
@@ -8,6 +9,7 @@ Desktop::Desktop() : State() {
 	taskbar = Taskbar(&processes);
 
 	Process* test;
+	Process* toFocus;
 
 	//test = new Process(window, "process w/ display", Point(500, 50), Point(400, 200));
 	//processes.push_back(test);
@@ -18,12 +20,16 @@ Desktop::Desktop() : State() {
 	TaskManager* manager = new TaskManager(&processes, Point(10, 60), Point(450, 300));
 	processes.push_back(manager);
 
-	TextEditor* editor = new TextEditor(Point(500, 50), Point(400, 200));
-	processes.push_back(editor);
+	//TextEditor* editor = new TextEditor(Point(500, 50), Point(400, 200));
+	//processes.push_back(editor);
+	//toFocus = editor;
 
+	TicTak* tic = new TicTak(Point(500, 50), Point(400, 200));
+	processes.push_back(tic);
+	toFocus = tic;
 
-	taskbar.SetFocused(editor);
-	focused = editor;
+	taskbar.SetFocused(toFocus);
+	focused = toFocus;
 
 	backgroundColor = MAGENTA;
 }
