@@ -18,13 +18,16 @@ protected:
 
 	bool hidden;
 	bool display;
+	bool close;
 
 
 	int barHeight = 30; //px
 	int buttonWidth = 40; //px
 	void DrawBoxBar(Point offset, bool fill);
+	void CheckBarButtonsClicked(Point normMousePos);
 	void CheckIfMinimizeClicked(Point normMousePos);
-	Point NormaliseMousePos(int taskbarHeight);
+	void CheckIfCloseClicked(Point normMousePos);
+	Point NormaliseMousePos(int yOffSet);
 
 
 
@@ -42,6 +45,7 @@ public:
 
 	bool GetHidden() { return hidden; }
 	bool GetDisplay() { return display; }
+	bool GetClose() { return close; }
 	void ToggleDisplay() { display = !display; }
 };
 

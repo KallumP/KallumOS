@@ -33,6 +33,7 @@
     <ClCompile Include="TaskManager.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextEditor.cpp" />
+    <ClCompile Include="TicTak.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="TaskManager.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextEditor.h" />
+    <ClInclude Include="TicTak.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -8,17 +8,18 @@ Process::Process() {
 }
 
 
-Process::Process( std::string _name) {
+Process::Process(std::string _name) {
 
 	name = _name;
 
 	hidden = true;
 	display = false;
+	close = false;
 	defaultFontSize = 20;
 
 }
 
-Process::Process( std::string _name, Point _position, Point _size) {
+Process::Process(std::string _name, Point _position, Point _size) {
 
 	name = _name;
 
@@ -27,6 +28,7 @@ Process::Process( std::string _name, Point _position, Point _size) {
 
 	hidden = false;
 	display = true;
+	close = false;
 }
 
 void Process::Draw(Point offset) {
@@ -54,11 +56,14 @@ void Process::DrawBoxBar(Point offset, bool fill) {
 
 
 	//draws the controls
+
+	//close button
 	DrawRectangle(position.GetX() + size.GetX() - buttonWidth + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, RED);
 	DrawRectangleLines(position.GetX() + size.GetX() - buttonWidth + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, RED);
 
-	DrawRectangle(position.GetX() + size.GetX() - buttonWidth * 2 + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, GRAY);
-	DrawRectangleLines(position.GetX() + size.GetX() - buttonWidth * 2 + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, GRAY);
+	//minimise button
+	DrawRectangle(position.GetX() + size.GetX() - buttonWidth * 2 + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, SKYBLUE);
+	DrawRectangleLines(position.GetX() + size.GetX() - buttonWidth * 2 + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, SKYBLUE);
 }
 
 std::string Process::GetName() {
@@ -68,17 +73,23 @@ std::string Process::GetName() {
 }
 
 //normalises the mouse position be relative to the window position
-Point Process::NormaliseMousePos(int taskbarHeight) {
+Point Process::NormaliseMousePos(int yOffSet) {
 
-	return Point(GetMouseX() - position.GetX(), GetMouseY() - position.GetY() - taskbarHeight);
+	return Point(GetMouseX() - position.GetX(), GetMouseY() - position.GetY() - yOffSet);
 }
 
 void Process::OnMousePress(MousePress* e, int taskbarHeight) {
 
 	if (display) {
 
-		CheckIfMinimizeClicked(NormaliseMousePos(taskbarHeight));
+		CheckBarButtonsClicked(NormaliseMousePos(taskbarHeight));
 	}
+}
+
+void Process::CheckBarButtonsClicked(Point normMousePos) {
+
+		CheckIfMinimizeClicked(normMousePos);
+		CheckIfCloseClicked(normMousePos);	
 }
 
 //Checks if the minimise button was pressed and sets the display off if it was
@@ -91,6 +102,20 @@ void Process::CheckIfMinimizeClicked(Point normMousePos) {
 			normMousePos.GetX() < size.GetX() - buttonWidth * 1) {
 
 			display = false;
+		}
+	}
+}
+
+//checks if the close button was pressed and sets the close flag to true
+void Process::CheckIfCloseClicked(Point normMousePos) {
+
+	//checks if the mouse was within the control bar
+	if (normMousePos.GetY() < barHeight) {
+
+		if (normMousePos.GetX() > size.GetX() - buttonWidth * 1 &&
+			normMousePos.GetX() < size.GetX() - buttonWidth * 0) {
+
+			close = true;
 		}
 	}
 }
