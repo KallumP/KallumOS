@@ -93,5 +93,6 @@ void TaskManager::OnMousePress(MousePress* e, int taskbarHeight) {
 //takes an index of a task to end
 void TaskManager::EndTask(int indexToRemove) {
 
+	
 	processes->erase(processes->begin() + indexToRemove);
 }
