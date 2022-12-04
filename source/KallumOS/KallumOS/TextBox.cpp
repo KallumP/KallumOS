@@ -88,7 +88,7 @@ bool TextBox::Click(Point* mousePosition) {
 void TextBox::OnKeyPress(KeyPress* e) {
 
 	if (e->GetKeyCode() == KEY_BACKSPACE) {
-		DeleteOne();
+		DeleteOne(true);
 		return;
 	} else if (e->GetKeyCode() == KEY_LEFT) {
 		MoveCursor(-1);
@@ -139,18 +139,45 @@ void TextBox::Input(std::string input) {
 
 }
 
-void TextBox::DeleteOne() {
+void TextBox::DeleteOne(bool backward) {
 	if (value.length() != 0) {
 
-		value.pop_back();
-		MoveCursor(-1);
+		if (backward) {
 
-		std::cout << "Pressed: Backspace" << std::endl;
+			if (cursor != 0) {
 
-	} else {
+				//value.pop_back();
+				value.erase(cursor - 1, 1);
+
+				MoveCursor(-1);
+				std::cout << "Pressed: Backspace" << std::endl;
+
+			} else {
+
+				std::cout << "Pressed: Backspace; Nothing before the cursor to delete" << std::endl;
+			}
+
+		} else {
+
+			if (cursor != value.length()) {
+
+				//value.pop_back();
+				value.erase(cursor + 1, 1);
+
+				MoveCursor(-1);
+				std::cout << "Pressed: Backspace" << std::endl;
+
+			} else {
+
+				std::cout << "Pressed: Backspace; Nothing after the cursor to delete" << std::endl;
+			}
+		}
+
+
+	} else
 
 		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
-	}
+
 }
 
 void TextBox::DeleteWord() {

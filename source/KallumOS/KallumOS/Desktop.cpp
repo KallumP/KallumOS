@@ -14,13 +14,13 @@ Desktop::Desktop() : State() {
 	TaskManager* manager = new TaskManager(&processes, Point(10, 60), Point(450, 300));
 	processes.push_back(manager);
 
-	//TextEditor* editor = new TextEditor(Point(500, 50), Point(400, 200));
-	//processes.push_back(editor);
-	//toFocus = editor;
 
 	TicTak* tic = new TicTak(Point(500, 50), Point(400, 200));
 	processes.push_back(tic);
 	toFocus = tic;
+
+	TextEditor* editor = new TextEditor(Point(650, 350), Point(400, 200));
+	processes.push_back(editor);
 
 	taskbar.SetFocused(toFocus);
 	focused = toFocus;
