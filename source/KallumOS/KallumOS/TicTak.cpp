@@ -133,7 +133,7 @@ void TicTak::CheckWin() {
 
 	//diagonals
 	win = win || board[0][0] != 0 && board[0][0] == board[1][1] && board[0][0] == board[2][2];
-	win = win || board[2][0] != 0 && board[2][0] == board[1][1] && board[2][0] == board[2][0];
+	win = win || board[2][0] != 0 && board[2][0] == board[1][1] && board[2][0] == board[0][2];
 
 
 
