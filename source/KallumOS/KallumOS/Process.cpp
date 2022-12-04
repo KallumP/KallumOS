@@ -96,7 +96,7 @@ void Process::CheckBarButtonsClicked(Point normMousePos) {
 void Process::CheckIfMinimizeClicked(Point normMousePos) {
 
 	//checks if the mouse was within the control bar
-	if (normMousePos.GetY() < barHeight) {
+	if (normMousePos.GetY() < barHeight && normMousePos.GetY() > 0) {
 
 		if (normMousePos.GetX() > size.GetX() - buttonWidth * 2 &&
 			normMousePos.GetX() < size.GetX() - buttonWidth * 1) {
@@ -110,7 +110,7 @@ void Process::CheckIfMinimizeClicked(Point normMousePos) {
 void Process::CheckIfCloseClicked(Point normMousePos) {
 
 	//checks if the mouse was within the control bar
-	if (normMousePos.GetY() < barHeight) {
+	if (normMousePos.GetY() < barHeight && normMousePos.GetY() > 0) {
 
 		if (normMousePos.GetX() > size.GetX() - buttonWidth * 1 &&
 			normMousePos.GetX() < size.GetX() - buttonWidth * 0) {
