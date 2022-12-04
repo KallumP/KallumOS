@@ -65,6 +65,8 @@ void Taskbar::HandleClickedProcess() {
 
 	int nonHiddenIndex = 0;
 
+	bool broke = false;
+
 	//loops through all processes
 	for (int i = 0; i < processes->size(); i++) {
 
@@ -76,13 +78,16 @@ void Taskbar::HandleClickedProcess() {
 
 				SetFocused((*processes)[i]);
 				clickedProcess = (*processes)[i];
-
+				broke = true;
 				break;
 			}
 			
 			nonHiddenIndex++;
 		}
-	}
+	} 
+
+	if (!broke)
+		clickedProcess = nullptr;
 }
 
 Process* Taskbar::GetClickedProcess() {
