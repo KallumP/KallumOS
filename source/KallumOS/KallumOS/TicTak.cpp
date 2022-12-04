@@ -106,11 +106,7 @@ void TicTak::SetupBoard() {
 }
 
 void TicTak::OutputConsoleBoard() {
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++)
-			std::cout << board[i][j] << ",";
-		std::cout << std::endl;
-	}
+
 }
 
 void TicTak::DrawSquare(Point offset, int i, int j, Color c) {
