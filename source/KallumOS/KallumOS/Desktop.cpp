@@ -107,23 +107,27 @@ void Desktop::MouseMove() {
 
 void Desktop::TaskBarClickHandle() {
 
-	//checks if the clicked icon was the focused process
-	if (focused == taskbar.GetClickedProcess()) {
+	//checks if an empty space was clicked on the task bar
+	if (taskbar.GetClickedProcess() != nullptr) {
 
-		//sets to process to stop display
-		focused->ToggleDisplay();
+		//checks if the clicked icon was the focused process
+		if (focused == taskbar.GetClickedProcess()) {
 
-		//unfocuses the process
-		focused = nullptr;
-		taskbar.SetFocused(nullptr);
-
-	} else {
-
-		focused = taskbar.GetClickedProcess();
-
-		//checks if the process was not being displayed
-		if (!taskbar.GetClickedProcess()->GetDisplay())
-
+			//sets to process to stop display
 			focused->ToggleDisplay();
+
+			//unfocuses the process
+			focused = nullptr;
+			taskbar.SetFocused(nullptr);
+
+		} else {
+
+			focused = taskbar.GetClickedProcess();
+
+			//checks if the process was not being displayed
+			if (!taskbar.GetClickedProcess()->GetDisplay())
+
+				focused->ToggleDisplay();
+		}
 	}
 }

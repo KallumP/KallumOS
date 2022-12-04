@@ -68,7 +68,7 @@ void Taskbar::HandleClickedProcess() {
 	//loops through all processes
 	for (int i = 0; i < processes->size(); i++) {
 
-		//checks if the current process should be displayed
+		//checks if the current process should be displayed in the task manager
 		if (!(*processes)[i]->GetHidden()) {
 
 			//checks if the current process' icon was clicked
