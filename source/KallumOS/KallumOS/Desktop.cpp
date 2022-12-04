@@ -1,6 +1,7 @@
 #include "Desktop.h"
 #include "Taskbar.h"
 #include "TaskManager.h"
+#include "TicTak.h"
 #include "TextEditor.h"
 
 Desktop::Desktop() : State() {
@@ -8,22 +9,21 @@ Desktop::Desktop() : State() {
 	taskbar = Taskbar(&processes);
 
 	Process* test;
-
-	//test = new Process(window, "process w/ display", Point(500, 50), Point(400, 200));
-	//processes.push_back(test);
-
-	//test = new Process(window, "process w/ no display");
-	//processes.push_back(test);
+	Process* toFocus;
 
 	TaskManager* manager = new TaskManager(&processes, Point(10, 60), Point(450, 300));
 	processes.push_back(manager);
 
-	TextEditor* editor = new TextEditor(Point(500, 50), Point(400, 200));
+
+	TicTak* tic = new TicTak(Point(500, 50), Point(400, 200));
+	processes.push_back(tic);
+	toFocus = tic;
+
+	TextEditor* editor = new TextEditor(Point(650, 350), Point(400, 200));
 	processes.push_back(editor);
 
-
-	taskbar.SetFocused(editor);
-	focused = editor;
+	taskbar.SetFocused(toFocus);
+	focused = toFocus;
 
 	backgroundColor = MAGENTA;
 }
@@ -62,9 +62,10 @@ void Desktop::Draw() {
 
 void Desktop::OnKeyPress(KeyPress* e) {
 
-	for (int i = 0; i < processes.size(); i++)
-		processes[i]->OnKeyPress(e);
-
+	//if there was a focused window
+	if (focused != nullptr)
+		if (focused->GetDisplay())
+			focused->OnKeyPress(e);
 }
 
 void Desktop::OnMousePress(MousePress* e) {
@@ -96,14 +97,6 @@ void Desktop::OnMousePress(MousePress* e) {
 			focused = nullptr;
 		}
 	}
-
-
-	//loop through the other non focus processes
-	//for (int i = 0; i < processes.size(); i++)
-	//	processes[i]->OnMousePress(e, taskbar.height);
-
-
-
 }
 
 void Desktop::MouseMove() {
@@ -114,23 +107,27 @@ void Desktop::MouseMove() {
 
 void Desktop::TaskBarClickHandle() {
 
-	//checks if the clicked icon was the focused process
-	if (focused == taskbar.GetClickedProcess()) {
+	//checks if an empty space was clicked on the task bar
+	if (taskbar.GetClickedProcess() != nullptr) {
 
-		//sets to process to stop display
-		focused->ToggleDisplay();
+		//checks if the clicked icon was the focused process
+		if (focused == taskbar.GetClickedProcess()) {
 
-		//unfocuses the process
-		focused = nullptr;
-		taskbar.SetFocused(nullptr);
-
-	} else {
-
-		focused = taskbar.GetClickedProcess();
-
-		//checks if the process was not being displayed
-		if (!taskbar.GetClickedProcess()->GetDisplay())
-
+			//sets to process to stop display
 			focused->ToggleDisplay();
+
+			//unfocuses the process
+			focused = nullptr;
+			taskbar.SetFocused(nullptr);
+
+		} else {
+
+			focused = taskbar.GetClickedProcess();
+
+			//checks if the process was not being displayed
+			if (!taskbar.GetClickedProcess()->GetDisplay())
+
+				focused->ToggleDisplay();
+		}
 	}
 }

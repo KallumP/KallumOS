@@ -26,7 +26,7 @@ public:
 private:
 
 	void Input(std::string input);
-	void DeleteOne();
+	void DeleteOne(bool back);
 	void DeleteWord();
 	void FindNewCursorPosition(int);
 	void MoveCursor(int);

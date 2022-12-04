@@ -65,10 +65,12 @@ void Taskbar::HandleClickedProcess() {
 
 	int nonHiddenIndex = 0;
 
+	bool broke = false;
+
 	//loops through all processes
 	for (int i = 0; i < processes->size(); i++) {
 
-		//checks if the current process should be displayed
+		//checks if the current process should be displayed in the task manager
 		if (!(*processes)[i]->GetHidden()) {
 
 			//checks if the current process' icon was clicked
@@ -76,13 +78,16 @@ void Taskbar::HandleClickedProcess() {
 
 				SetFocused((*processes)[i]);
 				clickedProcess = (*processes)[i];
-
+				broke = true;
 				break;
 			}
 			
 			nonHiddenIndex++;
 		}
-	}
+	} 
+
+	if (!broke)
+		clickedProcess = nullptr;
 }
 
 Process* Taskbar::GetClickedProcess() {
