@@ -87,7 +87,7 @@ bool TextBox::Click(Point* mousePosition) {
 
 void TextBox::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyCode() == KEY_BACK) {
+	if (e->GetKeyCode() == KEY_BACKSPACE) {
 		DeleteOne();
 		return;
 	} else if (e->GetKeyCode() == KEY_LEFT) {
