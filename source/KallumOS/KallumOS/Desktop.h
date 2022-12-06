@@ -26,8 +26,6 @@ private:
 	void MouseMove();
 	
 	void TaskBarClickHandle();
-	//void StartProcess();
-
 	void OpenLauncher();
 
 

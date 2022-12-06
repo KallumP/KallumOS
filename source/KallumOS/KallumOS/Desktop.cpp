@@ -47,7 +47,7 @@ void Desktop::Draw() {
 
 void Desktop::OnKeyPress(KeyPress* e) {
 
-	if (focused == nullptr && launcher == nullptr)
+	if (focused == nullptr)
 		if (e->GetKeyCode() == KEY_A)
 			OpenLauncher();
 
@@ -135,5 +135,4 @@ void Desktop::CloseApp(Process* toclose) {
 	processes.erase(it);
 	delete focused;
 	focused = nullptr;
-
 }
