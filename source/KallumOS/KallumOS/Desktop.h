@@ -2,7 +2,7 @@
 #include "raylib.h"
 
 #include "State.h"
-#include "Button.h"
+#include "AppLauncher.h"
 #include "InputPress.h"
 #include "TextBox.h"
 #include "Taskbar.h"
@@ -18,6 +18,7 @@ public:
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
 
+	void CloseApp(Process* toClose);
 
 private:
 
@@ -25,10 +26,10 @@ private:
 	void MouseMove();
 	
 	void TaskBarClickHandle();
-	//void StartProcess();
+	void OpenLauncher();
 
 
-
+	AppLauncher* launcher;
 	Taskbar taskbar;
 	std::vector<Process*> processes;
 	Process* focused;

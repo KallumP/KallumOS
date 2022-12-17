@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppLauncher.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="CreateAccount.cpp" />
@@ -36,6 +37,7 @@
     <ClCompile Include="TicTak.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppLauncher.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="CreateAccount.h" />
