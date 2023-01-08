@@ -19,7 +19,7 @@ Taskbar::Taskbar(std::vector<Process*>* _processes) : Control(Point(), Point()) 
 
 void Taskbar::Draw() {
 
-	DrawRectangle(0, 0, GetScreenWidth(), height, SKYBLUE);
+	DrawRectangle(0, 0, GetScreenWidth(), height, DARKBLUE);
 
 	int nonHiddenIndex = 0;
 

@@ -10,7 +10,7 @@ Desktop::Desktop() : State() {
 
 	OpenLauncher();
 
-	backgroundColor = MAGENTA;
+	backgroundColor = VIOLET;
 }
 
 void Desktop::Tick(float) {

@@ -77,7 +77,7 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 						TextEditor* app = new TextEditor(Point(700, 50), Point(400, 200));
 						processes->push_back(app);
 
-					} else if (processInfos[i].processName == "Tic Tac") {
+					} else if (processInfos[i].processName == "Tic Tak") {
 
 						TicTak* app = new TicTak(Point(700, 350), Point(400, 200));
 						processes->push_back(app);
@@ -100,6 +100,6 @@ void AppLauncher::SetupProcessInfos() {
 	processInfos.push_back(word);
 
 	ProcessInfo tic;
-	tic.processName = "Tic Tac";
+	tic.processName = "Tic Tak";
 	processInfos.push_back(tic);
 }
