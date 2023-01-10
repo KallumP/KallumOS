@@ -1,14 +1,13 @@
 #include "AppLauncher.h"
-#include "TaskManager.h"
-#include "TicTak.h"
-#include "AppLauncher.h"
-#include "TextEditor.h"
+
 
 AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size) : Process("App launcher", _position, _size) {
 
 	processes = _processes;
 
 	SetupProcessInfos();
+
+	LaunchTetris();
 
 }
 
@@ -82,6 +81,10 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 						TicTak* app = new TicTak(Point(700, 350), Point(400, 200));
 						processes->push_back(app);
 
+					} else if (processInfos[i].processName == "Tetris") {
+
+						LaunchTetris();
+
 					}
 				}
 			}
@@ -102,4 +105,9 @@ void AppLauncher::SetupProcessInfos() {
 	ProcessInfo tic;
 	tic.processName = "Tic Tak";
 	processInfos.push_back(tic);
+
+	ProcessInfo tetris;
+	tetris.processName = "Tetris";
+	processInfos.push_back(tetris);
+
 }

@@ -1,11 +1,15 @@
 #pragma once
 #include "Process.h"
+#include "TaskManager.h"
+#include "TextEditor.h"
+#include "TicTak.h"
+#include "Tetris.h"
 
 #include <vector>
 
 struct ProcessInfo {
 
-public:	
+public:
 	static const int buttonPadding = 30;
 	Point buttonSizes = Point(100, 50);
 
@@ -26,6 +30,11 @@ private:
 	std::vector<ProcessInfo> processInfos;
 	std::vector<Process*>* processes;
 	void SetupProcessInfos();
+
+	void LaunchTetris() {
+		Tetris* app = new Tetris(Point(525, 20), Point(320, 650));
+		processes->push_back(app);
+	}
 };
 
 

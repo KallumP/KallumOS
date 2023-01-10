@@ -1,8 +1,5 @@
 #include "Desktop.h"
 #include "Taskbar.h"
-#include "TaskManager.h"
-#include "TicTak.h"
-#include "TextEditor.h"
 
 Desktop::Desktop() : State() {
 
@@ -25,7 +22,7 @@ void Desktop::Tick(float) {
 	}
 
 	if (focused != nullptr) {
-
+		focused->Tick();
 	}
 }
 

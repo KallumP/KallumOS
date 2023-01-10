@@ -4,7 +4,6 @@
 #include "State.h"
 #include "AppLauncher.h"
 #include "InputPress.h"
-#include "TextBox.h"
 #include "Taskbar.h"
 
 class Desktop : public State {
