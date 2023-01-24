@@ -3,9 +3,30 @@
 #include <array>
 
 
-struct Piece {
+struct Block {
+	
+	Block() {
+
+	}
+	Block(Color col) {
+		color = col;
+	}
+
 	Color color;
 };
+
+
+struct FallingBlock : public Block {
+
+	Point location;
+
+	FallingBlock(Point loc, Color col) : Block(col) {
+		location = loc;
+	}
+
+};
+
+
 
 class Tetris : public Process {
 
@@ -17,7 +38,7 @@ public:
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e, int taskbarHeight);
 
-	void Tick();
+	void Tick(float elapsedTime);
 
 private:
 
@@ -27,18 +48,39 @@ private:
 	void ResetBoard();
 	void SpawnPiece();
 
-	void SetPiece(Point loc, Piece* piece);
+
+	void SetPiece(Point loc, Block* piece);
 
 
 	static const int boardWidth = 10;
 	static const int boardHeight = 20;
 	static const int pieceSize = 30;
 
-	std::array<std::array<Piece*, boardHeight>, boardWidth> board;
+	std::array<std::array<Block*, boardHeight>, boardWidth> board;
 
-	std::array<std::array<Piece*, 4>, 4> falling;
+	std::array<FallingBlock*, 4> fallingPiece;
 
+
+	int framesPerDrop;
+	int framesTillNextDrop;
+
+	void DropSpawned();
+	void ShiftSpawned(bool left);
+
+	double timeSinceLastFrame;
+	int targetFrameRate;
+
+	void SpawnTBlock(Point spawnLocation);
+	void SpawnLBlock(Point spawnLocation);
+	void SpawnSBlock(Point spawnLocation);
 	
+	void SpawnReverseLBlock(Point spawnLocation);
+	void SpawnReverseSBlock(Point spawnLocation);
+
+	void SpawnLineBlock(Point spawnLocation);
+	void SpawnOBlock(Point spawnLocation);
+
+
 };
 
 

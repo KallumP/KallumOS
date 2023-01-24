@@ -37,7 +37,7 @@ public:
 	Process( std::string _name);
 
 	virtual void Draw(Point offset);
-	virtual void Tick() {}
+	virtual void Tick(float elapsedTime) {}
 	virtual std::string GetName();
 
 	virtual void OnKeyPress(KeyPress* e) {}

@@ -10,7 +10,7 @@ Desktop::Desktop() : State() {
 	backgroundColor = VIOLET;
 }
 
-void Desktop::Tick(float) {
+void Desktop::Tick(float elapsedTime) {
 
 	//turns the window mouse values into a point
 	Point* newMouse = new Point(GetMouseX(), GetMouseY());
@@ -22,7 +22,7 @@ void Desktop::Tick(float) {
 	}
 
 	if (focused != nullptr) {
-		focused->Tick();
+		focused->Tick(elapsedTime);
 	}
 }
 
