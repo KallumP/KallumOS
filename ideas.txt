@@ -1,2 +1,8 @@
 bugs
 CLicking on a box does not set it to focused
+
+maybe have a boolean for set
+	Once a y collision has been found, set "set" to true
+	If set is true, 
+		in the tick, do the setFunction
+this needs to be changed to false again on rotation or slidemove

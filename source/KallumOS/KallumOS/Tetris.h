@@ -64,10 +64,11 @@ private:
 	int dropDelay;
 	int framesSinceLastDrop;
 
+	bool softSet;
 	int setDelay;
 	int framesSinceLastSet;
 
-	void DropSpawned();
+	void DropSpawned(bool softDrop);
 	void SlideSpawned(bool left);
 	void HardDropSpawned();
 	void ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up);

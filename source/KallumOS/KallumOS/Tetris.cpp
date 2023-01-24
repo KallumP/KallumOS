@@ -12,7 +12,7 @@ Tetris::Tetris(Point _position, Point _size) : Process("Tetris", _position, _siz
 	dropDelay = 5;
 	framesSinceLastDrop = 0;
 
-	setDelay = 15;
+	setDelay = 3;
 	framesSinceLastSet = 0;
 
 	ResetBoard();
@@ -75,7 +75,7 @@ void Tetris::OnKeyPress(KeyPress* e) {
 		else if (e->GetKeyCode() == KEY_L)
 			SlideSpawned(false);
 		else if (e->GetKeyCode() == KEY_K)
-			DropSpawned();
+			DropSpawned(true);
 		else if (e->GetKeyCode() == KEY_SPACE)
 			HardDropSpawned();
 	}
@@ -107,7 +107,7 @@ void Tetris::Tick(float elapsedTime) {
 
 			framesSinceLastDrop = 0;
 
-			DropSpawned();
+			DropSpawned(false);
 		}
 	}
 }
@@ -197,7 +197,7 @@ void Tetris::SpawnReverseSBlock(Point spawnLocation) {
 }
 
 //drops the falling piece down one
-void Tetris::DropSpawned() {
+void Tetris::DropSpawned(bool softDrop) {
 
 	//makes a copy of the falling piece
 	std::array<FallingBlock*, 4> tempFalling = FreshFalling();
@@ -212,11 +212,18 @@ void Tetris::DropSpawned() {
 		//copies the copied falling piece values into the falling piece
 		CopyFalling(fallingPiece, tempFalling);
 
+		framesSinceLastSet = 0;
+
+
 		//if there was a collision
 	} else {
 
-		//dont copy the moved temporary piece and set the board
-		SetFallingPiece(true);
+		//if this wasn't a soft drop (only tries to set on the tick not keypress)
+		if (!softDrop) {
+
+			//dont copy the moved temporary piece and set the board
+			SetFallingPiece(true);
+		}
 	}
 }
 
@@ -331,7 +338,6 @@ void Tetris::SetFallingPiece(bool delay) {
 	for (int i = 0; i < 4; i++)
 		SetBlock(Point(fallingPiece[i]->location.GetX(), fallingPiece[i]->location.GetY()), new Block(fallingPiece[i]->color));
 	SpawnPiece();
-
 }
 
 //creates a fresh array of falling piece blocks
