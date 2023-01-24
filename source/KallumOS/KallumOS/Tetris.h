@@ -43,6 +43,8 @@ public:
 
 private:
 
+	void Setup();
+
 	void DrawBoardBoarders(Point offset);
 	void DrawPieces(Point offset);
 
@@ -61,6 +63,8 @@ private:
 	std::array<FallingBlock*, 4> fallingPiece;
 	std::array<FallingBlock*, 4> fallingPieceShadow;
 	
+	bool lost;
+
 	double timeSinceLastFrame;
 	int targetFrameRate;
 

@@ -6,6 +6,13 @@
 
 Tetris::Tetris(Point _position, Point _size) : Process("Tetris", _position, _size) {
 
+	Setup();
+}
+
+void Tetris::Setup() {
+
+	lost = false;
+	std::srand(std::time(nullptr));
 	timeSinceLastFrame = 0;
 	targetFrameRate = 10;
 
@@ -30,10 +37,14 @@ void Tetris::Draw(Point offset) {
 		offset.SetX(offset.GetX() + 5);
 		offset.SetY(offset.GetY() + 5);
 
-		DrawPieces(offset);
-		DrawBoardBoarders(offset);
+		if (!lost) {
 
-		//DrawText(std::to_string(framesSinceLastSet).c_str(), offset.GetX() + 10, offset.GetY(), defaultFontSize, BLACK);
+			DrawPieces(offset);
+			DrawBoardBoarders(offset);
+
+		} else {
+			DrawText("You lose. Press R to restart", offset.GetX(), offset.GetY(), 20, RED);
+		}
 	}
 }
 void Tetris::DrawBoardBoarders(Point offset) {
@@ -78,22 +89,29 @@ void Tetris::OnKeyPress(KeyPress* e) {
 
 	if (display) {
 
-		if (e->GetKeyCode() == KEY_J)
-			SlideSpawned(true);
-		else if (e->GetKeyCode() == KEY_L)
-			SlideSpawned(false);
-		else if (e->GetKeyCode() == KEY_K)
-			DropSpawned(true);
-		else if (e->GetKeyCode() == KEY_SPACE)
-			HardDropSpawned();
-		else if (e->GetKeyCode() == KEY_I)
-			RotateSpawned();
-		else if (e->GetKeyCode() == KEY_W)
-			for (int i = 0; i < 3; i++)
+		if (!lost) {
+
+			if (e->GetKeyCode() == KEY_J)
+				SlideSpawned(true);
+			else if (e->GetKeyCode() == KEY_L)
+				SlideSpawned(false);
+			else if (e->GetKeyCode() == KEY_K)
+				DropSpawned(true);
+			else if (e->GetKeyCode() == KEY_SPACE)
+				HardDropSpawned();
+			else if (e->GetKeyCode() == KEY_I)
 				RotateSpawned();
-		else if (e->GetKeyCode() == KEY_D)
-			for (int i = 0; i < 2; i++)
-				RotateSpawned();
+			else if (e->GetKeyCode() == KEY_W)
+				for (int i = 0; i < 3; i++)
+					RotateSpawned();
+			else if (e->GetKeyCode() == KEY_D)
+				for (int i = 0; i < 2; i++)
+					RotateSpawned();
+		} else {
+			if (e->GetKeyCode() == KEY_R) //restart button
+				Setup();
+		}
+
 	}
 }
 void Tetris::OnMousePress(MousePress* e, int taskbarHeight) {
@@ -108,22 +126,26 @@ void Tetris::OnMousePress(MousePress* e, int taskbarHeight) {
 
 void Tetris::Tick(float elapsedTime) {
 
-	//gets the time in between ticks
-	timeSinceLastFrame += elapsedTime;
+	if (!lost) {
 
-	//checks if enough time has been for another frame
-	if (timeSinceLastFrame > 1 / (double)targetFrameRate) {
 
-		//resets the time for the next frame
-		timeSinceLastFrame = 0;
+		//gets the time in between ticks
+		timeSinceLastFrame += elapsedTime;
 
-		//gets how many frames has occured since the last 
-		framesSinceLastDrop++;
-		if (framesSinceLastDrop >= dropDelay) {
+		//checks if enough time has been for another frame
+		if (timeSinceLastFrame > 1 / (double)targetFrameRate) {
 
-			framesSinceLastDrop = 0;
+			//resets the time for the next frame
+			timeSinceLastFrame = 0;
 
-			DropSpawned(false);
+			//gets how many frames has occured since the last 
+			framesSinceLastDrop++;
+			if (framesSinceLastDrop >= dropDelay) {
+
+				framesSinceLastDrop = 0;
+
+				DropSpawned(false);
+			}
 		}
 	}
 }
@@ -150,7 +172,6 @@ void Tetris::SpawnPiece() {
 	Point spawnLocation = Point(4, 0);
 
 	//random number between 1 and 7
-	std::srand(std::time(nullptr));
 	int randomNumber = std::rand() % 7 + 1;
 
 	//chooses a spawn type from the random number
@@ -168,6 +189,10 @@ void Tetris::SpawnPiece() {
 		SpawnSBlock(spawnLocation);
 	else if (randomNumber == 7)
 		SpawnReverseSBlock(spawnLocation);
+
+	if (CheckPieceCollision(fallingPiece)) {
+		lost = true;
+	}
 }
 
 void Tetris::SpawnTBlock(Point spawnLocation) {
