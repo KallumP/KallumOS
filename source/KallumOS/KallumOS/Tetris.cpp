@@ -380,8 +380,11 @@ void Tetris::SetFallingPiece(bool delay) {
 	for (int i = 0; i < 4; i++)
 		SetBlock(Point(fallingPiece[i]->location.GetX(), fallingPiece[i]->location.GetY()), new Block(fallingPiece[i]->color));
 	SpawnPiece();
+
+	ClearLines(CheckClearLines());
 }
 
+//updates the position of the shadow to be as far down on the board under the falling pieceq
 void Tetris::UpdateShadow() {
 
 	//makes a copy of the falling piece
@@ -404,6 +407,61 @@ void Tetris::UpdateShadow() {
 
 	CopyFalling(fallingPieceShadow, previous);
 
+}
+
+//returns what lines need to be cleared
+std::vector<int> Tetris::CheckClearLines() {
+
+	//list of ints to store what lines need to be cleared
+	std::vector<int> linesToClear;
+
+	//loops through each column
+	for (int line = 0; line < boardHeight; line++) {
+
+		bool full = true;
+
+		//loops through each row and saves if there was a gap
+		for (int col = 0; col < boardWidth; col++)
+			if (board[col][line] == nullptr)
+				full = false;
+
+		//adds this row to the list if it was full
+		if (full)
+			linesToClear.push_back(line);
+	}
+
+	//returns the rows to clear
+	return linesToClear;
+}
+
+//clears a list of lines
+void Tetris::ClearLines(std::vector<int> linesToClear) {
+
+	for (int i = 0; i < linesToClear.size(); i++) {
+
+		int line = linesToClear[i];
+
+		ClearLine(line);
+
+		for (int lineToMove = line - 1; lineToMove >= 0; lineToMove--)
+			MoveLine(lineToMove);
+	}
+}
+
+//clears a line of all its blocks
+void Tetris::ClearLine(int line) {
+
+	for (int col = 0; col < boardWidth; col++)
+		board[col][line] = nullptr;
+}
+
+//moves a line down one line
+void Tetris::MoveLine(int line) {
+
+	for (int col = 0; col < boardWidth; col++)
+		board[col][line + 1] = board[col][line];
+
+	ClearLine(line);
 }
 
 //creates a fresh array of falling piece blocks

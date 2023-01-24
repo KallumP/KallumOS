@@ -1,6 +1,7 @@
 #pragma once
 #include "Process.h"
 #include <array>
+#include <vector>
 
 
 struct Block {
@@ -76,6 +77,10 @@ private:
 	void RotateSpawned();
 	void ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up);
 	void UpdateShadow();
+	std::vector<int> CheckClearLines();
+	void ClearLines(std::vector<int> toClear);
+	void ClearLine(int line);
+	void MoveLine(int line);
 
 	bool CheckBoardCollisionX(std::array<FallingBlock*, 4> toCheck);
 	bool CheckBoardCollisionY(std::array<FallingBlock*, 4> toCheck);
