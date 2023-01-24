@@ -49,7 +49,7 @@ private:
 	void SpawnPiece();
 
 
-	void SetPiece(Point loc, Block* piece);
+	void SetBlock(Point loc, Block* piece);
 
 
 	static const int boardWidth = 10;
@@ -61,8 +61,11 @@ private:
 	std::array<FallingBlock*, 4> fallingPiece;
 
 
-	int framesPerDrop;
-	int framesTillNextDrop;
+	int dropDelay;
+	int framesSinceLastDrop;
+
+	int setDelay;
+	int framesSinceLastSet;
 
 	void DropSpawned();
 	void SlideSpawned(bool left);
@@ -70,7 +73,7 @@ private:
 	void ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up);
 	bool CheckCollisionX(std::array<FallingBlock*, 4> toCheck);
 	bool CheckCollisionY(std::array<FallingBlock*, 4> toCheck);
-	void SetFallingPiece();
+	void SetFallingPiece(bool delay);
 
 	double timeSinceLastFrame;
 	int targetFrameRate;

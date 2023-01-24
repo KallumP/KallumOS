@@ -9,8 +9,11 @@ Tetris::Tetris(Point _position, Point _size) : Process("Tetris", _position, _siz
 	timeSinceLastFrame = 0;
 	targetFrameRate = 10;
 
-	framesPerDrop = 5;
-	framesTillNextDrop = 0;
+	dropDelay = 5;
+	framesSinceLastDrop = 0;
+
+	setDelay = 15;
+	framesSinceLastSet = 0;
 
 	ResetBoard();
 	SpawnPiece();
@@ -29,6 +32,8 @@ void Tetris::Draw(Point offset) {
 
 		DrawBoardBoarders(offset);
 		DrawPieces(offset);
+
+		//DrawText(std::to_string(framesSinceLastSet).c_str(), offset.GetX() + 10, offset.GetY(), defaultFontSize, BLACK);
 	}
 }
 void Tetris::DrawBoardBoarders(Point offset) {
@@ -76,6 +81,13 @@ void Tetris::OnKeyPress(KeyPress* e) {
 	}
 }
 void Tetris::OnMousePress(MousePress* e, int taskbarHeight) {
+
+	if (display) {
+
+		CheckBarButtonsClicked(NormaliseMousePos(taskbarHeight));
+
+		Point normalisedMouse = NormaliseMousePos(taskbarHeight + barHeight);
+	}
 }
 
 void Tetris::Tick(float elapsedTime) {
@@ -90,10 +102,10 @@ void Tetris::Tick(float elapsedTime) {
 		timeSinceLastFrame = 0;
 
 		//gets how many frames has occured since the last 
-		framesTillNextDrop++;
-		if (framesTillNextDrop >= framesPerDrop) {
+		framesSinceLastDrop++;
+		if (framesSinceLastDrop >= dropDelay) {
 
-			framesTillNextDrop = 0;
+			framesSinceLastDrop = 0;
 
 			DropSpawned();
 		}
@@ -109,7 +121,7 @@ void Tetris::ResetBoard() {
 			board[i][j] = nullptr;
 }
 
-void Tetris::SetPiece(Point loc, Block* piece) {
+void Tetris::SetBlock(Point loc, Block* piece) {
 
 	board[loc.GetX()][loc.GetY()] = piece;
 
@@ -194,7 +206,6 @@ void Tetris::DropSpawned() {
 	//moves the copy
 	ShiftSpawned(tempFalling, 0, 0, 1, 0);
 
-
 	//checks if the copy doesn't collide with anything
 	if (!CheckCollisionY(tempFalling)) {
 
@@ -205,8 +216,7 @@ void Tetris::DropSpawned() {
 	} else {
 
 		//dont copy the moved temporary piece and set the board
-		SetFallingPiece();
-		SpawnPiece();
+		SetFallingPiece(true);
 	}
 }
 
@@ -258,8 +268,7 @@ void Tetris::HardDropSpawned() {
 	//copies the copied falling piece values into the falling piece
 	CopyFalling(fallingPiece, previous);
 
-	SetFallingPiece();
-	SpawnPiece();
+	SetFallingPiece(false);
 }
 
 //moves the falling block by the units passed
@@ -271,7 +280,7 @@ void Tetris::ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int rig
 	}
 }
 
-//returns if the falling piece has collided
+//returns if the falling piece has collided on the y-axis
 bool Tetris::CheckCollisionX(std::array<FallingBlock*, 4> toCheck) {
 
 	//x-axis collisions
@@ -289,6 +298,7 @@ bool Tetris::CheckCollisionX(std::array<FallingBlock*, 4> toCheck) {
 	return false;
 }
 
+//returns if the falling piece has collided on the x-axis
 bool Tetris::CheckCollisionY(std::array<FallingBlock*, 4> toCheck) {
 
 	//y-axis collision
@@ -299,7 +309,7 @@ bool Tetris::CheckCollisionY(std::array<FallingBlock*, 4> toCheck) {
 			return true;
 
 		//checks if this location was occupied
-		if (board[toCheck[i]->location.GetX()][toCheck[i]->location.GetY()] != nullptr) 
+		if (board[toCheck[i]->location.GetX()][toCheck[i]->location.GetY()] != nullptr)
 			return true;
 	}
 
@@ -307,10 +317,21 @@ bool Tetris::CheckCollisionY(std::array<FallingBlock*, 4> toCheck) {
 }
 
 //turns each falling block in the falling piece into a permanent piece
-void Tetris::SetFallingPiece() {
+void Tetris::SetFallingPiece(bool delay) {
+
+	//doesn't do anything until the set delay has been met
+	if (delay) {
+		framesSinceLastSet++;
+		if (framesSinceLastSet < setDelay)
+			return;
+	}
+
+	framesSinceLastSet = 0;
 
 	for (int i = 0; i < 4; i++)
-		SetPiece(Point(fallingPiece[i]->location.GetX(), fallingPiece[i]->location.GetY()), new Block(fallingPiece[i]->color));
+		SetBlock(Point(fallingPiece[i]->location.GetX(), fallingPiece[i]->location.GetY()), new Block(fallingPiece[i]->color));
+	SpawnPiece();
+
 }
 
 //creates a fresh array of falling piece blocks
