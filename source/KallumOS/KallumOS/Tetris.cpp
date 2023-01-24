@@ -30,8 +30,8 @@ void Tetris::Draw(Point offset) {
 		offset.SetX(offset.GetX() + 5);
 		offset.SetY(offset.GetY() + 5);
 
-		DrawBoardBoarders(offset);
 		DrawPieces(offset);
+		DrawBoardBoarders(offset);
 
 		//DrawText(std::to_string(framesSinceLastSet).c_str(), offset.GetX() + 10, offset.GetY(), defaultFontSize, BLACK);
 	}
@@ -56,6 +56,14 @@ void Tetris::DrawPieces(Point offset) {
 					offset.GetX() + pieceSize * i,
 					offset.GetY() + pieceSize * j,
 					pieceSize, pieceSize, board[i][j]->color);
+
+	//draws the shadow
+	UpdateShadow();
+	for (int i = 0; i < 4; i++)
+		DrawRectangle(
+			offset.GetX() + pieceSize * fallingPieceShadow[i]->location.GetX(),
+			offset.GetY() + pieceSize * fallingPieceShadow[i]->location.GetY(),
+			pieceSize, pieceSize, fallingPieceShadow[i]->color);
 
 	//draws the falling piece
 	for (int i = 0; i < 4; i++)
@@ -127,6 +135,8 @@ void Tetris::ResetBoard() {
 		for (int j = 0; j < boardHeight; j++)
 
 			board[i][j] = nullptr;
+
+	fallingPieceShadow = FreshFalling();
 }
 
 void Tetris::SetBlock(Point loc, Block* piece) {
@@ -372,13 +382,37 @@ void Tetris::SetFallingPiece(bool delay) {
 	SpawnPiece();
 }
 
+void Tetris::UpdateShadow() {
+
+	//makes a copy of the falling piece
+	std::array<FallingBlock*, 4> tempFalling = FreshFalling();
+	CopyFalling(tempFalling, fallingPiece);
+
+	std::array<FallingBlock*, 4> previous = FreshFalling();
+	CopyFalling(previous, fallingPiece);
+
+	do {
+
+		//makes a copy of the current temporaryFalling block
+		CopyFalling(previous, tempFalling);
+
+		//moves the copy
+		ShiftSpawned(tempFalling, 0, 0, 1, 0);
+
+		//while there was no collision
+	} while (!CheckBoardCollisionY(tempFalling) && !CheckPieceCollision(tempFalling));
+
+	CopyFalling(fallingPieceShadow, previous);
+
+}
+
 //creates a fresh array of falling piece blocks
 std::array<FallingBlock*, 4> Tetris::FreshFalling() {
 
 	std::array<FallingBlock*, 4> tempFalling;
 
 	for (int i = 0; i < 4; i++)
-		tempFalling[i] = new FallingBlock(Point(0, 0), RED);
+		tempFalling[i] = new FallingBlock(Point(0, 0), GRAY);
 
 	return tempFalling;
 }

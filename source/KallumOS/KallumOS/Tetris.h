@@ -57,8 +57,8 @@ private:
 	static const int pieceSize = 30;
 
 	std::array<std::array<Block*, boardHeight>, boardWidth> board;
-
 	std::array<FallingBlock*, 4> fallingPiece;
+	std::array<FallingBlock*, 4> fallingPieceShadow;
 	
 	double timeSinceLastFrame;
 	int targetFrameRate;
@@ -75,6 +75,7 @@ private:
 	void HardDropSpawned();
 	void RotateSpawned();
 	void ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up);
+	void UpdateShadow();
 
 	bool CheckBoardCollisionX(std::array<FallingBlock*, 4> toCheck);
 	bool CheckBoardCollisionY(std::array<FallingBlock*, 4> toCheck);
