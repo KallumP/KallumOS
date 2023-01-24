@@ -26,10 +26,8 @@ int main() {
 		intputHandler->GetKeyPress(timeSinceLastFrame, os);
 		intputHandler->GetMouseInputs(timeSinceLastFrame, os);
 
-		//resets the time since last frame
-		timeSinceLastFrame = 0;
-
 		os->Tick(timeSinceLastFrame);
+		timeSinceLastFrame = 0;
 
 		BeginDrawing();
 		os->Draw();

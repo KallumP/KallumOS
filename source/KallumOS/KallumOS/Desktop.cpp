@@ -1,34 +1,16 @@
 #include "Desktop.h"
 #include "Taskbar.h"
-#include "TaskManager.h"
-#include "TicTak.h"
-#include "TextEditor.h"
 
 Desktop::Desktop() : State() {
 
 	taskbar = Taskbar(&processes);
 
-	Process* test;
-	Process* toFocus;
+	OpenLauncher();
 
-	TaskManager* manager = new TaskManager(&processes, Point(10, 60), Point(450, 300));
-	processes.push_back(manager);
-
-
-	TicTak* tic = new TicTak(Point(500, 50), Point(400, 200));
-	processes.push_back(tic);
-	toFocus = tic;
-
-	TextEditor* editor = new TextEditor(Point(650, 350), Point(400, 200));
-	processes.push_back(editor);
-
-	taskbar.SetFocused(toFocus);
-	focused = toFocus;
-
-	backgroundColor = MAGENTA;
+	backgroundColor = VIOLET;
 }
 
-void Desktop::Tick(float) {
+void Desktop::Tick(float elapsedTime) {
 
 	//turns the window mouse values into a point
 	Point* newMouse = new Point(GetMouseX(), GetMouseY());
@@ -40,7 +22,7 @@ void Desktop::Tick(float) {
 	}
 
 	if (focused != nullptr) {
-
+		focused->Tick(elapsedTime);
 	}
 }
 
@@ -61,6 +43,10 @@ void Desktop::Draw() {
 }
 
 void Desktop::OnKeyPress(KeyPress* e) {
+
+	if (focused == nullptr)
+		if (e->GetKeyCode() == KEY_A)
+			OpenLauncher();
 
 	//if there was a focused window
 	if (focused != nullptr)
@@ -90,11 +76,7 @@ void Desktop::OnMousePress(MousePress* e) {
 			//checks if the process should close
 		} else if (focused->GetClose()) {
 
-			auto it = find(processes.begin(), processes.end(), focused);
-
-			processes.erase(it);
-			delete focused;
-			focused = nullptr;
+			CloseApp(focused);
 		}
 	}
 }
@@ -130,4 +112,24 @@ void Desktop::TaskBarClickHandle() {
 				focused->ToggleDisplay();
 		}
 	}
+}
+
+void Desktop::OpenLauncher() {
+
+	launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 400));
+	processes.push_back(launcher);
+	taskbar.SetFocused(launcher);
+	focused = launcher;
+}
+
+void Desktop::CloseApp(Process* toclose) {
+
+	auto it = find(processes.begin(), processes.end(), toclose);
+
+	if (toclose == launcher)
+		launcher = nullptr;
+
+	processes.erase(it);
+	delete focused;
+	focused = nullptr;
 }

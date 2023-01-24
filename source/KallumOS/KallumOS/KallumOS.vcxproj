@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppLauncher.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="CreateAccount.cpp" />
@@ -31,11 +32,13 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Taskbar.cpp" />
     <ClCompile Include="TaskManager.cpp" />
+    <ClCompile Include="Tetris.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextEditor.cpp" />
     <ClCompile Include="TicTak.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppLauncher.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="CreateAccount.h" />
@@ -49,6 +52,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="Taskbar.h" />
     <ClInclude Include="TaskManager.h" />
+    <ClInclude Include="Tetris.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextEditor.h" />
     <ClInclude Include="TicTak.h" />

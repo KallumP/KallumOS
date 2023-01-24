@@ -1,4 +1,6 @@
 #pragma once
+#include <String>
+
 class Point {
 
 public:
@@ -26,12 +28,31 @@ public:
 		this->y = _new->y;
 	}
 
+	void SetX(float _x) {
+		x = _x;
+	}
+
+	void SetY(float _y) {
+		y = _y;
+	}
+
 	//returns if the input point is different from this point
 	bool Different(Point* compare) {
 
 		if (this->x != compare->x || this->y != compare->y)
 			return true;
 		return false;
+	}
+
+	std::string ToString() {
+		std::string toReturn = "";
+		toReturn += "X = ";
+		toReturn += std::to_string(x);
+
+		toReturn += ", Y = ";
+		toReturn += std::to_string(y);
+
+		return toReturn;
 	}
 
 private:

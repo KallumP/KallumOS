@@ -1,6 +1,6 @@
 #include "TicTak.h"
 
-TicTak::TicTak(Point _position, Point _size) : Process("TicTakToe", _position, _size) {
+TicTak::TicTak(Point _position, Point _size) : Process("Tic Tak", _position, _size) {
 
 	turn = 1;
 	win = false;
