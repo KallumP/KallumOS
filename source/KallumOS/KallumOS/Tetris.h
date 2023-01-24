@@ -68,6 +68,7 @@ private:
 	void SlideSpawned(bool left);
 	void ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up);
 	bool CheckCollision(std::array<FallingBlock*, 4> toCheck);
+	void SetFallingPiece();
 
 	double timeSinceLastFrame;
 	int targetFrameRate;

@@ -1,8 +1,8 @@
 #include "Tetris.h"
 #include <array>
 #include <string>
-#include <iostream>
-
+#include <cstdlib>
+#include <ctime>
 
 Tetris::Tetris(Point _position, Point _size) : Process("Tetris", _position, _size) {
 
@@ -117,9 +117,24 @@ void Tetris::SpawnPiece() {
 
 	Point spawnLocation = Point(4, 0);
 
+	//random number between 1 and 7
+	std::srand(std::time(nullptr));
+	int randomNumber = std::rand() % 7 + 1;
 
-	SpawnSBlock(spawnLocation);
-
+	if (randomNumber == 1)
+		SpawnTBlock(spawnLocation);
+	else if (randomNumber == 2)
+		SpawnLineBlock(spawnLocation);
+	else if (randomNumber == 3)
+		SpawnLBlock(spawnLocation);
+	else if (randomNumber == 4)
+		SpawnReverseLBlock(spawnLocation);
+	else if (randomNumber == 5)
+		SpawnOBlock(spawnLocation);
+	else if (randomNumber == 6)
+		SpawnSBlock(spawnLocation);
+	else if (randomNumber == 7)
+		SpawnReverseSBlock(spawnLocation);
 }
 
 void Tetris::SpawnTBlock(Point spawnLocation) {
@@ -221,18 +236,29 @@ void Tetris::ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int rig
 //returns if the falling piece has collided
 bool Tetris::CheckCollision(std::array<FallingBlock*, 4> toCheck) {
 
-	//wall collisions
-	for (int i = 0; i < 4; i++)
-
-		if (toCheck[i]->location.GetX() < 0 ||
-			toCheck[i]->location.GetX() > boardWidth - 1 ||
-			toCheck[i]->location.GetY() > boardHeight - 1)
-
+	//y-axis collision
+	for (int i = 0; i < 4; i++) {
+		if (toCheck[i]->location.GetY() > boardHeight - 1) {
+			SetFallingPiece();
+			SpawnPiece();
 			return true;
+		}
+	}
 
+	//x-axis collisions
+	for (int i = 0; i < 4; i++)
+		if (toCheck[i]->location.GetX() < 0 || toCheck[i]->location.GetX() > boardWidth - 1)
+			return true;
 	return false;
-	//piece collision
 }
+
+void Tetris::SetFallingPiece() {
+
+	for (int i = 0; i < 4; i++) 
+		SetPiece(Point(fallingPiece[i]->location.GetX(), fallingPiece[i]->location.GetY()), new Block(fallingPiece[i]->color));
+	
+}
+
 
 //creates a fresh array of falling piece blocks
 std::array<FallingBlock*, 4> Tetris::FreshFalling() {
