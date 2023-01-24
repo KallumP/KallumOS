@@ -4,7 +4,7 @@
 
 
 struct Block {
-	
+
 	Block() {
 
 	}
@@ -65,7 +65,9 @@ private:
 	int framesTillNextDrop;
 
 	void DropSpawned();
-	void ShiftSpawned(bool left);
+	void SlideSpawned(bool left);
+	void ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up);
+	bool CheckCollision(std::array<FallingBlock*, 4> toCheck);
 
 	double timeSinceLastFrame;
 	int targetFrameRate;
@@ -73,14 +75,15 @@ private:
 	void SpawnTBlock(Point spawnLocation);
 	void SpawnLBlock(Point spawnLocation);
 	void SpawnSBlock(Point spawnLocation);
-	
+
 	void SpawnReverseLBlock(Point spawnLocation);
 	void SpawnReverseSBlock(Point spawnLocation);
 
 	void SpawnLineBlock(Point spawnLocation);
 	void SpawnOBlock(Point spawnLocation);
 
-
+	std::array<FallingBlock*, 4> FreshFalling();
+	void CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom);
 };
 
 

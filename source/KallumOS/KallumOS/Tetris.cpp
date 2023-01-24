@@ -27,14 +27,9 @@ void Tetris::Draw(Point offset) {
 		offset.SetX(offset.GetX() + 5);
 		offset.SetY(offset.GetY() + 5);
 
-		DrawText(std::to_string(timeSinceLastFrame).c_str(), 10 + offset.GetX(), 5 + offset.GetY(), defaultFontSize, BLACK);
-
 		DrawBoardBoarders(offset);
-
 		DrawPieces(offset);
-
 	}
-
 }
 void Tetris::DrawBoardBoarders(Point offset) {
 
@@ -52,11 +47,17 @@ void Tetris::DrawPieces(Point offset) {
 	for (int i = 0; i < boardWidth; i++)
 		for (int j = 0; j < boardHeight; j++)
 			if (board[i][j] != nullptr)
-				DrawRectangle(offset.GetX() + pieceSize * i, offset.GetY() + pieceSize * j, pieceSize, pieceSize, board[i][j]->color);
+				DrawRectangle(
+					offset.GetX() + pieceSize * i, 
+					offset.GetY() + pieceSize * j, 
+					pieceSize, pieceSize, board[i][j]->color);
 
 	//draws the falling piece
 	for (int i = 0; i < 4; i++)
-		DrawRectangle(offset.GetX() + pieceSize * fallingPiece[i]->location.GetX(), offset.GetY() + pieceSize * fallingPiece[i]->location.GetY(), pieceSize, pieceSize, fallingPiece[i]->color);
+		DrawRectangle(
+			offset.GetX() + pieceSize * fallingPiece[i]->location.GetX(), 
+			offset.GetY() + pieceSize * fallingPiece[i]->location.GetY(),
+			pieceSize, pieceSize, fallingPiece[i]->color);
 }
 
 
@@ -65,12 +66,12 @@ void Tetris::OnKeyPress(KeyPress* e) {
 	if (display) {
 
 		if (e->GetKeyCode() == KEY_J)
-			ShiftSpawned(true);
+			SlideSpawned(true);
 		else if (e->GetKeyCode() == KEY_L)
-			ShiftSpawned(false);
-
+			SlideSpawned(false);
+		else if (e->GetKeyCode() == KEY_K)
+			DropSpawned();
 	}
-
 }
 void Tetris::OnMousePress(MousePress* e, int taskbarHeight) {
 }
@@ -85,11 +86,11 @@ void Tetris::Tick(float elapsedTime) {
 
 		//resets the time for the next frame
 		timeSinceLastFrame = 0;
-		
+
 		//gets how many frames has occured since the last 
 		framesTillNextDrop++;
 		if (framesTillNextDrop >= framesPerDrop) {
-			
+
 			framesTillNextDrop = 0;
 
 			DropSpawned();
@@ -165,26 +166,91 @@ void Tetris::SpawnReverseSBlock(Point spawnLocation) {
 	fallingPiece[3] = new FallingBlock(Point(spawnLocation.GetX() + 2, spawnLocation.GetY() + 0), RED);
 }
 
+//drops the falling piece down one
 void Tetris::DropSpawned() {
 
-	//draws the falling piece
-	for (int i = 0; i < 4; i++) {
+	//makes a copy of the falling piece
+	std::array<FallingBlock*, 4> tempFalling = FreshFalling();
+	CopyFalling(tempFalling, fallingPiece);
 
-		fallingPiece[i]->location.SetY(fallingPiece[i]->location.GetY() + 1);
-	}
 
+	//moves the copy
+	ShiftSpawned(tempFalling, 0, 0, 1, 0);
+
+
+	//checks if the copy doesn't collide with anything
+	if (!CheckCollision(tempFalling))
+
+		//copies the copied falling piece values into the falling piece
+		CopyFalling(fallingPiece, tempFalling);
 }
 
-void Tetris::ShiftSpawned(bool left) {
+//moves the falling block on the x-axis
+void Tetris::SlideSpawned(bool left) {
 
-
-	int toMove = 1;
+	int rightMove = 0;
+	int leftMove = 0;
 	if (left)
-		toMove *= -1;
+		leftMove++;
+	else
+		rightMove++;
 
-	//draws the falling piece
+	//makes a copy of the falling piece
+	std::array<FallingBlock*, 4> tempFalling = FreshFalling();
+	CopyFalling(tempFalling, fallingPiece);
+
+	//moves the copy
+	ShiftSpawned(tempFalling, leftMove, rightMove, 0, 0);
+
+	//checks if the copy doesn't collide with anything
+	if (!CheckCollision(tempFalling))
+
+		//copies the copied falling piece values into the falling piece
+		CopyFalling(fallingPiece, tempFalling);
+}
+
+//moves the falling block by the units passed
+void Tetris::ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up) {
+
+	for (int i = 0; i < 4; i++) {
+		toMove[i]->location.SetX(fallingPiece[i]->location.GetX() + right - left);
+		toMove[i]->location.SetY(fallingPiece[i]->location.GetY() + down - up);
+	}
+}
+
+//returns if the falling piece has collided
+bool Tetris::CheckCollision(std::array<FallingBlock*, 4> toCheck) {
+
+	//wall collisions
+	for (int i = 0; i < 4; i++)
+
+		if (toCheck[i]->location.GetX() < 0 ||
+			toCheck[i]->location.GetX() > boardWidth - 1 ||
+			toCheck[i]->location.GetY() > boardHeight - 1)
+
+			return true;
+
+	return false;
+	//piece collision
+}
+
+//creates a fresh array of falling piece blocks
+std::array<FallingBlock*, 4> Tetris::FreshFalling() {
+
+	std::array<FallingBlock*, 4> tempFalling;
+
+	for (int i = 0; i < 4; i++)
+		tempFalling[i] = new FallingBlock(Point(0, 0), RED);
+
+	return tempFalling;
+}
+
+//returns a copy of the falling piece
+void Tetris::CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom) {
+
 	for (int i = 0; i < 4; i++) {
 
-		fallingPiece[i]->location.SetX(fallingPiece[i]->location.GetX() + toMove);
+		copyTo[i]->location.SetX(copyFrom[i]->location.GetX());
+		copyTo[i]->location.SetY(copyFrom[i]->location.GetY());
 	}
 }
