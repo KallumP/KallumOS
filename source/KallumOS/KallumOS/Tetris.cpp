@@ -275,21 +275,35 @@ void Tetris::ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int rig
 bool Tetris::CheckCollisionX(std::array<FallingBlock*, 4> toCheck) {
 
 	//x-axis collisions
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++) {
+
+		//checks if this is out of the board
 		if (toCheck[i]->location.GetX() < 0 || toCheck[i]->location.GetX() > boardWidth - 1)
 			return true;
+
+		//checks if this location was occupied
+		if (board[toCheck[i]->location.GetX()][toCheck[i]->location.GetY()] != nullptr)
+			return true;
+	}
+
 	return false;
 }
 
 bool Tetris::CheckCollisionY(std::array<FallingBlock*, 4> toCheck) {
 
 	//y-axis collision
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++) {
+
+		//checks if this is out of the board
 		if (toCheck[i]->location.GetY() > boardHeight - 1)
 			return true;
-	return false;
 
-	//to check piece collision only check the y axis row of the board of the piece being checked
+		//checks if this location was occupied
+		if (board[toCheck[i]->location.GetX()][toCheck[i]->location.GetY()] != nullptr) 
+			return true;
+	}
+
+	return false;
 }
 
 //turns each falling block in the falling piece into a permanent piece
