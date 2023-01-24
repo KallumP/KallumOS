@@ -78,6 +78,14 @@ void Tetris::OnKeyPress(KeyPress* e) {
 			DropSpawned(true);
 		else if (e->GetKeyCode() == KEY_SPACE)
 			HardDropSpawned();
+		else if (e->GetKeyCode() == KEY_I)
+			RotateSpawned();
+		else if (e->GetKeyCode() == KEY_W)
+			for (int i = 0; i < 3; i++)
+				RotateSpawned();
+		else if (e->GetKeyCode() == KEY_D)
+			for (int i = 0; i < 2; i++)
+				RotateSpawned();
 	}
 }
 void Tetris::OnMousePress(MousePress* e, int taskbarHeight) {
@@ -207,13 +215,12 @@ void Tetris::DropSpawned(bool softDrop) {
 	ShiftSpawned(tempFalling, 0, 0, 1, 0);
 
 	//checks if the copy doesn't collide with anything
-	if (!CheckCollisionY(tempFalling)) {
+	if (!CheckBoardCollisionY(tempFalling) && !CheckPieceCollision(tempFalling)) {
 
 		//copies the copied falling piece values into the falling piece
 		CopyFalling(fallingPiece, tempFalling);
 
 		framesSinceLastSet = 0;
-
 
 		//if there was a collision
 	} else {
@@ -245,12 +252,13 @@ void Tetris::SlideSpawned(bool left) {
 	ShiftSpawned(tempFalling, leftMove, rightMove, 0, 0);
 
 	//checks if the copy doesn't collide with anything
-	if (!CheckCollisionX(tempFalling))
+	if (!CheckBoardCollisionX(tempFalling) && !CheckPieceCollision(tempFalling))
 
 		//copies the copied falling piece values into the falling piece
 		CopyFalling(fallingPiece, tempFalling);
 }
 
+//drops a piece as far as it goes
 void Tetris::HardDropSpawned() {
 
 	//makes a copy of the falling piece
@@ -270,12 +278,42 @@ void Tetris::HardDropSpawned() {
 		ShiftSpawned(tempFalling, 0, 0, 1, 0);
 
 		//while there was no collision
-	} while (!CheckCollisionY(tempFalling));
+	} while (!CheckBoardCollisionY(tempFalling) && !CheckPieceCollision(tempFalling));
 
 	//copies the copied falling piece values into the falling piece
 	CopyFalling(fallingPiece, previous);
 
 	SetFallingPiece(false);
+}
+
+//rotates the piece
+void Tetris::RotateSpawned() {
+
+	//makes a copy of the falling piece
+	std::array<FallingBlock*, 4> rotatedFalling = FreshFalling();
+	CopyFalling(rotatedFalling, fallingPiece);
+
+	//gets the point to rotate around
+	int rotateAroundIndex = 1;
+	int a = fallingPiece[1]->location.GetX();
+	int b = fallingPiece[1]->location.GetY();
+
+	//rotates each block around the rotation point
+	for (int i = 0; i < 4; i++) {
+
+		int x = fallingPiece[i]->location.GetX();
+		int y = fallingPiece[i]->location.GetY();
+
+		rotatedFalling[i]->location.SetX(a + b - y);
+		rotatedFalling[i]->location.SetY(x + b - a);
+	}
+
+	//checks if the copy doesn't collide with anything
+	if (!CheckBoardCollisionY(rotatedFalling) && !CheckBoardCollisionX(rotatedFalling) && !CheckPieceCollision(rotatedFalling)) {
+
+		//Copies the temporary piece into the falling Piece
+		CopyFalling(fallingPiece, rotatedFalling);
+	}
 }
 
 //moves the falling block by the units passed
@@ -287,39 +325,33 @@ void Tetris::ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int rig
 	}
 }
 
-//returns if the falling piece has collided on the y-axis
-bool Tetris::CheckCollisionX(std::array<FallingBlock*, 4> toCheck) {
+//returns if the falling piece has collided on the x-axis of the board
+bool Tetris::CheckBoardCollisionX(std::array<FallingBlock*, 4> toCheck) {
 
-	//x-axis collisions
-	for (int i = 0; i < 4; i++) {
-
-		//checks if this is out of the board
+	//checks if any block is out of the board
+	for (int i = 0; i < 4; i++)
 		if (toCheck[i]->location.GetX() < 0 || toCheck[i]->location.GetX() > boardWidth - 1)
 			return true;
-
-		//checks if this location was occupied
-		if (board[toCheck[i]->location.GetX()][toCheck[i]->location.GetY()] != nullptr)
-			return true;
-	}
-
 	return false;
 }
 
-//returns if the falling piece has collided on the x-axis
-bool Tetris::CheckCollisionY(std::array<FallingBlock*, 4> toCheck) {
+//returns if the falling piece has collided on the y-axis of the board
+bool Tetris::CheckBoardCollisionY(std::array<FallingBlock*, 4> toCheck) {
 
-	//y-axis collision
-	for (int i = 0; i < 4; i++) {
-
-		//checks if this is out of the board
+	//checks if any block is out of the board
+	for (int i = 0; i < 4; i++)
 		if (toCheck[i]->location.GetY() > boardHeight - 1)
 			return true;
+	return false;
+}
 
-		//checks if this location was occupied
+//returns if the falling piece has collided with any board piece
+bool Tetris::CheckPieceCollision(std::array<FallingBlock*, 4> toCheck) {
+
+	//checks if any block is intersecting with any other piece
+	for (int i = 0; i < 4; i++)
 		if (board[toCheck[i]->location.GetX()][toCheck[i]->location.GetY()] != nullptr)
 			return true;
-	}
-
 	return false;
 }
 

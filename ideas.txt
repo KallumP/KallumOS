@@ -6,3 +6,9 @@ maybe have a boolean for set
 	If set is true, 
 		in the tick, do the setFunction
 this needs to be changed to false again on rotation or slidemove
+
+
+random needs to be set at the start of the os
+or in a helper class?
+
+checkpiece collision is not safe (will not check if out of bounds before accessing board bounds
