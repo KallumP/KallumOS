@@ -6,9 +6,6 @@ AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Poi
 	processes = _processes;
 
 	SetupProcessInfos();
-
-	LaunchTetris();
-
 }
 
 void AppLauncher::Draw(Point offset) {
