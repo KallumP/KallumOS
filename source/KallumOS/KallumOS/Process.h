@@ -20,15 +20,17 @@ protected:
 	bool display;
 	bool close;
 
+	bool mouseDownOnBar;
+
 
 	int barHeight = 30; //px
 	int buttonWidth = 40; //px
 	void DrawBoxBar(Point offset, bool fill);
-	void CheckBarButtonsClicked(Point normMousePos);
-	void CheckIfMinimizeClicked(Point normMousePos);
-	void CheckIfCloseClicked(Point normMousePos);
+	void SuperMousePress(Point normMousePos);
+	bool CheckBarClicked(Point normMousePos);
+	bool CheckIfMinimizeClicked(Point normMousePos);
+	bool CheckIfCloseClicked(Point normMousePos);
 	Point NormaliseMousePos(int yOffSet);
-
 
 
 public:
@@ -42,10 +44,16 @@ public:
 
 	virtual void OnKeyPress(KeyPress* e) {}
 	virtual void OnMousePress(MousePress* e, int taskbarHeight);
+	virtual void OnMouseHold(MousePress* e, int taskBarHeight);
 
 	bool GetHidden() { return hidden; }
 	bool GetDisplay() { return display; }
 	bool GetClose() { return close; }
 	void ToggleDisplay() { display = !display; }
+
+
+private:
+
+	Point barClickLocation;
 };
 

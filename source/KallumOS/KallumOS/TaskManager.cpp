@@ -65,7 +65,7 @@ void TaskManager::OnMousePress(MousePress* e, int taskbarHeight) {
 
 	if (display) {
 
-		CheckBarButtonsClicked(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos(taskbarHeight));
 
 		int checkOffset;
 

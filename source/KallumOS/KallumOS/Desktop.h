@@ -16,6 +16,7 @@ public:
 	void Draw();
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
+	void OnMouseHold(MousePress* e);
 
 	void CloseApp(Process* toClose);
 

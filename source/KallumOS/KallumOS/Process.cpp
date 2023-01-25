@@ -82,40 +82,69 @@ void Process::OnMousePress(MousePress* e, int taskbarHeight) {
 
 	if (display) {
 
-		CheckBarButtonsClicked(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos(taskbarHeight));
 	}
 }
 
-void Process::CheckBarButtonsClicked(Point normMousePos) {
+void Process::SuperMousePress(Point normMousePos) {
 
-		CheckIfMinimizeClicked(normMousePos);
-		CheckIfCloseClicked(normMousePos);	
+
+	if (CheckBarClicked(normMousePos)) {
+
+		if (CheckIfMinimizeClicked(normMousePos))
+			return;
+
+		if (CheckIfCloseClicked(normMousePos))
+			return;
+
+		mouseDownOnBar = true;
+		barClickLocation = Point(normMousePos.GetX(), normMousePos.GetY());
+	}
+}
+
+bool Process::CheckBarClicked(Point normMousePos) {
+
+	//checks if the mouse was within the control bar
+	if (normMousePos.GetY() < barHeight && normMousePos.GetY() > 0) {
+		return true;
+	}
+
+	return false;
 }
 
 //Checks if the minimise button was pressed and sets the display off if it was
-void Process::CheckIfMinimizeClicked(Point normMousePos) {
+bool Process::CheckIfMinimizeClicked(Point normMousePos) {
 
-	//checks if the mouse was within the control bar
-	if (normMousePos.GetY() < barHeight && normMousePos.GetY() > 0) {
+	if (normMousePos.GetX() > size.GetX() - buttonWidth * 2 &&
+		normMousePos.GetX() < size.GetX() - buttonWidth * 1) {
 
-		if (normMousePos.GetX() > size.GetX() - buttonWidth * 2 &&
-			normMousePos.GetX() < size.GetX() - buttonWidth * 1) {
-
-			display = false;
-		}
+		display = false;
+		return true;
 	}
+
+	return false;
 }
 
 //checks if the close button was pressed and sets the close flag to true
-void Process::CheckIfCloseClicked(Point normMousePos) {
+bool Process::CheckIfCloseClicked(Point normMousePos) {
 
-	//checks if the mouse was within the control bar
-	if (normMousePos.GetY() < barHeight && normMousePos.GetY() > 0) {
+	if (normMousePos.GetX() > size.GetX() - buttonWidth * 1 &&
+		normMousePos.GetX() < size.GetX() - buttonWidth * 0) {
 
-		if (normMousePos.GetX() > size.GetX() - buttonWidth * 1 &&
-			normMousePos.GetX() < size.GetX() - buttonWidth * 0) {
+		close = true;
+		return true;
+	}
 
-			close = true;
-		}
+	return false;
+}
+
+void Process::OnMouseHold(MousePress* e, int taskbarHeight) {
+
+	if (mouseDownOnBar) {
+
+		Point newMousePosition = NormaliseMousePos(taskbarHeight);
+
+		//Point mouseDifference = 
+
 	}
 }

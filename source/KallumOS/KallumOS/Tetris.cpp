@@ -118,7 +118,7 @@ void Tetris::OnMousePress(MousePress* e, int taskbarHeight) {
 
 	if (display) {
 
-		CheckBarButtonsClicked(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos(taskbarHeight));
 
 		Point normalisedMouse = NormaliseMousePos(taskbarHeight + barHeight);
 	}

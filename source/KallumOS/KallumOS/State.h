@@ -45,6 +45,7 @@ public:
 	virtual void MouseMove() = 0;
 	virtual void OnKeyPress(KeyPress* e) = 0;
 	virtual void OnMousePress(MousePress* e) = 0;
+	virtual void OnMouseHold(MousePress* e) {}
 	virtual States GetNextState();
 
 	void Focus(Control* toFocus, bool click);

@@ -81,6 +81,16 @@ void Desktop::OnMousePress(MousePress* e) {
 	}
 }
 
+void Desktop::OnMouseHold(MousePress* e) {
+
+	//if there was a focused window
+	if (focused != nullptr) {
+
+		//send the click to the focused process
+		focused->OnMouseHold(e, taskbar.height);
+	}
+}
+
 void Desktop::MouseMove() {
 
 
