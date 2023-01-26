@@ -5,6 +5,7 @@
 Process::Process() {
 	name = "";
 	defaultFontSize = 20;
+	mouseDownOnBar = false;
 }
 
 
@@ -15,6 +16,7 @@ Process::Process(std::string _name) {
 	hidden = true;
 	display = false;
 	close = false;
+	mouseDownOnBar = false;
 	defaultFontSize = 20;
 
 }
@@ -29,6 +31,8 @@ Process::Process(std::string _name, Point _position, Point _size) {
 	hidden = false;
 	display = true;
 	close = false;
+	mouseDownOnBar = false;
+
 }
 
 void Process::Draw(Point offset) {
@@ -102,14 +106,11 @@ void Process::SuperMousePress(Point normMousePos) {
 	}
 }
 
+//returns if the bar was clicked on
 bool Process::CheckBarClicked(Point normMousePos) {
 
 	//checks if the mouse was within the control bar
-	if (normMousePos.GetY() < barHeight && normMousePos.GetY() > 0) {
-		return true;
-	}
-
-	return false;
+	return normMousePos.GetY() < barHeight && normMousePos.GetY() > 0;
 }
 
 //Checks if the minimise button was pressed and sets the display off if it was
