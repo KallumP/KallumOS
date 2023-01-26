@@ -45,12 +45,13 @@ public:
 	virtual void OnKeyPress(KeyPress* e) {}
 	virtual void OnMousePress(MousePress* e, int taskbarHeight);
 	virtual void OnMouseHold(MousePress* e, int taskBarHeight);
+	virtual void OnMouseRelease(MousePress* e);
 
 	bool GetHidden() { return hidden; }
 	bool GetDisplay() { return display; }
 	bool GetClose() { return close; }
 	void ToggleDisplay() { display = !display; }
-
+	void UpdatePosition(Point change);
 
 private:
 

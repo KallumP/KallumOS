@@ -91,6 +91,16 @@ void Desktop::OnMouseHold(MousePress* e) {
 	}
 }
 
+void Desktop::OnMouseRelease(MousePress* e) {
+
+	//if there was a focused window
+	if (focused != nullptr) {
+
+		//send the click to the focused process
+		focused->OnMouseRelease(e);
+	}
+}
+
 void Desktop::MouseMove() {
 
 

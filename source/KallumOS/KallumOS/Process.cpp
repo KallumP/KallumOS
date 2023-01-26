@@ -144,7 +144,19 @@ void Process::OnMouseHold(MousePress* e, int taskbarHeight) {
 
 		Point newMousePosition = NormaliseMousePos(taskbarHeight);
 
-		//Point mouseDifference = 
-
+		Point mouseDifference = newMousePosition.Difference(barClickLocation);
+		
+		UpdatePosition(mouseDifference);
 	}
+}
+
+void Process::OnMouseRelease(MousePress* e) {
+
+	mouseDownOnBar = false;
+}
+
+
+void Process::UpdatePosition(Point change) {
+
+	position.Add(change);
 }

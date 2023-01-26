@@ -19,6 +19,7 @@ public:
 	void OnKeyPress(KeyPress* e);
 	void OnMouseHold(MousePress* e);
 	void OnMousePress(MousePress* e);
+	void OnMouseRelease(MousePress* e);
 
 private:
 

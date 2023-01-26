@@ -42,11 +42,17 @@ void KallumOS::OnKeyPress(KeyPress* e) {
 }
 
 void KallumOS::OnMouseHold(MousePress* e) {
+
+	state->OnMouseHold(e);
 }
 
 void KallumOS::OnMousePress(MousePress* e) {
 
 	state->OnMousePress(e);
+}
+
+void KallumOS::OnMouseRelease(MousePress* e) {
+	state->OnMouseRelease(e);
 }
 
 void KallumOS::SwitchStates() {

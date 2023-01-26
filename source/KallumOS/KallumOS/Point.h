@@ -36,6 +36,11 @@ public:
 		y = _y;
 	}
 
+	void Add(Point p) {
+		SetX(GetX() + p.GetX());
+		SetY(GetY() + p.GetY());
+	}
+
 	//returns if the input point is different from this point
 	bool Different(Point* compare) {
 
@@ -44,6 +49,18 @@ public:
 		return false;
 	}
 
+	//returns the difference between this point and the passed point
+	Point Difference(Point p) {
+
+		Point toReturn;
+
+		toReturn.SetX(GetX() - p.GetX());
+		toReturn.SetY(GetY() - p.GetY());
+
+		return toReturn;
+	}
+
+	//returns a string of this point
 	std::string ToString() {
 		std::string toReturn = "";
 		toReturn += "X = ";

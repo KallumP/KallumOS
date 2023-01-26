@@ -247,7 +247,7 @@ void Input::GetMouseInputs(float elapsedTime, KallumOS* caller) {
 		else {
 
 			//calls the released method
-
+			caller->OnMouseRelease(&mousePresses[i]);
 
 			//removes the press from list
 			mousePresses.erase(mousePresses.begin() + i);
@@ -263,7 +263,10 @@ void Input::GetMouseInputs(float elapsedTime, KallumOS* caller) {
 			//checks if the press wasn't already registered
 			if (!InMousePressedList(allMousePressOptions[i])) {
 
+				//calls the mouse press method
 				caller->OnMousePress(&allMousePressOptions[i]);
+
+				//adds the press to the registered presses list
 				mousePresses.push_back(allMousePressOptions[i]);
 			}
 		}
