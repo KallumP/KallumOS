@@ -22,6 +22,7 @@ void Tetris::Setup() {
 	setDelay = 3;
 	framesSinceLastSet = 0;
 
+	hold = NullFalling();
 	ResetBoard();
 	SpawnPiece();
 }
@@ -41,6 +42,7 @@ void Tetris::Draw(Point offset) {
 
 			DrawPieces(offset);
 			DrawBoardBoarders(offset);
+			DrawHold(offset);
 
 		} else {
 			DrawText("You lose. Press R to restart", offset.GetX(), offset.GetY(), 20, RED);
@@ -83,7 +85,42 @@ void Tetris::DrawPieces(Point offset) {
 			offset.GetY() + pieceSize * fallingPiece[i]->location.GetY(),
 			pieceSize, pieceSize, fallingPiece[i]->color);
 }
+void Tetris::DrawHold(Point offset) {
 
+	offset.SetX(offset.GetX() + boardWidth * pieceSize + 20);
+
+	//draws the border
+	for (int i = 0; i < 4 + 1; i++)
+		DrawLine(offset.GetX() + pieceSize * i, offset.GetY(), offset.GetX() + pieceSize * i, offset.GetY() + 4 * pieceSize, BLACK);
+	for (int i = 0; i < 4 + 1; i++)
+		DrawLine(offset.GetX(), offset.GetY() + pieceSize * i, offset.GetX() + 4 * pieceSize, offset.GetY() + pieceSize * i, BLACK);
+
+
+	if (HoldExists()) {
+		Point corner = GetTopCorner(hold);
+
+		for (int i = 0; i < 4; i++)
+			DrawRectangle(
+				offset.GetX() + pieceSize * (hold[i]->location.GetX() - corner.GetX()),
+				offset.GetY() + pieceSize * (hold[i]->location.GetY() - corner.GetY()),
+				pieceSize, pieceSize, hold[i]->color);
+	}
+}
+
+Point Tetris::GetTopCorner(std::array<FallingBlock*, 4> toCheck) {
+
+	Point toReturn = Point(boardWidth, boardHeight);
+	for (int i = 0; i < 4; i++) {
+
+		if (toReturn.GetX() > toCheck[i]->location.GetX())
+			toReturn.SetX(toCheck[i]->location.GetX());
+
+		if (toReturn.GetY() > toCheck[i]->location.GetY())
+			toReturn.SetY(toCheck[i]->location.GetY());
+	}
+
+	return toReturn;
+}
 
 void Tetris::OnKeyPress(KeyPress* e) {
 
@@ -104,9 +141,11 @@ void Tetris::OnKeyPress(KeyPress* e) {
 			else if (e->GetKeyCode() == KEY_W)
 				for (int i = 0; i < 3; i++)
 					RotateSpawned();
-			else if (e->GetKeyCode() == KEY_D)
+			else if (e->GetKeyCode() == KEY_D) 
 				for (int i = 0; i < 2; i++)
 					RotateSpawned();
+			else if (e->GetKeyCode() == KEY_A)
+				SwapWithHold();
 		} else {
 			if (e->GetKeyCode() == KEY_R) //restart button
 				Setup();
@@ -500,6 +539,17 @@ std::array<FallingBlock*, 4> Tetris::FreshFalling() {
 	return tempFalling;
 }
 
+std::array<FallingBlock*, 4> Tetris::NullFalling() {
+
+	std::array<FallingBlock*, 4> tempFalling;
+
+	for (int i = 0; i < 4; i++)
+		tempFalling[i] = nullptr;
+
+	return tempFalling;
+
+}
+
 //returns a copy of the falling piece
 void Tetris::CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom) {
 
@@ -507,5 +557,36 @@ void Tetris::CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<Falling
 
 		copyTo[i]->location.SetX(copyFrom[i]->location.GetX());
 		copyTo[i]->location.SetY(copyFrom[i]->location.GetY());
+
+	}
+}
+
+//returns a copy of the falling piece
+void Tetris::CopyFallingWithColor(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom) {
+
+	CopyFalling(copyTo, copyFrom);
+	for (int i = 0; i < 4; i++)
+
+		copyTo[i]->color = copyFrom[i]->color;
+
+}
+
+
+void Tetris::SwapWithHold() {
+
+
+	if (!HoldExists()) {
+		hold = FreshFalling();
+		CopyFallingWithColor(hold, fallingPiece);
+		fallingPiece = NullFalling();
+		SpawnPiece();
+	} else {
+
+		std::array<FallingBlock*, 4> tempFalling;
+		tempFalling = FreshFalling();
+		CopyFallingWithColor(tempFalling, hold);
+		CopyFallingWithColor(hold, fallingPiece);
+		CopyFallingWithColor(fallingPiece, tempFalling);
+
 	}
 }

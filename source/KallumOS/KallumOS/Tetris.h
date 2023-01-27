@@ -47,6 +47,7 @@ private:
 
 	void DrawBoardBoarders(Point offset);
 	void DrawPieces(Point offset);
+	void DrawHold(Point offset);
 
 	void ResetBoard();
 	void SpawnPiece();
@@ -62,6 +63,7 @@ private:
 	std::array<std::array<Block*, boardHeight>, boardWidth> board;
 	std::array<FallingBlock*, 4> fallingPiece;
 	std::array<FallingBlock*, 4> fallingPieceShadow;
+	std::array<FallingBlock*, 4> hold;
 	
 	bool lost;
 
@@ -74,6 +76,9 @@ private:
 	bool softSet;
 	int setDelay;
 	int framesSinceLastSet;
+
+	void SwapWithHold();
+	Point GetTopCorner(std::array<FallingBlock*, 4> toCheck);
 
 	void DropSpawned(bool softDrop);
 	void SlideSpawned(bool left);
@@ -103,7 +108,13 @@ private:
 	void SpawnLineBlock(Point spawnLocation);
 
 	std::array<FallingBlock*, 4> FreshFalling();
+	std::array<FallingBlock*, 4> NullFalling();
 	void CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom);
+	void CopyFallingWithColor(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom);
+
+	bool HoldExists() {
+		return	hold[0] != nullptr;
+	}
 };
 
 

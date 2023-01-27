@@ -32,7 +32,7 @@ private:
 	void SetupProcessInfos();
 
 	void LaunchTetris() {
-		Tetris* app = new Tetris(Point(525, 10), Point(310, 610));
+		Tetris* app = new Tetris(Point(525, 10), Point(455, 610));
 		processes->push_back(app);
 	}
 };
