@@ -6,6 +6,7 @@
 #include "Tetris.h"
 
 #include <vector>
+#include <functional>
 
 struct ProcessInfo {
 
@@ -20,7 +21,7 @@ class AppLauncher : public Process {
 
 public:
 	AppLauncher();
-	AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size);
+	AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size, const std::function<void(Process* toLaunch)>& _LaunchAppPointer);
 
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
@@ -31,10 +32,7 @@ private:
 	std::vector<Process*>* processes;
 	void SetupProcessInfos();
 
-	void LaunchTetris() {
-		Tetris* app = new Tetris(Point(525, 10), Point(455, 610));
-		processes->push_back(app);
-	}
+	std::function<void(Process* toLaunch)> LaunchApp;
 };
 
 

@@ -1,11 +1,15 @@
 #include "Desktop.h"
 #include "Taskbar.h"
+#include "Process.h"
+
+#include <functional>
 
 Desktop::Desktop() : State() {
 
 	taskbar = Taskbar(&processes);
 
-	OpenLauncher();
+	launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 400), std::bind(&Desktop::LaunchApp, this, std::placeholders::_1));
+	LaunchApp(launcher);
 
 	backgroundColor = VIOLET;
 }
@@ -45,9 +49,12 @@ void Desktop::Draw() {
 void Desktop::OnKeyPress(KeyPress* e) {
 
 	if (focused == nullptr)
-		if (e->GetKeyCode() == KEY_A)
-			OpenLauncher();
+		if (e->GetKeyCode() == KEY_A) {
 
+			launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 400), std::bind(&Desktop::LaunchApp, this, std::placeholders::_1));
+			LaunchApp(launcher);
+
+		}
 	//if there was a focused window
 	if (focused != nullptr)
 		if (focused->GetDisplay())
@@ -134,12 +141,11 @@ void Desktop::TaskBarClickHandle() {
 	}
 }
 
-void Desktop::OpenLauncher() {
+void Desktop::LaunchApp(Process* app) {
 
-	launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 400));
-	processes.push_back(launcher);
-	taskbar.SetFocused(launcher);
-	focused = launcher;
+	processes.push_back(app);
+	taskbar.SetFocused(app);
+	focused = app;
 }
 
 void Desktop::CloseApp(Process* toclose) {

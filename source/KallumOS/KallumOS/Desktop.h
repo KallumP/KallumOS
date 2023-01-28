@@ -5,6 +5,9 @@
 #include "AppLauncher.h"
 #include "InputPress.h"
 #include "Taskbar.h"
+#include "Process.h"
+
+#include <functional>
 
 class Desktop : public State {
 
@@ -27,7 +30,7 @@ private:
 	void MouseMove();
 	
 	void TaskBarClickHandle();
-	void OpenLauncher();
+	void LaunchApp(Process* app);
 
 
 	AppLauncher* launcher;

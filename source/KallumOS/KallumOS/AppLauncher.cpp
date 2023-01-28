@@ -1,11 +1,15 @@
 #include "AppLauncher.h"
 
 
-AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size) : Process("App launcher", _position, _size) {
+AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size, const std::function<void(Process* toLaunch)>& _LaunchAppPointer) : Process("App launcher", _position, _size) {
 
 	processes = _processes;
 
+	//binds the launch method from the calling class
+	LaunchApp = _LaunchAppPointer;
+
 	SetupProcessInfos();
+
 }
 
 void AppLauncher::Draw(Point offset) {
@@ -66,22 +70,21 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 					if (processInfos[i].processName == "Task Manager") {
 
 						TaskManager* app = new TaskManager(processes, Point(200, 60), Point(450, 300));
-						processes->push_back(app);
+						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Word") {
 
 						TextEditor* app = new TextEditor(Point(700, 50), Point(400, 200));
-						processes->push_back(app);
+						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Tic Tak") {
 
 						TicTak* app = new TicTak(Point(700, 350), Point(400, 200));
-						processes->push_back(app);
+						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Tetris") {
-
-						LaunchTetris();
-
+						Tetris* app = new Tetris(Point(525, 10), Point(455, 610));
+						LaunchApp(app);
 					}
 				}
 			}
