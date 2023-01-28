@@ -1,15 +1,11 @@
 #include "AppLauncher.h"
 
 
-AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size, const std::function<void(Process* toLaunch)>& _LaunchAppPointer) : Process("App launcher", _position, _size) {
+AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size) : Process("App launcher", _position, _size) {
 
 	processes = _processes;
 
-	//binds the launch method from the calling class
-	LaunchApp = _LaunchAppPointer;
-
 	SetupProcessInfos();
-
 }
 
 void AppLauncher::Draw(Point offset) {
@@ -70,6 +66,7 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 					if (processInfos[i].processName == "Task Manager") {
 
 						TaskManager* app = new TaskManager(processes, Point(200, 60), Point(450, 300));
+						app->BindCloseApp(CloseApp);
 						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Word") {

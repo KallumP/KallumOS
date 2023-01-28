@@ -22,7 +22,6 @@ public:
 	void OnMouseHold(MousePress* e); 
 	void OnMouseRelease(MousePress* e);
 
-	void CloseApp(Process* toClose);
 
 private:
 
@@ -30,7 +29,9 @@ private:
 	void MouseMove();
 	
 	void TaskBarClickHandle();
+	void LaunchAppLauncher();
 	void LaunchApp(Process* app);
+	void CloseApp(Process* toClose);
 
 
 	AppLauncher* launcher;

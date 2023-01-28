@@ -8,8 +8,7 @@ Desktop::Desktop() : State() {
 
 	taskbar = Taskbar(&processes);
 
-	launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 400), std::bind(&Desktop::LaunchApp, this, std::placeholders::_1));
-	LaunchApp(launcher);
+	LaunchAppLauncher();
 
 	backgroundColor = VIOLET;
 }
@@ -49,12 +48,10 @@ void Desktop::Draw() {
 void Desktop::OnKeyPress(KeyPress* e) {
 
 	if (focused == nullptr)
-		if (e->GetKeyCode() == KEY_A) {
+		if (e->GetKeyCode() == KEY_A)
+			LaunchAppLauncher();
 
-			launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 400), std::bind(&Desktop::LaunchApp, this, std::placeholders::_1));
-			LaunchApp(launcher);
 
-		}
 	//if there was a focused window
 	if (focused != nullptr)
 		if (focused->GetDisplay())
@@ -73,17 +70,21 @@ void Desktop::OnMousePress(MousePress* e) {
 		//send the click to the focused process
 		focused->OnMousePress(e, taskbar.height);
 
-		//checks if the process is no longer displayed
-		if (!focused->GetDisplay()) {
+		//checks if this was nullptr (incase this was the task manager)
+		if (focused != nullptr) {
 
-			focused = nullptr;
-			taskbar.SetFocused(nullptr);
+			//checks if the process is no longer displayed
+			if (!focused->GetDisplay()) {
+
+				focused = nullptr;
+				taskbar.SetFocused(nullptr);
 
 
-			//checks if the process should close
-		} else if (focused->GetClose()) {
+				//checks if the process should close
+			} else if (focused->GetClose()) {
 
-			CloseApp(focused);
+				CloseApp(focused);
+			}
 		}
 	}
 }
@@ -141,6 +142,15 @@ void Desktop::TaskBarClickHandle() {
 	}
 }
 
+void Desktop::LaunchAppLauncher() {
+
+	launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 400));
+	launcher->BindLaunchApp(std::bind(&Desktop::LaunchApp, this, std::placeholders::_1));
+	launcher->BindCloseApp(std::bind(&Desktop::CloseApp, this, std::placeholders::_1));
+
+	LaunchApp(launcher);
+}
+
 void Desktop::LaunchApp(Process* app) {
 
 	processes.push_back(app);
@@ -148,14 +158,15 @@ void Desktop::LaunchApp(Process* app) {
 	focused = app;
 }
 
-void Desktop::CloseApp(Process* toclose) {
+void Desktop::CloseApp(Process* toClose) {
 
-	auto it = find(processes.begin(), processes.end(), toclose);
+	auto it = find(processes.begin(), processes.end(), toClose);
 
-	if (toclose == launcher)
+	if (toClose == launcher)
 		launcher = nullptr;
 
 	processes.erase(it);
-	delete focused;
-	focused = nullptr;
+
+	if (focused == toClose)
+		focused = nullptr;
 }

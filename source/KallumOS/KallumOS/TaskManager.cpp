@@ -73,7 +73,7 @@ void TaskManager::OnMousePress(MousePress* e, int taskbarHeight) {
 		Point normalisedMouse = NormaliseMousePos(taskbarHeight);
 
 		//loops through all the processes
-		for (int i = 0; i < processes->size(); i++) {
+		for (int i = processes->size() - 1; i >= 0; i--) {
 
 			//offset of the box bar, list padding and the padding between each process
 			checkOffset = barHeight + processListPadding + processPadding * (i + 1) + processBoxHeight * i;
@@ -93,6 +93,7 @@ void TaskManager::OnMousePress(MousePress* e, int taskbarHeight) {
 //takes an index of a task to end
 void TaskManager::EndTask(int indexToRemove) {
 
-	
-	processes->erase(processes->begin() + indexToRemove);
+	Process* toRemove;
+	toRemove = (*processes)[indexToRemove];
+	CloseApp(toRemove);
 }

@@ -21,7 +21,9 @@ class AppLauncher : public Process {
 
 public:
 	AppLauncher();
-	AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size, const std::function<void(Process* toLaunch)>& _LaunchAppPointer);
+	AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size);
+	void BindLaunchApp(const std::function<void(Process* toLaunch)>& _LaunchApp) { LaunchApp = _LaunchApp; }
+	void BindCloseApp(const std::function<void(Process* toLaunch)>& _CloseApp) { CloseApp = _CloseApp; }
 
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
@@ -33,6 +35,7 @@ private:
 	void SetupProcessInfos();
 
 	std::function<void(Process* toLaunch)> LaunchApp;
+	std::function<void(Process* toClose)> CloseApp;
 };
 
 
