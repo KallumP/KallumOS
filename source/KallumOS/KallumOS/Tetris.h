@@ -77,7 +77,14 @@ private:
 	int setDelay;
 	int framesSinceLastSet;
 
+	int holdAvailable;
+
 	void SwapWithHold();
+	bool HoldExists() {
+		return	hold[0] != nullptr;
+	}
+	void PushFallingToStart(std::array<FallingBlock*, 4> toPush);
+
 	Point GetTopCorner(std::array<FallingBlock*, 4> toCheck);
 
 	void DropSpawned(bool softDrop);
@@ -112,9 +119,7 @@ private:
 	void CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom);
 	void CopyFallingWithColor(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom);
 
-	bool HoldExists() {
-		return	hold[0] != nullptr;
-	}
+
 };
 
 

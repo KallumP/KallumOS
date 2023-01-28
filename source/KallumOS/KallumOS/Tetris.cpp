@@ -22,7 +22,9 @@ void Tetris::Setup() {
 	setDelay = 3;
 	framesSinceLastSet = 0;
 
+	holdAvailable = true;
 	hold = NullFalling();
+
 	ResetBoard();
 	SpawnPiece();
 }
@@ -141,7 +143,7 @@ void Tetris::OnKeyPress(KeyPress* e) {
 			else if (e->GetKeyCode() == KEY_W)
 				for (int i = 0; i < 3; i++)
 					RotateSpawned();
-			else if (e->GetKeyCode() == KEY_D) 
+			else if (e->GetKeyCode() == KEY_D)
 				for (int i = 0; i < 2; i++)
 					RotateSpawned();
 			else if (e->GetKeyCode() == KEY_A)
@@ -233,7 +235,6 @@ void Tetris::SpawnPiece() {
 		lost = true;
 	}
 }
-
 void Tetris::SpawnTBlock(Point spawnLocation) {
 	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0), MAGENTA);
 	fallingPiece[1] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0), MAGENTA);
@@ -414,7 +415,7 @@ bool Tetris::CheckBoardCollisionY(std::array<FallingBlock*, 4> toCheck) {
 
 	//checks if any block is out of the board
 	for (int i = 0; i < 4; i++)
-		if (toCheck[i]->location.GetY() > boardHeight - 1)
+		if (toCheck[i]->location.GetY() < 0 || toCheck[i]->location.GetY() > boardHeight - 1)
 			return true;
 	return false;
 }
@@ -444,6 +445,8 @@ void Tetris::SetFallingPiece(bool delay) {
 	for (int i = 0; i < 4; i++)
 		SetBlock(Point(fallingPiece[i]->location.GetX(), fallingPiece[i]->location.GetY()), new Block(fallingPiece[i]->color));
 	SpawnPiece();
+
+	holdAvailable = true;
 
 	ClearLines(CheckClearLines());
 }
@@ -571,22 +574,42 @@ void Tetris::CopyFallingWithColor(std::array<FallingBlock*, 4> copyTo, std::arra
 
 }
 
-
+//swaps the current falling piece with the hold
 void Tetris::SwapWithHold() {
 
+	if (holdAvailable) {
 
-	if (!HoldExists()) {
-		hold = FreshFalling();
-		CopyFallingWithColor(hold, fallingPiece);
-		fallingPiece = NullFalling();
-		SpawnPiece();
-	} else {
+		if (!HoldExists()) {
+			hold = FreshFalling();
+			CopyFallingWithColor(hold, fallingPiece);
+			fallingPiece = NullFalling();
+			SpawnPiece();
 
-		std::array<FallingBlock*, 4> tempFalling;
-		tempFalling = FreshFalling();
-		CopyFallingWithColor(tempFalling, hold);
-		CopyFallingWithColor(hold, fallingPiece);
-		CopyFallingWithColor(fallingPiece, tempFalling);
+		} else {
+			std::array<FallingBlock*, 4> tempFalling;
+			tempFalling = FreshFalling();
+			CopyFallingWithColor(tempFalling, hold);
+			CopyFallingWithColor(hold, fallingPiece);
+			CopyFallingWithColor(fallingPiece, tempFalling);
 
+			PushFallingToStart(fallingPiece);
+		}
+
+		holdAvailable = false;
+
+		if (CheckPieceCollision(fallingPiece)) {
+			lost = true;
+		}
+	}
+}
+
+//pushes the falling piece to the top of the board
+void Tetris::PushFallingToStart(std::array<FallingBlock*, 4> toPush) {
+
+	Point corner = GetTopCorner(toPush);
+
+	for (int i = 0; i < 4; i++) {
+		toPush[i]->location.SetY(toPush[i]->location.GetY() - corner.GetY());
+		toPush[i]->location.SetX(toPush[i]->location.GetX() - corner.GetX() + 4);
 	}
 }
