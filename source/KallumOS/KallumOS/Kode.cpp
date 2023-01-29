@@ -5,7 +5,7 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
 	//text = "out Hello world!;out Hello second line!:);";
-	text = "out x";
+	text = "int x = 20;int y = 30;int z = x + y + 40;z = z + 20;out z";
 
 	consoleHeight = 100;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
@@ -210,7 +210,7 @@ void Kode::Run() {
 			if (ValidFunction(chunks, 1)) {
 
 				//gets the result of the function
-				std::string functionResult = HandleFunction(chunks, 2);
+				std::string functionResult = HandleFunction(chunks, 1);
 
 				AddToConsoleOutput(i, functionResult, WHITE);
 				continue;
@@ -229,9 +229,9 @@ void Kode::Run() {
 		if (foundOpcode == "int") {
 
 			//not enough chunks
-			if (chunks.size() != 4) {
+			if (chunks.size() < 4) {
 				if (debug)
-					AddToConsoleOutput(i, "Need to have three operands for an int", RED);
+					AddToConsoleOutput(i, "Not enough chunks for this statement, should be atleast 4", RED);
 				continue;
 			}
 
@@ -249,24 +249,26 @@ void Kode::Run() {
 				continue;
 			}
 
-
 			//variable already existed
 			if (VariableExists(chunks[1])) {
 				AddToConsoleOutput(i, "Variable: " + chunks[1] + " already exists", RED);
 				continue;
 			}
 
-			//if the value was not a number
-			if (!Intable(chunks[3])) {
+			//checks if the operand is a function
+			if (!ValidFunction(chunks, 3)) {
 				if (debug)
-					AddToConsoleOutput(i, "Value must be a number", RED);
+					AddToConsoleOutput(i, "Function to assign is not valid", RED);
 				continue;
 			}
+
+			//gets the result of the function
+			std::string functionResult = HandleFunction(chunks, 3);
 
 			//declares and assigns values to the variable
 			Variable* inter = new Variable();
 			inter->identifier = chunks[1];
-			inter->value = chunks[3];
+			inter->value = functionResult;
 			inter->type = "integer";
 			variables.push_back(inter);
 
@@ -298,15 +300,18 @@ void Kode::Run() {
 			//assigning to an integer
 			if (toAssign->type == "integer") {
 
-				//if the value was not a number
-				if (!Intable(chunks[2])) {
+				//checks if the operand is a function
+				if (!ValidFunction(chunks, 2)) {
 					if (debug)
-						AddToConsoleOutput(i, "Value must be a number", RED);
+						AddToConsoleOutput(i, "Function to assign is not valid", RED);
 					continue;
 				}
 
+				//gets the result of the function
+				std::string functionResult = HandleFunction(chunks, 2);
+
 				//assigns the value
-				toAssign->value = chunks[2];
+				toAssign->value = functionResult;
 
 				if (debug)
 					AddToConsoleOutput(i, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
@@ -417,13 +422,35 @@ bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
 
 std::string Kode::HandleFunction(std::vector<std::string> chunks, int startIndex) {
 
-	//tries to find a variable with this value
-	Variable* potentialVariable = GetVariable(chunks[1]);
+	int result = 0;
 
-	//if a variable was found
-	if (potentialVariable != nullptr) {
-		return potentialVariable->value;
+	//saves either the variable value or direct value
+	if (VariableExists(chunks[startIndex]))
+		result = std::stoi(GetVariable(chunks[startIndex])->value);
+	else
+		result = std::stoi(chunks[startIndex]);
+
+	//list of supported symbols
+	std::vector<std::string> supportedSymbols;
+	supportedSymbols.push_back("+");
+
+	//loops through two chunks at a time until the end
+	for (int i = startIndex + 1; i < chunks.size(); i += 2) {
+
+		int toWorkWith;
+
+		//saves either the variable value or direct value
+		if (VariableExists(chunks[i + 1]))
+			toWorkWith = std::stoi(GetVariable(chunks[i + 1])->value);
+		else
+			toWorkWith = std::stoi(chunks[i + 1]);
+
+		//handles the two values using the used operation
+		if (chunks[i] == "+") 
+			result = Add(result, toWorkWith);
 	}
+
+	return std::to_string(result);
 }
 
 
@@ -432,28 +459,28 @@ std::string Kode::HandleFunction(std::vector<std::string> chunks, int startIndex
 //pressing f3 will make most functionality output to the console in red
 // 
 //kode consists of statements
-// a statement is ended by a ;
+//a statement is ended by a ;
 //each statement consists of chunks
-// chunk are to be separated by a space
+//chunk are to be separated by a space
 //the first chunk is the opcode (or variable name)
 //this is what states what will happen next
 // 
 // 
 //the "out" opcode will take whatever is after it and output it to the console
-// if the following chunks are just a variable identifier, if that identifier exists, output it's value
-// else output all chunks as string literal
+//if the following chunks a valid function (which will output the result of that function)
+//else output all chunks as string literal
 // 
 // 
 //the "int" opcode will declare and assign a new integer variable
 //the second chunk is the variable identifier
 //the third chunk is the  = symbol
-//the fourth chunk is the variable value
+//the fourth chunk is the variable value. This value can be a function
 //Declaration must follow <type> <identifier> = <value>.
 //
 //a variable identifier initiates works as an alias to the assign opcode
 //assign cannot be called directly
 //the second chunk must be an = symbol
-//the third chunk must be a value that can be turned into the variable type that is being assigned to
+//the third chunk must be a value (function) that can be turned into the variable type that is being assigned to
 //
 //
 //A valid function will have an odd number of chunks

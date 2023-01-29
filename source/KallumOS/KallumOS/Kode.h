@@ -49,6 +49,7 @@ private:
 	bool ValidFunction(std::vector<std::string> chunks, int startIndex);
 	std::string HandleFunction(std::vector<std::string> chunks, int startIndex);
 
+	int Add(int a, int b) { return a + b; }
 
 	int fontSize;
 	std::string text;
