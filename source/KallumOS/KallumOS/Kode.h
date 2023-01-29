@@ -3,6 +3,14 @@
 
 #include <vector>
 
+struct Variable {
+	std::string identifier;
+};
+
+struct Integer : public Variable {
+	int value;
+};
+
 class Kode : public Process {
 
 public:
@@ -39,6 +47,7 @@ private:
 
 	int cursor;
 
+	std::vector<Variable*> variables;
 
 };
 

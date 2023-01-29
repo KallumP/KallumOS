@@ -4,12 +4,11 @@
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
-	text = "Hello world!;Hello second line!:);";
+	text = "out Hello world!;out Hello second line!:);";
 
 	consoleHeight = 100;
 	console.push_back("Press F5 to compile your text");
 }
-
 
 void Kode::Draw(Point offset) {
 
@@ -22,7 +21,6 @@ void Kode::Draw(Point offset) {
 		DrawConsole(offset);
 	}
 }
-
 void Kode::DrawTextInput(Point offset) {
 
 	int padding = 10;
@@ -85,7 +83,6 @@ void Kode::DrawConsole(Point offset) {
 
 		DrawText(text.c_str(), padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(i), fontSize, WHITE);
 	}
-
 }
 
 
@@ -157,7 +154,6 @@ std::vector<std::string> Kode::Split(std::string toSplit, std::string delimiter)
 void Kode::Run() {
 
 	console.clear();
-	//console.push_back(text);
 
 	//splits the text into statements (defined by ';')
 	std::vector<std::string> statements = Split(text, ";");
@@ -167,34 +163,82 @@ void Kode::Run() {
 
 		console.push_back("");
 
+		//checks if this was an empty statement
+		if (statements[i].size() == 0) {
+			console[i] = ("Empty statement");
+			continue;
+		}
+
 		//splits the statement into the different chunks (defined by ' ')
 		std::vector<std::string> chunks = Split(statements[i], " ");
 
-		//checks if this wasn't an empty statement
-		if (statements[i].size() != 0) {
+		//gets what the first chunk was
+		std::string foundOpcode = CheckOpcode(chunks);
 
-			//gets what the first chunk was
-			std::string foundOpcode = CheckOpcode(chunks);
+		//unknown opcode
+		if (foundOpcode == "error") {
+			console[i] = ("Unrecognized opcode");
+			continue;
+		}
 
-			//if there was an opcode found
-			if (foundOpcode != "error" && foundOpcode != "empty") {
+		//empty opcode
+		if (foundOpcode == "empty") {
+			console[i] = ("Empty opcode (Maybe you have a space at the start?)");
+			continue;
+		}
 
-				//loops through all the operands
-				for (int j = 1; j < chunks.size(); j++) {
+		//out command
+		if (foundOpcode == "out") {
 
-					if (foundOpcode == "out") {
+			//loops through all the chunks
+			for (int j = 1; j < chunks.size(); j++) {
 
-						console[i] += chunks[j] + " ";
-					}
-				}
-			} else if ( foundOpcode == "error") {
-				console[i] = ("Unrecognized opcode");
-			} else if (foundOpcode == "empty") {
-				console[i] = ("Empty opcode (Maybe you have a space at the start)");
+				console[i] += chunks[j] + " ";
+				continue;
+			}
+			continue;
+		}
+
+		//int command
+		if (foundOpcode == "int") {
+
+			//not enough operands
+			if (chunks.size() != 3) {
+
+				console[i] = ("Need to have two operands for an int");
+				continue;
 			}
 
-		} else {
-			console[i] = ("Empty statement");
+			//identifier operand is empty
+			if (chunks[1] == "") {
+
+				console[i] = ("Cannot have empty variable identifier");
+				continue;
+			}
+
+			//tries to convert the value operand into an int
+			bool cannotConvert = false;
+			int value;
+			try {
+				value = std::stoi(chunks[2]);
+			} catch (const std::invalid_argument& e) {
+				cannotConvert = true;
+			}
+
+			//if the value operand was not a number
+			if (cannotConvert) {
+
+				console[i] = ("Value must be a number");
+				continue;
+			}
+
+
+			Integer* inter = new Integer();
+			inter->identifier = chunks[1];
+			inter->value = value;
+			variables.push_back(inter);
+			console[i] = ("Integer: " + inter->identifier + " with value: " + std::to_string( inter->value) + " created");
+			continue;
 		}
 	}
 }
@@ -203,6 +247,7 @@ std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
 
 	std::vector<std::string> supportedOpCodes;
 	supportedOpCodes.push_back("out");
+	supportedOpCodes.push_back("int");
 
 	auto it = std::find(supportedOpCodes.begin(), supportedOpCodes.end(), chunks[0]);
 	if (it != supportedOpCodes.end())
