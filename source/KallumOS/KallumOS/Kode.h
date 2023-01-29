@@ -46,6 +46,9 @@ private:
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);
 	bool Intable(std::string toCheck);
+	bool ValidFunction(std::vector<std::string> chunks, int startIndex);
+	std::string HandleFunction(std::vector<std::string> chunks, int startIndex);
+
 
 	int fontSize;
 	std::string text;

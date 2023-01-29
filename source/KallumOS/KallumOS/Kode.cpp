@@ -199,17 +199,21 @@ void Kode::Run() {
 		//out command
 		if (foundOpcode == "out") {
 
-			//checks if there was only one operand chunk
-			if (chunks.size() == 2) {
+			//there is no chunks after the opcode
+			if (chunks.size() < 2) {
+				if (debug)
+					AddToConsoleOutput(i, "Nothing to output", RED);
+				continue;
+			}
 
-				//tries to find a variable with this value
-				Variable* potentialVariable = GetVariable(chunks[1]);
+			//checks if the operand is a function
+			if (ValidFunction(chunks, 1)) {
 
-				//if a variable was found
-				if (potentialVariable != nullptr) {
-					AddToConsoleOutput(i, potentialVariable->value, WHITE);
-					continue;
-				}
+				//gets the result of the function
+				std::string functionResult = HandleFunction(chunks, 2);
+
+				AddToConsoleOutput(i, functionResult, WHITE);
+				continue;
 			}
 
 			//loops through all the chunks and gets the whole output
@@ -225,18 +229,26 @@ void Kode::Run() {
 		if (foundOpcode == "int") {
 
 			//not enough chunks
-			if (chunks.size() != 3) {
+			if (chunks.size() != 4) {
 				if (debug)
-					AddToConsoleOutput(i, "Need to have two operands for an int", RED);
+					AddToConsoleOutput(i, "Need to have three operands for an int", RED);
 				continue;
 			}
 
 			//identifier is empty
 			if (chunks[1] == "") {
 				if (debug)
-					AddToConsoleOutput(i, "Cannot have empty variable identifier", RED);
+					AddToConsoleOutput(i, "Cannot have empty variable identifier in declaration", RED);
 				continue;
 			}
+
+			//identifier is empty
+			if (chunks[2] != "=") {
+				if (debug)
+					AddToConsoleOutput(i, "Missing the = symbol in declaration", RED);
+				continue;
+			}
+
 
 			//variable already existed
 			if (VariableExists(chunks[1])) {
@@ -245,7 +257,7 @@ void Kode::Run() {
 			}
 
 			//if the value was not a number
-			if (!Intable(chunks[2])) {
+			if (!Intable(chunks[3])) {
 				if (debug)
 					AddToConsoleOutput(i, "Value must be a number", RED);
 				continue;
@@ -254,7 +266,7 @@ void Kode::Run() {
 			//declares and assigns values to the variable
 			Variable* inter = new Variable();
 			inter->identifier = chunks[1];
-			inter->value = chunks[2];
+			inter->value = chunks[3];
 			inter->type = "integer";
 			variables.push_back(inter);
 
@@ -304,6 +316,7 @@ void Kode::Run() {
 	}
 }
 
+//returns what opcode or alias was called
 std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
 
 	std::vector<std::string> supportedOpCodes;
@@ -373,6 +386,45 @@ bool Kode::Intable(std::string toCheck) {
 	return intable;
 }
 
+//returns if the chunks from the startIndex onwards make a valid function
+bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
+
+	//checks if the number of chunks left are even
+	if (chunks.size() - startIndex % 2 == 0)
+		return false;
+
+	//checks if the first chunk is not intable or a variable
+	if (!(Intable(chunks[startIndex]) || VariableExists(chunks[startIndex])))
+		return false;
+
+	//list of supported symbols
+	std::vector<std::string> supportedSymbols;
+	supportedSymbols.push_back("+");
+
+	//loops through two chunks at a time until the end
+	for (int i = startIndex + 1; i < chunks.size(); i += 2) {
+
+		//checks if this wasn't supported symbol
+		auto it = std::find(supportedSymbols.begin(), supportedSymbols.end(), chunks[i]);
+		if (it == supportedSymbols.end())
+			return false;
+
+		if (!(Intable(chunks[i + 1]) || VariableExists(chunks[i + 1])))
+			return false;
+	}
+	return true;
+}
+
+std::string Kode::HandleFunction(std::vector<std::string> chunks, int startIndex) {
+
+	//tries to find a variable with this value
+	Variable* potentialVariable = GetVariable(chunks[1]);
+
+	//if a variable was found
+	if (potentialVariable != nullptr) {
+		return potentialVariable->value;
+	}
+}
 
 
 //instructions
@@ -394,12 +446,18 @@ bool Kode::Intable(std::string toCheck) {
 // 
 //the "int" opcode will declare and assign a new integer variable
 //the second chunk is the variable identifier
-//the third chunk is the variable value
-//
+//the third chunk is the  = symbol
+//the fourth chunk is the variable value
+//Declaration must follow <type> <identifier> = <value>.
 //
 //a variable identifier initiates works as an alias to the assign opcode
 //assign cannot be called directly
 //the second chunk must be an = symbol
 //the third chunk must be a value that can be turned into the variable type that is being assigned to
-
+//
+//
+//A valid function will have an odd number of chunks
+//A valid function will start with either a number or a variable name, 
+// and then follow with a supported symbol like (+, -. /, *) + a number or variable name
+//It will continue the previous step until the end of the list.
 
