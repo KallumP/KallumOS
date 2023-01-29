@@ -4,8 +4,10 @@
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
-	text = "";
+	text = "Hello World!";
 
+	consoleHeight = 100;
+	console.push_back("Press F5 to compile your text");
 }
 
 
@@ -16,30 +18,48 @@ void Kode::Draw(Point offset) {
 		DrawBoxBar(offset, true);
 		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
 
-		int padding = 10;
-
-		//gets properties about the lines to draw to the window
-		int textLength = text.size();
-		int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
-		int linesToDraw = std::ceil(textLength / (float)charsPerLine);
-
-		//if there wasn't enough characters to fill a line
-		if (text.size() < charsPerLine) {
-			DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), fontSize, BLACK);
-
-		} else {
-
-			for (int i = 0; i < linesToDraw; i++) {
-
-				std::string line;
-				line = text.substr(i * charsPerLine, charsPerLine);
-
-				DrawText(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize) * 3) + offset.GetY(), fontSize, BLACK);
-			}
-		}
+		DrawTextInput(offset);
+		DrawConsole(offset);
 	}
 }
 
+void Kode::DrawTextInput(Point offset) {
+
+	int padding = 10;
+
+	//gets properties about the lines to draw to the window
+	int textLength = text.size();
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
+	int linesToDraw = std::ceil(textLength / (float)charsPerLine);
+
+	//if there wasn't enough characters to fill a line
+	if (text.size() < charsPerLine) {
+		DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), fontSize, BLACK);
+
+	} else {
+
+		for (int i = 0; i < linesToDraw; i++) {
+
+			std::string line;
+			line = text.substr(i * charsPerLine, charsPerLine);
+
+			DrawText(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize) * 3) + offset.GetY(), fontSize, BLACK);
+		}
+	}
+}
+void Kode::DrawConsole(Point offset) {
+
+	int padding = 10;
+
+	offset.SetY(offset.GetY() + size.GetY() - consoleHeight);
+	DrawRectangle(offset.GetX(), offset.GetY(), size.GetX(), consoleHeight, BLACK);
+
+	for (int i = 0; i < console.size(); i++) {
+
+		DrawText(console[i].c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize) * 3) + offset.GetY(), fontSize, WHITE);
+	}
+
+}
 
 
 void Kode::OnKeyPress(KeyPress* e) {
@@ -52,6 +72,9 @@ void Kode::OnKeyPress(KeyPress* e) {
 		return;
 	} else if (e->GetKeyCode() == KEY_RIGHT) {
 		//MoveCursor(1);
+		return;
+	} else if (e->GetKeyCode() == KEY_F5) {
+		Run();
 		return;
 	}
 
@@ -84,10 +107,15 @@ void Kode::DeleteChar() {
 
 		text.pop_back();
 
-		std::cout << "Pressed: Backspace" << std::endl;
+		//std::cout << "Pressed: Backspace" << std::endl;
 
 	} else {
 
-		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
+		//std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
 	}
+}
+
+void Kode::Run() {
+	console.clear();
+	console.push_back(text);
 }
