@@ -43,6 +43,9 @@ private:
 	void Run();
 	std::string CheckOpcode(std::vector<std::string> chunks);
 	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
+	bool VariableExists(std::string toCheck);
+	Variable* GetVariable(std::string toGet);
+	bool Intable(std::string toCheck);
 
 	int fontSize;
 	std::string text;

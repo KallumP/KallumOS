@@ -5,7 +5,7 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
 	//text = "out Hello world!;out Hello second line!:);";
-	text = "out Hello world!;out Hello second line!:);int test 10;test = 4";
+	text = "out x";
 
 	consoleHeight = 100;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
@@ -161,6 +161,7 @@ std::vector<std::string> Kode::Split(std::string toSplit, std::string delimiter)
 void Kode::Run() {
 
 	console.clear();
+	variables.clear();
 
 	//splits the text into statements (defined by ';')
 	std::vector<std::string> statements = Split(text, ";");
@@ -198,6 +199,19 @@ void Kode::Run() {
 		//out command
 		if (foundOpcode == "out") {
 
+			//checks if there was only one operand chunk
+			if (chunks.size() == 2) {
+
+				//tries to find a variable with this value
+				Variable* potentialVariable = GetVariable(chunks[1]);
+
+				//if a variable was found
+				if (potentialVariable != nullptr) {
+					AddToConsoleOutput(i, potentialVariable->value, WHITE);
+					continue;
+				}
+			}
+
 			//loops through all the chunks and gets the whole output
 			std::string operand = "";
 			for (int j = 1; j < chunks.size(); j++)
@@ -224,26 +238,23 @@ void Kode::Run() {
 				continue;
 			}
 
-			//tries to convert the value into an int
-			bool cannotConvert = false;
-			int value;
-			try {
-				value = std::stoi(chunks[2]);
-			} catch (const std::invalid_argument& e) {
-				cannotConvert = true;
+			//variable already existed
+			if (VariableExists(chunks[1])) {
+				AddToConsoleOutput(i, "Variable: " + chunks[1] + " already exists", RED);
+				continue;
 			}
 
 			//if the value was not a number
-			if (cannotConvert) {
+			if (!Intable(chunks[2])) {
 				if (debug)
 					AddToConsoleOutput(i, "Value must be a number", RED);
 				continue;
 			}
 
-
+			//declares and assigns values to the variable
 			Variable* inter = new Variable();
 			inter->identifier = chunks[1];
-			inter->value = std::to_string(value);
+			inter->value = chunks[2];
 			inter->type = "integer";
 			variables.push_back(inter);
 
@@ -252,8 +263,8 @@ void Kode::Run() {
 			continue;
 		}
 
-		//int command
-		if (foundOpcode == "ass") {
+		//assign command
+		if (foundOpcode == "assign") {
 
 			//not enough chunks
 			if (chunks.size() < 3) {
@@ -269,35 +280,21 @@ void Kode::Run() {
 				continue;
 			}
 
-			//gets the variable being assigned
-			int variableIndex;
-			for (int i = 0; i < variables.size(); i++)
-				if (chunks[0] == variables[i]->identifier) {
-					variableIndex = i;
-					continue;
-				}
-			Variable* toAssign = variables[variableIndex];
+			//gets the variable to assign to
+			Variable* toAssign = GetVariable(chunks[0]);
 
+			//assigning to an integer
 			if (toAssign->type == "integer") {
 
-
-				//tries to convert the value into an int
-				bool cannotConvert = false;
-				int value;
-				try {
-					value = std::stoi(chunks[2]);
-				} catch (const std::invalid_argument& e) {
-					cannotConvert = true;
-				}
-
 				//if the value was not a number
-				if (cannotConvert) {
+				if (!Intable(chunks[2])) {
 					if (debug)
 						AddToConsoleOutput(i, "Value must be a number", RED);
 					continue;
 				}
 
-				toAssign->value = std::to_string(value);
+				//assigns the value
+				toAssign->value = chunks[2];
 
 				if (debug)
 					AddToConsoleOutput(i, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
@@ -319,9 +316,8 @@ std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
 		return chunks[0];
 
 	//returns if a variable identifier was found
-	for (int i = 0; i < variables.size(); i++)
-		if (chunks[0] == variables[i]->identifier)
-			return "ass";
+	if (VariableExists(chunks[0]))
+		return "assign";
 
 	if (chunks[0] == "")
 		return "empty";
@@ -329,6 +325,7 @@ std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
 	return "error";
 }
 
+//adds a piece of text to the console lineup
 void Kode::AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor) {
 
 	ConsoleText ct;
@@ -338,3 +335,71 @@ void Kode::AddToConsoleOutput(int statementNumber, std::string toAdd, Color text
 
 	console.push_back(ct);
 }
+
+//returns if a variable exists
+bool Kode::VariableExists(std::string toCheck) {
+
+	//returns if a variable identifier was found
+	for (int i = 0; i < variables.size(); i++)
+		if (toCheck == variables[i]->identifier)
+			return true;
+	return false;
+}
+
+//returns the pointer to the passed variable identifier
+Variable* Kode::GetVariable(std::string toGet) {
+
+	Variable* toAssign = nullptr;
+
+	//gets the variable being assigned
+	for (int i = 0; i < variables.size(); i++)
+		if (toGet == variables[i]->identifier)
+			toAssign = variables[i];
+
+	return toAssign;
+}
+
+//returns if a string can be tuend into an int
+bool Kode::Intable(std::string toCheck) {
+
+	//tries to convert the value into an int
+	bool intable = true;
+	try {
+		std::stoi(toCheck);
+	} catch (const std::invalid_argument& e) {
+		intable = false;
+	}
+
+	return intable;
+}
+
+
+
+//instructions
+//pressing f5 will compile the kode
+//pressing f3 will make most functionality output to the console in red
+// 
+//kode consists of statements
+// a statement is ended by a ;
+//each statement consists of chunks
+// chunk are to be separated by a space
+//the first chunk is the opcode (or variable name)
+//this is what states what will happen next
+// 
+// 
+//the "out" opcode will take whatever is after it and output it to the console
+// if the following chunks are just a variable identifier, if that identifier exists, output it's value
+// else output all chunks as string literal
+// 
+// 
+//the "int" opcode will declare and assign a new integer variable
+//the second chunk is the variable identifier
+//the third chunk is the variable value
+//
+//
+//a variable identifier initiates works as an alias to the assign opcode
+//assign cannot be called directly
+//the second chunk must be an = symbol
+//the third chunk must be a value that can be turned into the variable type that is being assigned to
+
+
