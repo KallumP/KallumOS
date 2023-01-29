@@ -4,10 +4,14 @@
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
-	text = "out Hello world!;out Hello second line!:);";
+	//text = "out Hello world!;out Hello second line!:);";
+	text = "out Hello world!;out Hello second line!:);int test 10;test = 4";
 
 	consoleHeight = 100;
-	console.push_back("Press F5 to compile your text");
+	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
+	AddToConsoleOutput(1, "Press F3 to off debug outputs", BLUE);
+
+	debug = true;
 }
 
 void Kode::Draw(Point offset) {
@@ -78,10 +82,10 @@ void Kode::DrawConsole(Point offset) {
 
 		//gets the string to output
 		std::string text = "";
-		text += std::to_string(i) + ". ";
-		text += console[i];
+		text += std::to_string(console[i].linkedToStatement) + ". ";
+		text += console[i].text;
 
-		DrawText(text.c_str(), padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(i), fontSize, WHITE);
+		DrawText(text.c_str(), padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(i), fontSize, console[i].textColor);
 	}
 }
 
@@ -99,6 +103,9 @@ void Kode::OnKeyPress(KeyPress* e) {
 		return;
 	} else if (e->GetKeyCode() == KEY_F5) {
 		Run();
+		return;
+	} else if (e->GetKeyCode() == KEY_F3) {
+		debug = !debug;
 		return;
 	}
 
@@ -161,11 +168,10 @@ void Kode::Run() {
 	//loops through each statement
 	for (int i = 0; i < statements.size(); i++) {
 
-		console.push_back("");
-
 		//checks if this was an empty statement
 		if (statements[i].size() == 0) {
-			console[i] = ("Empty statement");
+			if (debug)
+				AddToConsoleOutput(i, "Empty statement", RED);
 			continue;
 		}
 
@@ -177,46 +183,48 @@ void Kode::Run() {
 
 		//unknown opcode
 		if (foundOpcode == "error") {
-			console[i] = ("Unrecognized opcode");
+			if (debug)
+				AddToConsoleOutput(i, "Unrecognized opcode", RED);
 			continue;
 		}
 
 		//empty opcode
 		if (foundOpcode == "empty") {
-			console[i] = ("Empty opcode (Maybe you have a space at the start?)");
+			if (debug)
+				AddToConsoleOutput(i, "Empty opcode (Maybe you have a space at the start?)", RED);
 			continue;
 		}
 
 		//out command
 		if (foundOpcode == "out") {
 
-			//loops through all the chunks
-			for (int j = 1; j < chunks.size(); j++) {
+			//loops through all the chunks and gets the whole output
+			std::string operand = "";
+			for (int j = 1; j < chunks.size(); j++)
+				operand += chunks[j] + " ";
 
-				console[i] += chunks[j] + " ";
-				continue;
-			}
+			AddToConsoleOutput(i, operand, WHITE);
 			continue;
 		}
 
 		//int command
 		if (foundOpcode == "int") {
 
-			//not enough operands
+			//not enough chunks
 			if (chunks.size() != 3) {
-
-				console[i] = ("Need to have two operands for an int");
+				if (debug)
+					AddToConsoleOutput(i, "Need to have two operands for an int", RED);
 				continue;
 			}
 
-			//identifier operand is empty
+			//identifier is empty
 			if (chunks[1] == "") {
-
-				console[i] = ("Cannot have empty variable identifier");
+				if (debug)
+					AddToConsoleOutput(i, "Cannot have empty variable identifier", RED);
 				continue;
 			}
 
-			//tries to convert the value operand into an int
+			//tries to convert the value into an int
 			bool cannotConvert = false;
 			int value;
 			try {
@@ -225,20 +233,76 @@ void Kode::Run() {
 				cannotConvert = true;
 			}
 
-			//if the value operand was not a number
+			//if the value was not a number
 			if (cannotConvert) {
-
-				console[i] = ("Value must be a number");
+				if (debug)
+					AddToConsoleOutput(i, "Value must be a number", RED);
 				continue;
 			}
 
 
-			Integer* inter = new Integer();
+			Variable* inter = new Variable();
 			inter->identifier = chunks[1];
-			inter->value = value;
+			inter->value = std::to_string(value);
+			inter->type = "integer";
 			variables.push_back(inter);
-			console[i] = ("Integer: " + inter->identifier + " with value: " + std::to_string( inter->value) + " created");
+
+			if (debug)
+				AddToConsoleOutput(i, "Integer: " + inter->identifier + " with value: " + inter->value + " created", RED);
 			continue;
+		}
+
+		//int command
+		if (foundOpcode == "ass") {
+
+			//not enough chunks
+			if (chunks.size() < 3) {
+				if (debug)
+					AddToConsoleOutput(i, "Need to have two operands for an int", RED);
+				continue;
+			}
+
+			//if the operand wasn't an eqauls
+			if (chunks[1] != "=") {
+				if (debug)
+					AddToConsoleOutput(i, "Error trying to assign value without an '='", RED);
+				continue;
+			}
+
+			//gets the variable being assigned
+			int variableIndex;
+			for (int i = 0; i < variables.size(); i++)
+				if (chunks[0] == variables[i]->identifier) {
+					variableIndex = i;
+					continue;
+				}
+			Variable* toAssign = variables[variableIndex];
+
+			if (toAssign->type == "integer") {
+
+
+				//tries to convert the value into an int
+				bool cannotConvert = false;
+				int value;
+				try {
+					value = std::stoi(chunks[2]);
+				} catch (const std::invalid_argument& e) {
+					cannotConvert = true;
+				}
+
+				//if the value was not a number
+				if (cannotConvert) {
+					if (debug)
+						AddToConsoleOutput(i, "Value must be a number", RED);
+					continue;
+				}
+
+				toAssign->value = std::to_string(value);
+
+				if (debug)
+					AddToConsoleOutput(i, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
+				continue;
+			}
 		}
 	}
 }
@@ -249,12 +313,28 @@ std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
 	supportedOpCodes.push_back("out");
 	supportedOpCodes.push_back("int");
 
+	//returns if a valid opcode was found
 	auto it = std::find(supportedOpCodes.begin(), supportedOpCodes.end(), chunks[0]);
 	if (it != supportedOpCodes.end())
 		return chunks[0];
-	else if (chunks[0] == "")
+
+	//returns if a variable identifier was found
+	for (int i = 0; i < variables.size(); i++)
+		if (chunks[0] == variables[i]->identifier)
+			return "ass";
+
+	if (chunks[0] == "")
 		return "empty";
-	else
-		return "error";
+
+	return "error";
 }
 
+void Kode::AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor) {
+
+	ConsoleText ct;
+	ct.linkedToStatement = statementNumber;
+	ct.text = toAdd;
+	ct.textColor = textColor;
+
+	console.push_back(ct);
+}

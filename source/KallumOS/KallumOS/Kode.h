@@ -3,12 +3,18 @@
 
 #include <vector>
 
+
 struct Variable {
 	std::string identifier;
+	std::string value;
+	std::string type;
 };
 
-struct Integer : public Variable {
-	int value;
+struct ConsoleText {
+
+	std::string text;
+	Color textColor;
+	int linkedToStatement;
 };
 
 class Kode : public Process {
@@ -23,9 +29,7 @@ public:
 
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e, int taskbarHeight);
-	void Tick(float elapsedTime) {
-
-	}
+	void Tick(float elapsedTime) {}
 
 private:
 
@@ -38,14 +42,16 @@ private:
 
 	void Run();
 	std::string CheckOpcode(std::vector<std::string> chunks);
+	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
 
 	int fontSize;
 	std::string text;
-
-	std::vector<std::string> console;
-	int consoleHeight;
-
 	int cursor;
+
+	std::vector<ConsoleText> console;
+	int consoleHeight;
+	bool debug;
+
 
 	std::vector<Variable*> variables;
 
