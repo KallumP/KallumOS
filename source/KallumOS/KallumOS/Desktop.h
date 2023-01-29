@@ -24,9 +24,6 @@ public:
 
 
 private:
-
-	void Click() {};
-	void MouseMove();
 	
 	void TaskBarClickHandle();
 	void LaunchAppLauncher();

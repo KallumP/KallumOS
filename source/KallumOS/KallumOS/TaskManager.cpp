@@ -15,7 +15,6 @@ void TaskManager::Draw(Point offset) {
 
 	if (display) {
 
-		
 		DrawBoxBar(offset, true);
 		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
 
@@ -26,7 +25,6 @@ void TaskManager::Draw(Point offset) {
 		for (int i = 0; i < processes->size(); i++) {
 
 			offset.Set(new Point(offset.GetX(), offset.GetY() + processPadding));
-
 
 			//outputs a rectangle for the current process
 			DrawRectangleLines(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, GREEN);
@@ -52,11 +50,6 @@ void TaskManager::OnKeyPress(KeyPress* e) {
 
 	if (display) {
 
-		//if (e->GetKeyContent() == "x")
-
-		//	if (!processes->empty())
-
-		//		EndTask(selected);
 	}
 }
 

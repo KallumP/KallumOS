@@ -52,7 +52,6 @@ private:
 	void ResetBoard();
 	void SpawnPiece();
 
-
 	void SetBlock(Point loc, Block* piece);
 
 
@@ -64,7 +63,11 @@ private:
 	std::array<FallingBlock*, 4> fallingPiece;
 	std::array<FallingBlock*, 4> fallingPieceShadow;
 	std::array<FallingBlock*, 4> hold;
-	
+
+	float time;
+	int toClear;
+	int linesLeft;
+	bool won;
 	bool lost;
 
 	double timeSinceLastFrame;
@@ -79,10 +82,10 @@ private:
 
 	int holdAvailable;
 
+
 	void SwapWithHold();
-	bool HoldExists() {
-		return	hold[0] != nullptr;
-	}
+	bool HoldExists() { return hold[0] != nullptr; }
+	bool GameEnded() { return !lost && !won; }
 	void PushFallingToStart(std::array<FallingBlock*, 4> toPush);
 
 	Point GetTopCorner(std::array<FallingBlock*, 4> toCheck);
@@ -119,7 +122,9 @@ private:
 	void CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom);
 	void CopyFallingWithColor(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom);
 
-
+	void UpdateLinesLeft(int linesCleared);
+	bool CheckWin();
+	bool CheckLoss();
 };
 
 

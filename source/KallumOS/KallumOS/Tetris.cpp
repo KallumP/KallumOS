@@ -1,8 +1,12 @@
 #include "Tetris.h"
+
 #include <array>
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <iomanip>
+#include <sstream>
+
 
 Tetris::Tetris(Point _position, Point _size) : Process("Tetris", _position, _size) {
 
@@ -11,7 +15,10 @@ Tetris::Tetris(Point _position, Point _size) : Process("Tetris", _position, _siz
 
 void Tetris::Setup() {
 
+	won = false;
 	lost = false;
+	toClear = 20;
+	linesLeft = toClear;
 	std::srand(std::time(nullptr));
 	timeSinceLastFrame = 0;
 	targetFrameRate = 10;
@@ -27,6 +34,8 @@ void Tetris::Setup() {
 
 	ResetBoard();
 	SpawnPiece();
+
+	time = 0;
 }
 
 
@@ -40,15 +49,27 @@ void Tetris::Draw(Point offset) {
 		offset.SetX(offset.GetX() + 5);
 		offset.SetY(offset.GetY() + 5);
 
-		if (!lost) {
+		std::stringstream stream;
+		stream << std::fixed << std::setprecision(2) << time;
+		std::string timeString = stream.str();
+
+		if (GameEnded()) {
 
 			DrawPieces(offset);
 			DrawBoardBoarders(offset);
 			DrawHold(offset);
 
-		} else {
-			DrawText("You lose. Press R to restart", offset.GetX(), offset.GetY(), 20, RED);
-		}
+			offset.SetY(offset.GetY() + 4 * pieceSize + 20);
+			offset.SetX(offset.GetX() + boardWidth * pieceSize + 20);
+
+			DrawText(("Time: " + timeString + "s\nLines: " + std::to_string(linesLeft)).c_str(), offset.GetX(), offset.GetY(), 20, BLACK);
+
+		} else if (lost)
+			DrawText(("You survived for: " + timeString + " seconds.\nYou had: " + std::to_string(linesLeft) + " lines left to clear\nPress R to restart").c_str(), offset.GetX(), offset.GetY(), 20, RED);
+
+		else if (won)
+			DrawText(("You cleared " + std::to_string(toClear) + " in: " + timeString + " seconds.\nPress R to restart").c_str(), offset.GetX(), offset.GetY(), 20, GREEN);
+
 	}
 }
 void Tetris::DrawBoardBoarders(Point offset) {
@@ -128,7 +149,7 @@ void Tetris::OnKeyPress(KeyPress* e) {
 
 	if (display) {
 
-		if (!lost) {
+		if (GameEnded()) {
 
 			if (e->GetKeyCode() == KEY_J)
 				SlideSpawned(true);
@@ -167,8 +188,10 @@ void Tetris::OnMousePress(MousePress* e, int taskbarHeight) {
 
 void Tetris::Tick(float elapsedTime) {
 
-	if (!lost) {
+	if (GameEnded()) {
 
+		//stores how much time has been since the start
+		time += elapsedTime;
 
 		//gets the time in between ticks
 		timeSinceLastFrame += elapsedTime;
@@ -191,6 +214,7 @@ void Tetris::Tick(float elapsedTime) {
 	}
 }
 
+//sets all the board spots to null
 void Tetris::ResetBoard() {
 
 	for (int i = 0; i < boardWidth; i++)
@@ -202,10 +226,10 @@ void Tetris::ResetBoard() {
 	fallingPieceShadow = FreshFalling();
 }
 
+//sets an individual board spot to a block
 void Tetris::SetBlock(Point loc, Block* piece) {
 
 	board[loc.GetX()][loc.GetY()] = piece;
-
 }
 
 void Tetris::SpawnPiece() {
@@ -231,9 +255,7 @@ void Tetris::SpawnPiece() {
 	else if (randomNumber == 7)
 		SpawnReverseSBlock(spawnLocation);
 
-	if (CheckPieceCollision(fallingPiece)) {
-		lost = true;
-	}
+	lost = CheckLoss();
 }
 void Tetris::SpawnTBlock(Point spawnLocation) {
 	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0), MAGENTA);
@@ -504,6 +526,8 @@ std::vector<int> Tetris::CheckClearLines() {
 //clears a list of lines
 void Tetris::ClearLines(std::vector<int> linesToClear) {
 
+	UpdateLinesLeft(linesToClear.size());
+
 	for (int i = 0; i < linesToClear.size(); i++) {
 
 		int line = linesToClear[i];
@@ -513,6 +537,8 @@ void Tetris::ClearLines(std::vector<int> linesToClear) {
 		for (int lineToMove = line - 1; lineToMove >= 0; lineToMove--)
 			MoveLine(lineToMove);
 	}
+
+	won = CheckWin();
 }
 
 //clears a line of all its blocks
@@ -542,6 +568,7 @@ std::array<FallingBlock*, 4> Tetris::FreshFalling() {
 	return tempFalling;
 }
 
+//creates an array of null pointers
 std::array<FallingBlock*, 4> Tetris::NullFalling() {
 
 	std::array<FallingBlock*, 4> tempFalling;
@@ -612,4 +639,17 @@ void Tetris::PushFallingToStart(std::array<FallingBlock*, 4> toPush) {
 		toPush[i]->location.SetY(toPush[i]->location.GetY() - corner.GetY());
 		toPush[i]->location.SetX(toPush[i]->location.GetX() - corner.GetX() + 4);
 	}
+}
+
+
+void Tetris::UpdateLinesLeft(int linesCleared) {
+	linesLeft -= linesCleared;
+}
+
+bool Tetris::CheckWin() {
+	return linesLeft <= 0;
+}
+
+bool Tetris::CheckLoss() {
+	return CheckPieceCollision(fallingPiece);
 }

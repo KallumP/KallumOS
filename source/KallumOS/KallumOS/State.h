@@ -41,8 +41,8 @@ public:
 	virtual void Tick(float elapsedTime) = 0;
 	virtual void Draw() = 0;
 
-	virtual	void Click() = 0;
-	virtual void MouseMove() = 0;
+	virtual	void Click() {}
+	virtual void MouseMove() {}
 	virtual void OnKeyPress(KeyPress* e) = 0;
 	virtual void OnMousePress(MousePress* e) = 0;
 	virtual void OnMouseHold(MousePress* e) {}
