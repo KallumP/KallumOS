@@ -23,8 +23,10 @@ private:
 
 	void Input(std::string input);
 	void DeleteChar();
+	void MoveCursor(int toMove) { cursor += toMove; }
 
 	void Run();
+	std::vector<std::string> Split(std::string toSplit, std::string delimeter);
 
 	int fontSize;
 	std::string text;

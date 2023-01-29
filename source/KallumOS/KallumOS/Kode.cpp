@@ -4,7 +4,7 @@
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
-	text = "Hello World!";
+	text = "out Hello World!;out This is the next line";
 
 	consoleHeight = 100;
 	console.push_back("Press F5 to compile your text");
@@ -27,25 +27,47 @@ void Kode::DrawTextInput(Point offset) {
 
 	int padding = 10;
 
-	//gets properties about the lines to draw to the window
-	int textLength = text.size();
+	//how many of the biggest char can fit in the box
 	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
-	int linesToDraw = std::ceil(textLength / (float)charsPerLine);
 
-	//if there wasn't enough characters to fill a line
-	if (text.size() < charsPerLine) {
-		DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), fontSize, BLACK);
+	//gets each statement in a vector
+	std::vector<std::string> statements = Split(text, ";");
 
-	} else {
+	//loops through each statement
+	int lineCount = 0;
+	for (int i = 0; i < statements.size(); i++) {
 
-		for (int i = 0; i < linesToDraw; i++) {
+		//gets the string to output
+		std::string text = statements[i];
+		if (i != statements.size() - 1)
+			text += ";";
 
-			std::string line;
-			line = text.substr(i * charsPerLine, charsPerLine);
 
-			DrawText(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize) * 3) + offset.GetY(), fontSize, BLACK);
+		//if there wasn't enough characters to fill a line
+		if (text.size() < charsPerLine) {
+
+			DrawText(text.c_str(), padding + offset.GetX(), offset.GetY() + padding + (lineCount * MeasureText("X", defaultFontSize) * 3), fontSize, BLACK);
+			lineCount++;
+
+		} else {
+
+			//gets the number of lines that need to be drawn for this statemenet
+			int linesToDraw = std::ceil(text.size() / (float)charsPerLine);
+
+			//loops through each line
+			for (int i = 0; i < linesToDraw; i++) {
+
+				std::string line;
+				line = text.substr(i * charsPerLine, charsPerLine);
+
+				DrawText(line.c_str(), padding + offset.GetX(), offset.GetY() + padding + (lineCount * MeasureText("X", defaultFontSize) * 3), fontSize, BLACK);
+				lineCount++;
+			}
 		}
 	}
+
+
+
 }
 void Kode::DrawConsole(Point offset) {
 
@@ -68,10 +90,10 @@ void Kode::OnKeyPress(KeyPress* e) {
 		DeleteChar();
 		return;
 	} else if (e->GetKeyCode() == KEY_LEFT) {
-		//MoveCursor(-1);
+		MoveCursor(-1);
 		return;
 	} else if (e->GetKeyCode() == KEY_RIGHT) {
-		//MoveCursor(1);
+		MoveCursor(1);
 		return;
 	} else if (e->GetKeyCode() == KEY_F5) {
 		Run();
@@ -107,15 +129,56 @@ void Kode::DeleteChar() {
 
 		text.pop_back();
 
-		//std::cout << "Pressed: Backspace" << std::endl;
-
 	} else {
 
-		//std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
 	}
 }
 
 void Kode::Run() {
+
 	console.clear();
-	console.push_back(text);
+	//console.push_back(text);
+
+	//splits the text into statements (defined by ';')
+	std::vector<std::string> statements = Split(text, ";");
+
+	//loops through each statement
+	for (int i = 0; i < statements.size(); i++) {
+
+		console.push_back("");
+
+		//splits the statement into the different chunks (defined by ' ')
+		std::vector<std::string> chunks = Split(statements[i], " ");
+
+		std::string compileState = "opCodeSearching";
+		for (int j = 0; j < chunks.size(); j++) {
+
+			if (compileState == "opCodeSearching") {
+
+				if (chunks[j] == "out") {
+
+					compileState = "operandSearch";
+				}
+
+			} else if (compileState == "operandSearch") {
+
+				console[i] += chunks[j] + " ";
+			}
+		}
+	}
+}
+
+std::vector<std::string> Kode::Split(std::string toSplit, std::string delimiter) {
+
+
+	std::vector<std::string> toReturn;
+	size_t pos = 0;
+
+	while ((pos = toSplit.find(delimiter)) != std::string::npos) {
+		toReturn.push_back(toSplit.substr(0, pos));
+		toSplit.erase(0, pos + delimiter.length());
+	}
+	toReturn.push_back(toSplit);
+
+	return toReturn;
 }
