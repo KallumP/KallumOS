@@ -25,8 +25,11 @@ private:
 	void DeleteChar();
 	void MoveCursor(int toMove) { cursor += toMove; }
 
-	void Run();
 	std::vector<std::string> Split(std::string toSplit, std::string delimeter);
+	int GetNextLineY(int lineCount) { return (lineCount * MeasureText("X", defaultFontSize) * 4); }
+
+	void Run();
+	std::string CheckOpcode(std::vector<std::string> chunks);
 
 	int fontSize;
 	std::string text;
