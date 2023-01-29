@@ -26,6 +26,7 @@
     <ClCompile Include="Desktop.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KallumOS.cpp" />
+    <ClCompile Include="Kode.cpp" />
     <ClCompile Include="Login.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Process.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="KallumOS.h" />
     <ClInclude Include="InputPress.h" />
+    <ClInclude Include="Kode.h" />
     <ClInclude Include="Login.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Process.h" />

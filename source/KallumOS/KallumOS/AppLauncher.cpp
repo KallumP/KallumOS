@@ -82,6 +82,9 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 					} else if (processInfos[i].processName == "Tetris") {
 						Tetris* app = new Tetris(Point(525, 10), Point(455, 610));
 						LaunchApp(app);
+					} else if (processInfos[i].processName == "Kode") {
+						Kode* app = new Kode(Point(525, 10), Point(700, 500));
+						LaunchApp(app);
 					}
 				}
 			}
@@ -94,6 +97,10 @@ void AppLauncher::SetupProcessInfos() {
 	ProcessInfo manager;
 	manager.processName = "Task Manager";
 	processInfos.push_back(manager);
+
+	ProcessInfo kode;
+	kode.processName = "Kode";
+	processInfos.push_back(kode);
 
 	ProcessInfo word;
 	word.processName = "Word";
