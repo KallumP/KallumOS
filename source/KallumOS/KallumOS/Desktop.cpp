@@ -109,12 +109,6 @@ void Desktop::OnMouseRelease(MousePress* e) {
 	}
 }
 
-void Desktop::MouseMove() {
-
-
-
-}
-
 void Desktop::TaskBarClickHandle() {
 
 	//checks if an empty space was clicked on the task bar
