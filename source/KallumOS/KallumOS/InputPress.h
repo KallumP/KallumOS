@@ -10,7 +10,16 @@ public:
 	KeyPress(int _keyCode, std::string _keyContent) {
 		keyCode = _keyCode;
 		keyContent = _keyContent;
+		primaryContent = _keyContent;
+		secondKeyContent = _keyContent;
 	}
+	KeyPress(int _keyCode, std::string _keyContent, std::string _secondKeyContent) {
+		keyCode = _keyCode;
+		keyContent = _keyContent;
+		primaryContent = _keyContent;
+		secondKeyContent = _secondKeyContent;
+	}
+
 	int GetKeyCode() {
 		return keyCode;
 	}
@@ -19,9 +28,15 @@ public:
 		return keyContent;
 	}
 
+	void UsePrimary() { keyContent = primaryContent; }
+	void UseSecondary() { keyContent = secondKeyContent; }
+
 private:
 	int keyCode;
 	std::string keyContent;
+	std::string primaryContent;
+	std::string secondKeyContent;
+
 
 };
 
@@ -39,8 +54,6 @@ public:
 
 private:
 	int mouseButton;
-	//olc::HWButton state;
-
 	//mouse buttons are as follows
 	//left: 0, right: 1, middle: 2
 };
