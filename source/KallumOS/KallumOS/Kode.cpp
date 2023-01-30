@@ -3,6 +3,9 @@
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
+	SetupSupportedOpcodes();
+	SetupSupportedSymbols();
+
 	fontSize = 20;
 	//text = "out Hello world!;out Hello second line!:);";
 	text = "int x = 20;int y = 30;int z = x + y + 40;z = z + 20;out z";
@@ -156,6 +159,15 @@ std::vector<std::string> Kode::Split(std::string toSplit, std::string delimiter)
 	toReturn.push_back(toSplit);
 
 	return toReturn;
+}
+
+void Kode::SetupSupportedSymbols() {
+	supportedSymbols.push_back("+");
+	supportedSymbols.push_back("-");
+}
+void Kode::SetupSupportedOpcodes() {
+	supportedOpCodes.push_back("out");
+	supportedOpCodes.push_back("int");
 }
 
 void Kode::Run() {
@@ -324,10 +336,6 @@ void Kode::Run() {
 //returns what opcode or alias was called
 std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
 
-	std::vector<std::string> supportedOpCodes;
-	supportedOpCodes.push_back("out");
-	supportedOpCodes.push_back("int");
-
 	//returns if a valid opcode was found
 	auto it = std::find(supportedOpCodes.begin(), supportedOpCodes.end(), chunks[0]);
 	if (it != supportedOpCodes.end())
@@ -402,10 +410,6 @@ bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
 	if (!(Intable(chunks[startIndex]) || VariableExists(chunks[startIndex])))
 		return false;
 
-	//list of supported symbols
-	std::vector<std::string> supportedSymbols;
-	supportedSymbols.push_back("+");
-
 	//loops through two chunks at a time until the end
 	for (int i = startIndex + 1; i < chunks.size(); i += 2) {
 
@@ -430,10 +434,6 @@ std::string Kode::HandleFunction(std::vector<std::string> chunks, int startIndex
 	else
 		result = std::stoi(chunks[startIndex]);
 
-	//list of supported symbols
-	std::vector<std::string> supportedSymbols;
-	supportedSymbols.push_back("+");
-
 	//loops through two chunks at a time until the end
 	for (int i = startIndex + 1; i < chunks.size(); i += 2) {
 
@@ -448,6 +448,9 @@ std::string Kode::HandleFunction(std::vector<std::string> chunks, int startIndex
 		//handles the two values using the used operation
 		if (chunks[i] == "+") 
 			result = Add(result, toWorkWith);
+		else if (chunks[i] == "-")
+			result = Minus(result, toWorkWith);
+
 	}
 
 	return std::to_string(result);

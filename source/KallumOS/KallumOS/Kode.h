@@ -40,6 +40,9 @@ private:
 	std::vector<std::string> Split(std::string toSplit, std::string delimeter);
 	int GetNextLineY(int lineCount) { return (lineCount * MeasureText("X", defaultFontSize) * 4); }
 
+	void SetupSupportedSymbols();
+	void SetupSupportedOpcodes();
+
 	void Run();
 	std::string CheckOpcode(std::vector<std::string> chunks);
 	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
@@ -50,6 +53,7 @@ private:
 	std::string HandleFunction(std::vector<std::string> chunks, int startIndex);
 
 	int Add(int a, int b) { return a + b; }
+	int Minus(int a, int b) { return a - b; }
 
 	int fontSize;
 	std::string text;
@@ -61,6 +65,8 @@ private:
 
 
 	std::vector<Variable*> variables;
+	std::vector<std::string> supportedSymbols;
+	std::vector<std::string> supportedOpCodes;
 
 };
 
