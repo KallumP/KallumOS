@@ -48,25 +48,25 @@ void Input::GenerateKeyPressList() {
 	allKeyPressOptions.push_back(KeyPress(KEY_SPACE, " "));
 
 	//symbol inputs
-	allKeyPressOptions.push_back(KeyPress(KEY_APOSTROPHE, "'"));
-	allKeyPressOptions.push_back(KeyPress(KEY_COMMA, ","));
-	allKeyPressOptions.push_back(KeyPress(KEY_MINUS, "-"));
-	allKeyPressOptions.push_back(KeyPress(KEY_PERIOD, "."));
-	allKeyPressOptions.push_back(KeyPress(KEY_SLASH, "/"));
-	allKeyPressOptions.push_back(KeyPress(KEY_SEMICOLON, ";"));
+	allKeyPressOptions.push_back(KeyPress(KEY_APOSTROPHE, "'", "@"));
+	allKeyPressOptions.push_back(KeyPress(KEY_COMMA, ",", "<"));
+	allKeyPressOptions.push_back(KeyPress(KEY_MINUS, "-", "_"));
+	allKeyPressOptions.push_back(KeyPress(KEY_PERIOD, ".", ">"));
+	allKeyPressOptions.push_back(KeyPress(KEY_SLASH, "/", "?"));
+	allKeyPressOptions.push_back(KeyPress(KEY_SEMICOLON, ";", ":"));
 	allKeyPressOptions.push_back(KeyPress(KEY_EQUAL, "=", "+"));
 
 	//number inputs
-	allKeyPressOptions.push_back(KeyPress(KEY_ZERO, "0"));
-	allKeyPressOptions.push_back(KeyPress(KEY_ONE, "1"));
+	allKeyPressOptions.push_back(KeyPress(KEY_ONE, "1", "!"));
 	allKeyPressOptions.push_back(KeyPress(KEY_TWO, "2"));
-	allKeyPressOptions.push_back(KeyPress(KEY_THREE, "3"));
-	allKeyPressOptions.push_back(KeyPress(KEY_FOUR, "4"));
-	allKeyPressOptions.push_back(KeyPress(KEY_FIVE, "5"));
-	allKeyPressOptions.push_back(KeyPress(KEY_SIX, "6"));
-	allKeyPressOptions.push_back(KeyPress(KEY_SEVEN, "7"));
-	allKeyPressOptions.push_back(KeyPress(KEY_EIGHT, "8"));
-	allKeyPressOptions.push_back(KeyPress(KEY_NINE, "9"));
+	allKeyPressOptions.push_back(KeyPress(KEY_THREE, "3", "£"));
+	allKeyPressOptions.push_back(KeyPress(KEY_FOUR, "4", "$"));
+	allKeyPressOptions.push_back(KeyPress(KEY_FIVE, "5", "%"));
+	allKeyPressOptions.push_back(KeyPress(KEY_SIX, "6", "^"));
+	allKeyPressOptions.push_back(KeyPress(KEY_SEVEN, "7", "&"));
+	allKeyPressOptions.push_back(KeyPress(KEY_EIGHT, "8", "*"));
+	allKeyPressOptions.push_back(KeyPress(KEY_NINE, "9", "("));
+	allKeyPressOptions.push_back(KeyPress(KEY_ZERO, "0", ")"));
 
 	//numpad number inputs
 	allKeyPressOptions.push_back(KeyPress(KEY_KP_0, "0"));

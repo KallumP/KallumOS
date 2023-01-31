@@ -7,14 +7,21 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	SetupSupportedSymbols();
 
 	fontSize = 20;
-	//text = "out Hello world!;out Hello second line!:);";
-	text = "int x = 20;int y = 30;int z = x + y + 40;z = z + 20;out z";
+	text = "out Hello world!;out Hello second line!:);";
+	//text = "int x = 20;int y = 30;";
+	//text += "int z = y - x;out z;";
+	//text += "z = y + x;out z;";
+	//text += "z = y * x;out z;";
+	//text += "z = z + z;out z;";
+	//text += "z = z + 10;out z;";
+
+	//
 
 	consoleHeight = 100;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
-	AddToConsoleOutput(1, "Press F3 to off debug outputs", BLUE);
+	AddToConsoleOutput(1, "Press F3 to on debug outputs", BLUE);
 
-	debug = true;
+	debug = false;
 }
 
 void Kode::Draw(Point offset) {
@@ -164,6 +171,10 @@ std::vector<std::string> Kode::Split(std::string toSplit, std::string delimiter)
 void Kode::SetupSupportedSymbols() {
 	supportedSymbols.push_back("+");
 	supportedSymbols.push_back("-");
+	supportedSymbols.push_back("*");
+	supportedSymbols.push_back("**");
+	supportedSymbols.push_back("^");
+	supportedSymbols.push_back("/");
 }
 void Kode::SetupSupportedOpcodes() {
 	supportedOpCodes.push_back("out");
@@ -222,7 +233,7 @@ void Kode::Run() {
 			if (ValidFunction(chunks, 1)) {
 
 				//gets the result of the function
-				std::string functionResult = HandleFunction(chunks, 1);
+				std::string functionResult = HandleFunction(i, chunks, 1);
 
 				AddToConsoleOutput(i, functionResult, WHITE);
 				continue;
@@ -275,7 +286,7 @@ void Kode::Run() {
 			}
 
 			//gets the result of the function
-			std::string functionResult = HandleFunction(chunks, 3);
+			std::string functionResult = HandleFunction(i, chunks, 3);
 
 			//declares and assigns values to the variable
 			Variable* inter = new Variable();
@@ -320,7 +331,7 @@ void Kode::Run() {
 				}
 
 				//gets the result of the function
-				std::string functionResult = HandleFunction(chunks, 2);
+				std::string functionResult = HandleFunction(i, chunks, 2);
 
 				//assigns the value
 				toAssign->value = functionResult;
@@ -388,6 +399,11 @@ Variable* Kode::GetVariable(std::string toGet) {
 //returns if a string can be tuend into an int
 bool Kode::Intable(std::string toCheck) {
 
+	////checks if all the chars were numbers
+	//for (char c : toCheck)
+	//	if (!isdigit(c))
+	//		return false;
+
 	//tries to convert the value into an int
 	bool intable = true;
 	try {
@@ -424,7 +440,7 @@ bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
 	return true;
 }
 
-std::string Kode::HandleFunction(std::vector<std::string> chunks, int startIndex) {
+std::string Kode::HandleFunction(int statementNumber, std::vector<std::string> chunks, int startIndex) {
 
 	int result = 0;
 
@@ -446,11 +462,24 @@ std::string Kode::HandleFunction(std::vector<std::string> chunks, int startIndex
 			toWorkWith = std::stoi(chunks[i + 1]);
 
 		//handles the two values using the used operation
-		if (chunks[i] == "+") 
+		if (chunks[i] == "+")
 			result = Add(result, toWorkWith);
 		else if (chunks[i] == "-")
 			result = Minus(result, toWorkWith);
+		else if (chunks[i] == "*")
+			result = Multiply(result, toWorkWith);
+		else if (chunks[i] == "**" || chunks[i] == "^")
+			result = Exponent(result, toWorkWith);
+		else if (chunks[i] == "/") {
 
+			if (toWorkWith == 0) {
+				//if (debug)
+					AddToConsoleOutput(i, "Tried to divide by zero. Division operation skipped", RED);
+				continue;
+			}
+
+			result = Divide(result, toWorkWith);
+		}
 	}
 
 	return std::to_string(result);
@@ -490,4 +519,5 @@ std::string Kode::HandleFunction(std::vector<std::string> chunks, int startIndex
 //A valid function will start with either a number or a variable name, 
 // and then follow with a supported symbol like (+, -. /, *) + a number or variable name
 //It will continue the previous step until the end of the list.
-
+//curent order of operations is each symbol will be handled in the order it appears
+//if trying to divide by zero it will return an error and skip that division

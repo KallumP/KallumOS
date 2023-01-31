@@ -50,10 +50,13 @@ private:
 	Variable* GetVariable(std::string toGet);
 	bool Intable(std::string toCheck);
 	bool ValidFunction(std::vector<std::string> chunks, int startIndex);
-	std::string HandleFunction(std::vector<std::string> chunks, int startIndex);
+	std::string HandleFunction(int statementNumber, std::vector<std::string> chunks, int startIndex);
 
 	int Add(int a, int b) { return a + b; }
 	int Minus(int a, int b) { return a - b; }
+	int Multiply(int a, int b) { return a * b; }
+	int Divide(int a, int b) { return a / b; }
+	int Exponent(int a, int b) { return  std::pow(a, b); }
 
 	int fontSize;
 	std::string text;
