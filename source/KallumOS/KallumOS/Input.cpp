@@ -18,18 +18,6 @@ void Input::GenerateKeyPressList() {
 	//null input
 	allKeyPressOptions.push_back(KeyPress(KEY_NULL, ""));
 
-	//number inputs
-	allKeyPressOptions.push_back(KeyPress(KEY_ZERO, "0"));
-	allKeyPressOptions.push_back(KeyPress(KEY_ONE, "1"));
-	allKeyPressOptions.push_back(KeyPress(KEY_TWO, "2"));
-	allKeyPressOptions.push_back(KeyPress(KEY_THREE, "3"));
-	allKeyPressOptions.push_back(KeyPress(KEY_FOUR, "4"));
-	allKeyPressOptions.push_back(KeyPress(KEY_FIVE, "5"));
-	allKeyPressOptions.push_back(KeyPress(KEY_SIX, "6"));
-	allKeyPressOptions.push_back(KeyPress(KEY_SEVEN, "7"));
-	allKeyPressOptions.push_back(KeyPress(KEY_EIGHT, "8"));
-	allKeyPressOptions.push_back(KeyPress(KEY_NINE, "9"));
-
 	//letter inputs
 	allKeyPressOptions.push_back(KeyPress(KEY_A, "a"));
 	allKeyPressOptions.push_back(KeyPress(KEY_B, "b"));
@@ -57,60 +45,30 @@ void Input::GenerateKeyPressList() {
 	allKeyPressOptions.push_back(KeyPress(KEY_X, "x"));
 	allKeyPressOptions.push_back(KeyPress(KEY_Y, "y"));
 	allKeyPressOptions.push_back(KeyPress(KEY_Z, "z"));
-
-
-
-
-	//special keys
-
 	allKeyPressOptions.push_back(KeyPress(KEY_SPACE, " "));
-	allKeyPressOptions.push_back(KeyPress(KEY_ESCAPE, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_ENTER, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_TAB, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_BACKSPACE, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_INSERT, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_DELETE, ""));
 
-	allKeyPressOptions.push_back(KeyPress(KEY_RIGHT, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_LEFT, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_DOWN, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_UP, ""));
+	//symbol inputs
+	allKeyPressOptions.push_back(KeyPress(KEY_APOSTROPHE, "'", "@"));
+	allKeyPressOptions.push_back(KeyPress(KEY_COMMA, ",", "<"));
+	allKeyPressOptions.push_back(KeyPress(KEY_MINUS, "-", "_"));
+	allKeyPressOptions.push_back(KeyPress(KEY_PERIOD, ".", ">"));
+	allKeyPressOptions.push_back(KeyPress(KEY_SLASH, "/", "?"));
+	allKeyPressOptions.push_back(KeyPress(KEY_SEMICOLON, ";", ":"));
+	allKeyPressOptions.push_back(KeyPress(KEY_EQUAL, "=", "+"));
 
-	allKeyPressOptions.push_back(KeyPress(KEY_PAGE_UP, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_PAGE_DOWN, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_HOME, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_END, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_CAPS_LOCK, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_SCROLL_LOCK, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_NUM_LOCK, ""));
+	//number inputs
+	allKeyPressOptions.push_back(KeyPress(KEY_ONE, "1", "!"));
+	allKeyPressOptions.push_back(KeyPress(KEY_TWO, "2"));
+	allKeyPressOptions.push_back(KeyPress(KEY_THREE, "3", "£"));
+	allKeyPressOptions.push_back(KeyPress(KEY_FOUR, "4", "$"));
+	allKeyPressOptions.push_back(KeyPress(KEY_FIVE, "5", "%"));
+	allKeyPressOptions.push_back(KeyPress(KEY_SIX, "6", "^"));
+	allKeyPressOptions.push_back(KeyPress(KEY_SEVEN, "7", "&"));
+	allKeyPressOptions.push_back(KeyPress(KEY_EIGHT, "8", "*"));
+	allKeyPressOptions.push_back(KeyPress(KEY_NINE, "9", "("));
+	allKeyPressOptions.push_back(KeyPress(KEY_ZERO, "0", ")"));
 
-	allKeyPressOptions.push_back(KeyPress(KEY_APOSTROPHE, "'"));
-	allKeyPressOptions.push_back(KeyPress(KEY_COMMA, ","));
-	allKeyPressOptions.push_back(KeyPress(KEY_MINUS, "-"));
-	allKeyPressOptions.push_back(KeyPress(KEY_PERIOD, "."));
-	allKeyPressOptions.push_back(KeyPress(KEY_SLASH, "/"));
-	allKeyPressOptions.push_back(KeyPress(KEY_SEMICOLON, ";"));
-	allKeyPressOptions.push_back(KeyPress(KEY_EQUAL, "="));
-
-	allKeyPressOptions.push_back(KeyPress(KEY_PAUSE, ""));
-
-
-	allKeyPressOptions.push_back(KeyPress(KEY_LEFT_SHIFT, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_LEFT_SHIFT, ""));
-
-
-
-
-	//numpad inputs
-	allKeyPressOptions.push_back(KeyPress(KEY_KP_DECIMAL, "."));
-	allKeyPressOptions.push_back(KeyPress(KEY_KP_DIVIDE, "/"));
-	allKeyPressOptions.push_back(KeyPress(KEY_KP_MULTIPLY, "*"));
-	allKeyPressOptions.push_back(KeyPress(KEY_KP_SUBTRACT, "-"));
-	allKeyPressOptions.push_back(KeyPress(KEY_KP_ADD, "+"));
-	allKeyPressOptions.push_back(KeyPress(KEY_KP_ENTER, ""));
-	allKeyPressOptions.push_back(KeyPress(KEY_KP_EQUAL, ""));
-
-	//number inputs (numpad)
+	//numpad number inputs
 	allKeyPressOptions.push_back(KeyPress(KEY_KP_0, "0"));
 	allKeyPressOptions.push_back(KeyPress(KEY_KP_1, "1"));
 	allKeyPressOptions.push_back(KeyPress(KEY_KP_2, "2"));
@@ -122,16 +80,38 @@ void Input::GenerateKeyPressList() {
 	allKeyPressOptions.push_back(KeyPress(KEY_KP_8, "8"));
 	allKeyPressOptions.push_back(KeyPress(KEY_KP_9, "9"));
 
+	//numpad inputs
+	allKeyPressOptions.push_back(KeyPress(KEY_KP_DECIMAL, "."));
+	allKeyPressOptions.push_back(KeyPress(KEY_KP_DIVIDE, "/"));
+	allKeyPressOptions.push_back(KeyPress(KEY_KP_MULTIPLY, "*"));
+	allKeyPressOptions.push_back(KeyPress(KEY_KP_SUBTRACT, "-"));
+	allKeyPressOptions.push_back(KeyPress(KEY_KP_ADD, "+"));
+	allKeyPressOptions.push_back(KeyPress(KEY_KP_ENTER, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_KP_EQUAL, "="));
 
+	//characterless keys
+	allKeyPressOptions.push_back(KeyPress(KEY_PAGE_UP, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_PAGE_DOWN, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_HOME, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_END, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_CAPS_LOCK, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_SCROLL_LOCK, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_NUM_LOCK, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_ESCAPE, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_ENTER, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_TAB, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_BACKSPACE, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_INSERT, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_DELETE, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_PAUSE, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_LEFT_SHIFT, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_LEFT_CONTROL, ""));
 
-	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_1, ";"));
-	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_2, "/"));
-	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_3, "#"));
-	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_4, "["));
-	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_5, "\\"));
-	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_6, "]"));
-	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_7, "'"));
-	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_8, ""));
+	//arrow keys
+	allKeyPressOptions.push_back(KeyPress(KEY_RIGHT, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_LEFT, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_DOWN, ""));
+	allKeyPressOptions.push_back(KeyPress(KEY_UP, ""));
 
 	//function keys
 	allKeyPressOptions.push_back(KeyPress(KEY_F1, ""));
@@ -147,6 +127,14 @@ void Input::GenerateKeyPressList() {
 	allKeyPressOptions.push_back(KeyPress(KEY_F11, ""));
 	allKeyPressOptions.push_back(KeyPress(KEY_F12, ""));
 
+	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_1, ";"));
+	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_2, "/"));
+	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_3, "#"));
+	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_4, "["));
+	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_5, "\\"));
+	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_6, "]"));
+	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_7, "'"));
+	//allKeyPressOptions.push_back(KeyPress(KEY_OEM_8, ""));
 }
 
 //goes through the list of supported keys and sents the passed control the keypresses
@@ -203,9 +191,15 @@ void Input::GetKeyPress(float elapsedTime, KallumOS* caller) {
 
 
 	//calls the event method in the caller for keypress
-	for (int i = 0; i < pressedKeys.size(); i++)
-		caller->OnKeyPress(pressedKeys[i]);
+	for (int i = 0; i < pressedKeys.size(); i++) {
 
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+			pressedKeys[i]->UseSecondary();
+		else
+			pressedKeys[i]->UsePrimary();
+
+		caller->OnKeyPress(pressedKeys[i]);
+	}
 
 	//separate method that does not do delays
 	//this way controls can take two events delayed and not delayed, and the control objecst choose which to use
