@@ -44,6 +44,7 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="CreateAccount.h" />
     <ClInclude Include="Desktop.h" />
+    <ClInclude Include="Helper.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="KallumOS.h" />
     <ClInclude Include="InputPress.h" />

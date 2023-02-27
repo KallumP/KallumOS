@@ -48,10 +48,7 @@ private:
 	void DrawPieces(Point offset);
 	void DrawHold(Point offset);
 
-	void ResetBoard();
-	void SpawnPiece();
 
-	void SetBlock(Point loc, Block* piece);
 
 
 	static const int boardWidth = 10;
@@ -62,6 +59,8 @@ private:
 	std::array<FallingBlock*, 4> fallingPiece;
 	std::array<FallingBlock*, 4> fallingPieceShadow;
 	std::array<FallingBlock*, 4> hold;
+
+	std::vector<std::array<FallingBlock*, 4>> fallingPieceBag;
 
 	float time;
 	int toClear;
@@ -81,6 +80,11 @@ private:
 
 	int holdAvailable;
 
+	void ResetBoard();
+	void SpawnPiece();
+	void GenerateSevenBag();
+
+	void SetBlock(Point loc, Block* piece);
 
 	void SwapWithHold();
 	bool HoldExists() { return hold[0] != nullptr; }

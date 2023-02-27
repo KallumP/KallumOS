@@ -1,4 +1,5 @@
 #include "Tetris.h"
+#include "Helper.h"
 
 #include <array>
 #include <string>
@@ -231,6 +232,32 @@ void Tetris::SetBlock(Point loc, Block* piece) {
 
 	board[loc.GetX()][loc.GetY()] = piece;
 }
+
+void Tetris::GenerateSevenBag() {
+
+	//random number between 1 and 7
+	int randomNumber = Helper::Random(1, 7);
+	
+	Point spawnLocation = Point(4, 0);
+
+	//chooses a spawn type from the random number
+	if (randomNumber == 1)
+		SpawnTBlock(spawnLocation);
+	else if (randomNumber == 2)
+		SpawnLineBlock(spawnLocation);
+	else if (randomNumber == 3)
+		SpawnLBlock(spawnLocation);
+	else if (randomNumber == 4)
+		SpawnReverseLBlock(spawnLocation);
+	else if (randomNumber == 5)
+		SpawnOBlock(spawnLocation);
+	else if (randomNumber == 6)
+		SpawnSBlock(spawnLocation);
+	else if (randomNumber == 7)
+		SpawnReverseSBlock(spawnLocation);
+
+}
+
 
 void Tetris::SpawnPiece() {
 
