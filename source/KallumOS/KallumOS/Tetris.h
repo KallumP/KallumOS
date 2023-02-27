@@ -53,7 +53,7 @@ private:
 
 	static const int boardWidth = 10;
 	static const int boardHeight = 20;
-	static const int pieceSize = 30;
+	static const int blockSize = 30;
 
 	std::array<std::array<Block*, boardHeight>, boardWidth> board;
 	std::array<FallingBlock*, 4> fallingPiece;
@@ -91,7 +91,8 @@ private:
 	bool GameEnded() { return !lost && !won; }
 	void PushFallingToStart(std::array<FallingBlock*, 4> toPush);
 
-	Point GetTopCorner(std::array<FallingBlock*, 4> toCheck);
+	Point GetTopLeftCorner(std::array<FallingBlock*, 4> toCheck);
+	Point GetBottomRightCorner(std::array<FallingBlock*, 4> toCheck);
 
 	void DropSpawned(bool softDrop);
 	void SlideSpawned(bool left);

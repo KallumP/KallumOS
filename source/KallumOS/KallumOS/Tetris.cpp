@@ -60,19 +60,19 @@ void Tetris::Draw(Point offset) {
 		if (GameEnded()) {
 
 			DrawHold(offset);
-			offset.SetY(offset.GetY() + 4 * pieceSize + 5);
+			offset.SetY(offset.GetY() + 4 * blockSize + 5);
 			DrawText("Hold", offset.GetX(), offset.GetY(), 20, BLACK);
-			offset.SetY(offset.GetY() - (4 * pieceSize + 5));
+			offset.SetY(offset.GetY() - (4 * blockSize + 5));
 
-			offset.SetX(offset.GetX() + 4 * pieceSize + 20);
+			offset.SetX(offset.GetX() + 4 * blockSize + 20);
 			DrawPieces(offset);
 			DrawBoardBoarders(offset);
 
-			offset.SetX(offset.GetX() + boardWidth * pieceSize + 20);
+			offset.SetX(offset.GetX() + boardWidth * blockSize + 20);
 			DrawBag(offset);
 
-			offset.SetX(offset.GetX() - (boardWidth * pieceSize + 20));
-			offset.SetY(offset.GetY() + boardHeight * pieceSize + 5);
+			offset.SetX(offset.GetX() - (boardWidth * blockSize + 20));
+			offset.SetY(offset.GetY() + boardHeight * blockSize + 5);
 			DrawText(("Time: " + timeString + "s Lines: " + std::to_string(linesLeft)).c_str(), offset.GetX(), offset.GetY(), 20, BLACK);
 
 		} else if (lost)
@@ -86,30 +86,35 @@ void Tetris::Draw(Point offset) {
 void Tetris::DrawHold(Point offset) {
 
 	if (HoldExists()) {
-		Point corner = GetTopCorner(hold);
+		Point topCorner = GetTopLeftCorner(hold);
+		Point bottomCorner = GetBottomRightCorner(hold);
+
+		Point pieceSize = Point((bottomCorner.GetX() - topCorner.GetX()) * blockSize, (bottomCorner.GetY() - topCorner.GetY()) * blockSize);
+
+		Point leeway = Point(((4 * blockSize) - pieceSize.GetX()) / 2, ((4 * blockSize) - pieceSize.GetY()) / 2);
 
 		for (int i = 0; i < 4; i++)
 			DrawRectangle(
-				offset.GetX() + pieceSize * (hold[i]->location.GetX() - corner.GetX()),
-				offset.GetY() + pieceSize * (hold[i]->location.GetY() - corner.GetY()),
-				pieceSize, pieceSize, hold[i]->color);
+				offset.GetX() + blockSize * (hold[i]->location.GetX() - topCorner.GetX()) + leeway.GetX(),
+				offset.GetY() + blockSize * (hold[i]->location.GetY() - topCorner.GetY()) + leeway.GetY(),
+				blockSize, blockSize, hold[i]->color);
 	}
 
 	//draws the borders
-	for (int i = 0; i < 4 + 1; i++) {
-		DrawLine(offset.GetX() + pieceSize * i, offset.GetY(), offset.GetX() + pieceSize * i, offset.GetY() + 4 * pieceSize, BLACK);
-		DrawLine(offset.GetX(), offset.GetY() + pieceSize * i, offset.GetX() + 4 * pieceSize, offset.GetY() + pieceSize * i, BLACK);
-	}
+	DrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + blockSize * 4, BLACK);
+	DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + blockSize * 4, offset.GetY(), BLACK);
+	DrawLine(offset.GetX(), offset.GetY() + blockSize * 4, offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4, BLACK);
+	DrawLine(offset.GetX() + blockSize * 4, offset.GetY(), offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4, BLACK);
 }
 void Tetris::DrawBoardBoarders(Point offset) {
 
 	//draws all vertical lines
 	for (int i = 0; i < boardWidth + 1; i++)
-		DrawLine(offset.GetX() + pieceSize * i, offset.GetY(), offset.GetX() + pieceSize * i, offset.GetY() + boardHeight * pieceSize, BLACK);
+		DrawLine(offset.GetX() + blockSize * i, offset.GetY(), offset.GetX() + blockSize * i, offset.GetY() + boardHeight * blockSize, BLACK);
 
 	//draws all horizontal lines
 	for (int i = 0; i < boardHeight + 1; i++)
-		DrawLine(offset.GetX(), offset.GetY() + pieceSize * i, offset.GetX() + boardWidth * pieceSize, offset.GetY() + pieceSize * i, BLACK);
+		DrawLine(offset.GetX(), offset.GetY() + blockSize * i, offset.GetX() + boardWidth * blockSize, offset.GetY() + blockSize * i, BLACK);
 }
 void Tetris::DrawPieces(Point offset) {
 
@@ -118,54 +123,67 @@ void Tetris::DrawPieces(Point offset) {
 		for (int j = 0; j < boardHeight; j++)
 			if (board[i][j] != nullptr)
 				DrawRectangle(
-					offset.GetX() + pieceSize * i,
-					offset.GetY() + pieceSize * j,
-					pieceSize, pieceSize, board[i][j]->color);
+					offset.GetX() + blockSize * i,
+					offset.GetY() + blockSize * j,
+					blockSize, blockSize, board[i][j]->color);
 
 	//draws the shadow
 	UpdateShadow();
 	for (int i = 0; i < 4; i++)
 		DrawRectangle(
-			offset.GetX() + pieceSize * fallingPieceShadow[i]->location.GetX(),
-			offset.GetY() + pieceSize * fallingPieceShadow[i]->location.GetY(),
-			pieceSize, pieceSize, fallingPieceShadow[i]->color);
+			offset.GetX() + blockSize * fallingPieceShadow[i]->location.GetX(),
+			offset.GetY() + blockSize * fallingPieceShadow[i]->location.GetY(),
+			blockSize, blockSize, fallingPieceShadow[i]->color);
 
 	//draws the falling piece
 	for (int i = 0; i < 4; i++)
 		DrawRectangle(
-			offset.GetX() + pieceSize * fallingPiece[i]->location.GetX(),
-			offset.GetY() + pieceSize * fallingPiece[i]->location.GetY(),
-			pieceSize, pieceSize, fallingPiece[i]->color);
+			offset.GetX() + blockSize * fallingPiece[i]->location.GetX(),
+			offset.GetY() + blockSize * fallingPiece[i]->location.GetY(),
+			blockSize, blockSize, fallingPiece[i]->color);
 }
 void Tetris::DrawBag(Point offset) {
 
-	int toDraw = 5;
+	int piecesToDraw = 5;
 
 	if (pieceBag.size() < 5)
-		toDraw = pieceBag.size();
+		piecesToDraw = pieceBag.size();
 
 	int bagPieceGap = 1;
-	DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + 4 * pieceSize, offset.GetY(), BLACK);
-	DrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + toDraw * pieceSize * 4 + toDraw * bagPieceGap, BLACK);
-	DrawLine(offset.GetX() + 4 * pieceSize, offset.GetY(), offset.GetX() + 4 * pieceSize, offset.GetY() + toDraw * pieceSize * 4 + toDraw * bagPieceGap, BLACK);
 
-	for (int i = 0; i < toDraw; i++) {
+	for (int i = 0; i < piecesToDraw; i++) {
 
 		std::array<FallingBlock*, 4> toDraw = pieceBag[i];
-		Point corner = GetTopCorner(toDraw);
+
+		Point topCorner = GetTopLeftCorner(toDraw);
+		Point bottomCorner = GetBottomRightCorner(toDraw);
+		Point pieceSize = Point((bottomCorner.GetX() - topCorner.GetX()) * blockSize, (bottomCorner.GetY() - topCorner.GetY()) * blockSize);
+
+		Point leeway = Point(((4 * blockSize) - pieceSize.GetX()) / 2, ((4 * blockSize) - pieceSize.GetY()) / 2);
+
+		Point corner = GetTopLeftCorner(toDraw);
 		for (int k = 0; k < 4; k++)
 			DrawRectangle(
-				offset.GetX() + pieceSize * (toDraw[k]->location.GetX() - corner.GetX()),
-				offset.GetY() + pieceSize * (toDraw[k]->location.GetY() - corner.GetY()),
-				pieceSize, pieceSize, toDraw[k]->color);
+				offset.GetX() + blockSize * (toDraw[k]->location.GetX() - topCorner.GetX()) + leeway.GetX(),
+				offset.GetY() + blockSize * (toDraw[k]->location.GetY() - topCorner.GetY()) + leeway.GetY() + 4 * blockSize * i,
+				blockSize, blockSize, toDraw[k]->color);
 
-		offset.SetY(offset.GetY() + 4 * pieceSize + bagPieceGap);
+		//draws a line under this bag piece
+		DrawLine(offset.GetX(), offset.GetY() + blockSize * 4 * i, offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4 * i, BLACK);
 	}
 
-		DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + 4 * pieceSize, offset.GetY(), BLACK);
+	Point bagBoardSize = Point();
+	bagBoardSize.SetX(4 * blockSize);
+	bagBoardSize.SetY(piecesToDraw * 4 * blockSize);
+
+	//draws the borders
+	DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY(), BLACK);
+	DrawLine(offset.GetX(), offset.GetY() + bagBoardSize.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY() + bagBoardSize.GetY(), BLACK);
+	DrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + piecesToDraw * blockSize * 4, BLACK);
+	DrawLine(offset.GetX() + bagBoardSize.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(),offset.GetY() + bagBoardSize.GetY(), BLACK);
 }
 
-Point Tetris::GetTopCorner(std::array<FallingBlock*, 4> toCheck) {
+Point Tetris::GetTopLeftCorner(std::array<FallingBlock*, 4> toCheck) {
 
 	Point toReturn = Point(boardWidth, boardHeight);
 	for (int i = 0; i < 4; i++) {
@@ -179,6 +197,22 @@ Point Tetris::GetTopCorner(std::array<FallingBlock*, 4> toCheck) {
 
 	return toReturn;
 }
+
+Point Tetris::GetBottomRightCorner(std::array<FallingBlock*, 4> toCheck) {
+
+	Point toReturn = Point(0, 0);
+	for (int i = 0; i < 4; i++) {
+
+		if (toReturn.GetX() < toCheck[i]->location.GetX() + 1)
+			toReturn.SetX(toCheck[i]->location.GetX() + 1);
+
+		if (toReturn.GetY() < toCheck[i]->location.GetY() + 1)
+			toReturn.SetY(toCheck[i]->location.GetY() + 1);
+	}
+
+	return toReturn;
+}
+
 
 void Tetris::OnKeyPress(KeyPress* e) {
 
@@ -710,7 +744,7 @@ void Tetris::SwapWithHold() {
 //pushes the falling piece to the top of the board
 void Tetris::PushFallingToStart(std::array<FallingBlock*, 4> toPush) {
 
-	Point corner = GetTopCorner(toPush);
+	Point corner = GetTopLeftCorner(toPush);
 
 	for (int i = 0; i < 4; i++) {
 		toPush[i]->location.SetY(toPush[i]->location.GetY() - corner.GetY());
