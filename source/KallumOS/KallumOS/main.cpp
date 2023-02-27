@@ -3,6 +3,7 @@
 
 #include "KallumOS.h"
 #include "Input.h"
+#include "Helper.h"
 
 int main() {
 
@@ -10,6 +11,7 @@ int main() {
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 	InitWindow(1280, 720, "KallumOS");
 
+	Helper::SetupHelper();
 	KallumOS* os = new KallumOS();
 	Input* intputHandler = new Input();
 

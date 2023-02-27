@@ -10,9 +10,6 @@ Desktop::Desktop() : State() {
 
 	LaunchAppLauncher();
 
-	Kode* app = new Kode(Point(525, 10), Point(700, 500));
-	LaunchApp(app);
-
 	backgroundColor = VIOLET;
 }
 

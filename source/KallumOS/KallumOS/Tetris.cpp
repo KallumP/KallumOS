@@ -7,6 +7,7 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <functional>
 
 
 Tetris::Tetris(Point _position, Point _size) : Process("Tetris", _position, _size) {
@@ -20,7 +21,6 @@ void Tetris::Setup() {
 	lost = false;
 	toClear = 20;
 	linesLeft = toClear;
-	std::srand(std::time(nullptr));
 	timeSinceLastFrame = 0;
 	targetFrameRate = 10;
 
@@ -33,7 +33,10 @@ void Tetris::Setup() {
 	holdAvailable = true;
 	hold = NullFalling();
 
+	fallingPiece = FreshFalling();
+
 	ResetBoard();
+	GenerateSevenBag();
 	SpawnPiece();
 
 	time = 0;
@@ -160,7 +163,7 @@ void Tetris::OnKeyPress(KeyPress* e) {
 				DropSpawned(true);
 			else if (e->GetKeyCode() == KEY_SPACE)
 				HardDropSpawned();
-			else if (e->GetKeyCode() == KEY_I)
+			else if (e->GetKeyCode() == KEY_I || e->GetKeyCode() == KEY_S)
 				RotateSpawned();
 			else if (e->GetKeyCode() == KEY_W)
 				for (int i = 0; i < 3; i++)
@@ -235,97 +238,118 @@ void Tetris::SetBlock(Point loc, Block* piece) {
 
 void Tetris::GenerateSevenBag() {
 
-	//random number between 1 and 7
-	int randomNumber = Helper::Random(1, 7);
-	
+	//a list of the piece spawn functions
+	std::vector<std::function<void(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation)>> SpawnFunctions;
+	SpawnFunctions.push_back(std::bind(&Tetris::SpawnTBlock, this, std::placeholders::_1, std::placeholders::_2));
+	SpawnFunctions.push_back(std::bind(&Tetris::SpawnLineBlock, this, std::placeholders::_1, std::placeholders::_2));
+	SpawnFunctions.push_back(std::bind(&Tetris::SpawnLBlock, this, std::placeholders::_1, std::placeholders::_2));
+	SpawnFunctions.push_back(std::bind(&Tetris::SpawnReverseLBlock, this, std::placeholders::_1, std::placeholders::_2));
+	SpawnFunctions.push_back(std::bind(&Tetris::SpawnOBlock, this, std::placeholders::_1, std::placeholders::_2));
+	SpawnFunctions.push_back(std::bind(&Tetris::SpawnSBlock, this, std::placeholders::_1, std::placeholders::_2));
+	SpawnFunctions.push_back(std::bind(&Tetris::SpawnReverseSBlock, this, std::placeholders::_1, std::placeholders::_2));
+
+	//a vector of piece spawn indexes
+	std::vector<int> pieceSpawnIndexes;
+	for (int i = 0; i < 7; i++)
+		pieceSpawnIndexes.push_back(i);
+
 	Point spawnLocation = Point(4, 0);
 
-	//chooses a spawn type from the random number
-	if (randomNumber == 1)
-		SpawnTBlock(spawnLocation);
-	else if (randomNumber == 2)
-		SpawnLineBlock(spawnLocation);
-	else if (randomNumber == 3)
-		SpawnLBlock(spawnLocation);
-	else if (randomNumber == 4)
-		SpawnReverseLBlock(spawnLocation);
-	else if (randomNumber == 5)
-		SpawnOBlock(spawnLocation);
-	else if (randomNumber == 6)
-		SpawnSBlock(spawnLocation);
-	else if (randomNumber == 7)
-		SpawnReverseSBlock(spawnLocation);
+	//spawns all the piece types into the bag
+	while (pieceSpawnIndexes.size() > 0) {
 
+		//gets a random index from list of function indexes to call
+		int randomIndex = Helper::Random(0, pieceSpawnIndexes.size() - 1);
+		int functionIndex = pieceSpawnIndexes[randomIndex];
+
+		//spawns this piece type into the bag
+		std::array<FallingBlock*, 4> newFallingPiece = FreshFalling();
+		SpawnFunctions[functionIndex](newFallingPiece, spawnLocation);
+		pieceBag.push_back(newFallingPiece);
+
+		//removes this piece spawn option
+		pieceSpawnIndexes.erase(pieceSpawnIndexes.begin() + randomIndex);
+	}
 }
 
 
 void Tetris::SpawnPiece() {
 
-	Point spawnLocation = Point(4, 0);
+	if (pieceBag.size() <= 0)
+		GenerateSevenBag();
 
-	//random number between 1 and 7
-	int randomNumber = std::rand() % 7 + 1;
+	//gets a random index from the bag of pieces
+	int randomIndex = Helper::Random(0, pieceBag.size() - 1);
 
-	//chooses a spawn type from the random number
-	if (randomNumber == 1)
-		SpawnTBlock(spawnLocation);
-	else if (randomNumber == 2)
-		SpawnLineBlock(spawnLocation);
-	else if (randomNumber == 3)
-		SpawnLBlock(spawnLocation);
-	else if (randomNumber == 4)
-		SpawnReverseLBlock(spawnLocation);
-	else if (randomNumber == 5)
-		SpawnOBlock(spawnLocation);
-	else if (randomNumber == 6)
-		SpawnSBlock(spawnLocation);
-	else if (randomNumber == 7)
-		SpawnReverseSBlock(spawnLocation);
+	CopyFallingWithColor(fallingPiece, pieceBag[randomIndex]);
+
+	pieceBag.erase(pieceBag.begin() + randomIndex);
 
 	lost = CheckLoss();
-}
-void Tetris::SpawnTBlock(Point spawnLocation) {
-	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0), MAGENTA);
-	fallingPiece[1] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0), MAGENTA);
-	fallingPiece[2] = new FallingBlock(Point(spawnLocation.GetX() + 2, spawnLocation.GetY() + 0), MAGENTA);
-	fallingPiece[3] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1), MAGENTA);
-}
-void Tetris::SpawnLineBlock(Point spawnLocation) {
-	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0), SKYBLUE);
-	fallingPiece[1] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 1), SKYBLUE);
-	fallingPiece[2] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 2), SKYBLUE);
-	fallingPiece[3] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 3), SKYBLUE);
-}
-void Tetris::SpawnLBlock(Point spawnLocation) {
-	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0), ORANGE);
-	fallingPiece[1] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 1), ORANGE);
-	fallingPiece[2] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 2), ORANGE);
-	fallingPiece[3] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 2), ORANGE);
-}
-void Tetris::SpawnReverseLBlock(Point spawnLocation) {
-	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0), DARKBLUE);
-	fallingPiece[1] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1), DARKBLUE);
-	fallingPiece[2] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 2), DARKBLUE);
-	fallingPiece[3] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 2), DARKBLUE);
-}
-void Tetris::SpawnOBlock(Point spawnLocation) {
-	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0), YELLOW);
-	fallingPiece[1] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 1), YELLOW);
-	fallingPiece[2] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0), YELLOW);
-	fallingPiece[3] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1), YELLOW);
-}
-void Tetris::SpawnSBlock(Point spawnLocation) {
 
-	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0), LIME);
-	fallingPiece[1] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1), LIME);
-	fallingPiece[2] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0), LIME);
-	fallingPiece[3] = new FallingBlock(Point(spawnLocation.GetX() + 2, spawnLocation.GetY() + 1), LIME);
 }
-void Tetris::SpawnReverseSBlock(Point spawnLocation) {
-	fallingPiece[0] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0), RED);
-	fallingPiece[1] = new FallingBlock(Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1), RED);
-	fallingPiece[2] = new FallingBlock(Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 1), RED);
-	fallingPiece[3] = new FallingBlock(Point(spawnLocation.GetX() + 2, spawnLocation.GetY() + 0), RED);
+void Tetris::SpawnTBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation) {
+
+	toSpawn[0]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0));
+	toSpawn[1]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0));
+	toSpawn[2]->location.Set(new Point(spawnLocation.GetX() + 2, spawnLocation.GetY() + 0));
+	toSpawn[3]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1));
+
+	SetPieceColor(toSpawn, MAGENTA);
+}
+void Tetris::SpawnLineBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation) {
+	toSpawn[0]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0));
+	toSpawn[1]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 1));
+	toSpawn[2]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 2));
+	toSpawn[3]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 3));
+
+	SetPieceColor(toSpawn, SKYBLUE);
+}
+void Tetris::SpawnLBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation) {
+	toSpawn[0]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0));
+	toSpawn[1]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 1));
+	toSpawn[2]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 2));
+	toSpawn[3]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 2));
+
+	SetPieceColor(toSpawn, ORANGE);
+}
+void Tetris::SpawnReverseLBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation) {
+	toSpawn[0]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0));
+	toSpawn[1]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1));
+	toSpawn[2]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 2));
+	toSpawn[3]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 2));
+
+	SetPieceColor(toSpawn, DARKBLUE);
+}
+void Tetris::SpawnOBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation) {
+	toSpawn[0]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0));
+	toSpawn[1]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 1));
+	toSpawn[2]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0));
+	toSpawn[3]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1));
+
+	SetPieceColor(toSpawn, YELLOW);
+}
+void Tetris::SpawnSBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation) {
+
+	toSpawn[0]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0));
+	toSpawn[1]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1));
+	toSpawn[2]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 0));
+	toSpawn[3]->location.Set(new Point(spawnLocation.GetX() + 2, spawnLocation.GetY() + 1));
+
+	SetPieceColor(toSpawn, RED);
+}
+void Tetris::SpawnReverseSBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation) {
+	toSpawn[0]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 0));
+	toSpawn[1]->location.Set(new Point(spawnLocation.GetX() + 1, spawnLocation.GetY() + 1));
+	toSpawn[2]->location.Set(new Point(spawnLocation.GetX() + 0, spawnLocation.GetY() + 1));
+	toSpawn[3]->location.Set(new Point(spawnLocation.GetX() + 2, spawnLocation.GetY() + 0));
+
+	SetPieceColor(toSpawn, LIME);
+}
+
+void Tetris::SetPieceColor(std::array<FallingBlock*, 4> toSet, Color c) {
+	for (int i = 0; i < 4; i++)
+		toSet[i]->color = c;
 }
 
 //drops the falling piece down one
@@ -604,7 +628,6 @@ std::array<FallingBlock*, 4> Tetris::NullFalling() {
 		tempFalling[i] = nullptr;
 
 	return tempFalling;
-
 }
 
 //returns a copy of the falling piece
@@ -614,7 +637,6 @@ void Tetris::CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<Falling
 
 		copyTo[i]->location.SetX(copyFrom[i]->location.GetX());
 		copyTo[i]->location.SetY(copyFrom[i]->location.GetY());
-
 	}
 }
 
@@ -625,7 +647,6 @@ void Tetris::CopyFallingWithColor(std::array<FallingBlock*, 4> copyTo, std::arra
 	for (int i = 0; i < 4; i++)
 
 		copyTo[i]->color = copyFrom[i]->color;
-
 }
 
 //swaps the current falling piece with the hold
@@ -633,13 +654,8 @@ void Tetris::SwapWithHold() {
 
 	if (holdAvailable) {
 
-		if (!HoldExists()) {
-			hold = FreshFalling();
-			CopyFallingWithColor(hold, fallingPiece);
-			fallingPiece = NullFalling();
-			SpawnPiece();
+		if (HoldExists()) {
 
-		} else {
 			std::array<FallingBlock*, 4> tempFalling;
 			tempFalling = FreshFalling();
 			CopyFallingWithColor(tempFalling, hold);
@@ -647,6 +663,13 @@ void Tetris::SwapWithHold() {
 			CopyFallingWithColor(fallingPiece, tempFalling);
 
 			PushFallingToStart(fallingPiece);
+
+		} else {
+
+			hold = FreshFalling();
+			CopyFallingWithColor(hold, fallingPiece);
+			fallingPiece = FreshFalling();
+			SpawnPiece();
 		}
 
 		holdAvailable = false;

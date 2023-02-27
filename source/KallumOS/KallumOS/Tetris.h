@@ -60,7 +60,7 @@ private:
 	std::array<FallingBlock*, 4> fallingPieceShadow;
 	std::array<FallingBlock*, 4> hold;
 
-	std::vector<std::array<FallingBlock*, 4>> fallingPieceBag;
+	std::vector<std::array<FallingBlock*, 4>> pieceBag;
 
 	float time;
 	int toClear;
@@ -110,15 +110,14 @@ private:
 
 	void SetFallingPiece(bool delay);
 
-	void SpawnTBlock(Point spawnLocation);
-	void SpawnLBlock(Point spawnLocation);
-	void SpawnSBlock(Point spawnLocation);
-	void SpawnOBlock(Point spawnLocation);
-
-	void SpawnReverseLBlock(Point spawnLocation);
-	void SpawnReverseSBlock(Point spawnLocation);
-
-	void SpawnLineBlock(Point spawnLocation);
+	void SpawnTBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation);
+	void SpawnLBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation);
+	void SpawnSBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation);
+	void SpawnOBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation);
+	void SpawnReverseLBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation);
+	void SpawnReverseSBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation);
+	void SpawnLineBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation);
+	void SetPieceColor(std::array<FallingBlock*, 4> toSet, Color c);
 
 	std::array<FallingBlock*, 4> FreshFalling();
 	std::array<FallingBlock*, 4> NullFalling();
