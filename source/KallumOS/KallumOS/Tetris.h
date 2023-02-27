@@ -33,7 +33,7 @@ class Tetris : public Process {
 
 public:
 	Tetris();
-	Tetris(Point _position, Point _size);
+	Tetris(Point _position);
 
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
@@ -47,7 +47,7 @@ private:
 	void DrawBoardBoarders(Point offset);
 	void DrawPieces(Point offset);
 	void DrawHold(Point offset);
-
+	void DrawBag(Point offset);
 
 
 

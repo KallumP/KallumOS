@@ -80,7 +80,7 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Tetris") {
-						Tetris* app = new Tetris(Point(525, 10), Point(455, 610));
+						Tetris* app = new Tetris(Point(525, 10));
 						LaunchApp(app);
 					} else if (processInfos[i].processName == "Kode") {
 						Kode* app = new Kode(Point(525, 10), Point(700, 500));

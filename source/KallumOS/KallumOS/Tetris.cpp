@@ -10,7 +10,7 @@
 #include <functional>
 
 
-Tetris::Tetris(Point _position, Point _size) : Process("Tetris", _position, _size) {
+Tetris::Tetris(Point _position) : Process("Tetris", _position, Point(655, 630)) {
 
 	Setup();
 }
@@ -59,14 +59,21 @@ void Tetris::Draw(Point offset) {
 
 		if (GameEnded()) {
 
+			DrawHold(offset);
+			offset.SetY(offset.GetY() + 4 * pieceSize + 5);
+			DrawText("Hold", offset.GetX(), offset.GetY(), 20, BLACK);
+			offset.SetY(offset.GetY() - (4 * pieceSize + 5));
+
+			offset.SetX(offset.GetX() + 4 * pieceSize + 20);
 			DrawPieces(offset);
 			DrawBoardBoarders(offset);
-			DrawHold(offset);
 
-			offset.SetY(offset.GetY() + 4 * pieceSize + 20);
 			offset.SetX(offset.GetX() + boardWidth * pieceSize + 20);
+			DrawBag(offset);
 
-			DrawText(("Time: " + timeString + "s\nLines: " + std::to_string(linesLeft)).c_str(), offset.GetX(), offset.GetY(), 20, BLACK);
+			offset.SetX(offset.GetX() - (boardWidth * pieceSize + 20));
+			offset.SetY(offset.GetY() + boardHeight * pieceSize + 5);
+			DrawText(("Time: " + timeString + "s Lines: " + std::to_string(linesLeft)).c_str(), offset.GetX(), offset.GetY(), 20, BLACK);
 
 		} else if (lost)
 			DrawText(("You survived for: " + timeString + " seconds.\nYou had: " + std::to_string(linesLeft) + " lines left to clear\nPress R to restart").c_str(), offset.GetX(), offset.GetY(), 20, RED);
@@ -74,6 +81,24 @@ void Tetris::Draw(Point offset) {
 		else if (won)
 			DrawText(("You cleared " + std::to_string(toClear) + " in: " + timeString + " seconds.\nPress R to restart").c_str(), offset.GetX(), offset.GetY(), 20, GREEN);
 
+	}
+}
+void Tetris::DrawHold(Point offset) {
+
+	if (HoldExists()) {
+		Point corner = GetTopCorner(hold);
+
+		for (int i = 0; i < 4; i++)
+			DrawRectangle(
+				offset.GetX() + pieceSize * (hold[i]->location.GetX() - corner.GetX()),
+				offset.GetY() + pieceSize * (hold[i]->location.GetY() - corner.GetY()),
+				pieceSize, pieceSize, hold[i]->color);
+	}
+
+	//draws the borders
+	for (int i = 0; i < 4 + 1; i++) {
+		DrawLine(offset.GetX() + pieceSize * i, offset.GetY(), offset.GetX() + pieceSize * i, offset.GetY() + 4 * pieceSize, BLACK);
+		DrawLine(offset.GetX(), offset.GetY() + pieceSize * i, offset.GetX() + 4 * pieceSize, offset.GetY() + pieceSize * i, BLACK);
 	}
 }
 void Tetris::DrawBoardBoarders(Point offset) {
@@ -112,26 +137,32 @@ void Tetris::DrawPieces(Point offset) {
 			offset.GetY() + pieceSize * fallingPiece[i]->location.GetY(),
 			pieceSize, pieceSize, fallingPiece[i]->color);
 }
-void Tetris::DrawHold(Point offset) {
+void Tetris::DrawBag(Point offset) {
 
-	offset.SetX(offset.GetX() + boardWidth * pieceSize + 20);
+	int toDraw = 5;
 
-	//draws the border
-	for (int i = 0; i < 4 + 1; i++)
-		DrawLine(offset.GetX() + pieceSize * i, offset.GetY(), offset.GetX() + pieceSize * i, offset.GetY() + 4 * pieceSize, BLACK);
-	for (int i = 0; i < 4 + 1; i++)
-		DrawLine(offset.GetX(), offset.GetY() + pieceSize * i, offset.GetX() + 4 * pieceSize, offset.GetY() + pieceSize * i, BLACK);
+	if (pieceBag.size() < 5)
+		toDraw = pieceBag.size();
 
+	int bagPieceGap = 1;
+	DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + 4 * pieceSize, offset.GetY(), BLACK);
+	DrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + toDraw * pieceSize * 4 + toDraw * bagPieceGap, BLACK);
+	DrawLine(offset.GetX() + 4 * pieceSize, offset.GetY(), offset.GetX() + 4 * pieceSize, offset.GetY() + toDraw * pieceSize * 4 + toDraw * bagPieceGap, BLACK);
 
-	if (HoldExists()) {
-		Point corner = GetTopCorner(hold);
+	for (int i = 0; i < toDraw; i++) {
 
-		for (int i = 0; i < 4; i++)
+		std::array<FallingBlock*, 4> toDraw = pieceBag[i];
+		Point corner = GetTopCorner(toDraw);
+		for (int k = 0; k < 4; k++)
 			DrawRectangle(
-				offset.GetX() + pieceSize * (hold[i]->location.GetX() - corner.GetX()),
-				offset.GetY() + pieceSize * (hold[i]->location.GetY() - corner.GetY()),
-				pieceSize, pieceSize, hold[i]->color);
+				offset.GetX() + pieceSize * (toDraw[k]->location.GetX() - corner.GetX()),
+				offset.GetY() + pieceSize * (toDraw[k]->location.GetY() - corner.GetY()),
+				pieceSize, pieceSize, toDraw[k]->color);
+
+		offset.SetY(offset.GetY() + 4 * pieceSize + bagPieceGap);
 	}
+
+		DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + 4 * pieceSize, offset.GetY(), BLACK);
 }
 
 Point Tetris::GetTopCorner(std::array<FallingBlock*, 4> toCheck) {
@@ -278,15 +309,11 @@ void Tetris::SpawnPiece() {
 	if (pieceBag.size() <= 0)
 		GenerateSevenBag();
 
-	//gets a random index from the bag of pieces
-	int randomIndex = Helper::Random(0, pieceBag.size() - 1);
+	CopyFallingWithColor(fallingPiece, pieceBag[0]);
 
-	CopyFallingWithColor(fallingPiece, pieceBag[randomIndex]);
-
-	pieceBag.erase(pieceBag.begin() + randomIndex);
+	pieceBag.erase(pieceBag.begin());
 
 	lost = CheckLoss();
-
 }
 void Tetris::SpawnTBlock(std::array<FallingBlock*, 4> toSpawn, Point spawnLocation) {
 
