@@ -180,7 +180,7 @@ void Tetris::DrawBag(Point offset) {
 	DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY(), BLACK);
 	DrawLine(offset.GetX(), offset.GetY() + bagBoardSize.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY() + bagBoardSize.GetY(), BLACK);
 	DrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + piecesToDraw * blockSize * 4, BLACK);
-	DrawLine(offset.GetX() + bagBoardSize.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(),offset.GetY() + bagBoardSize.GetY(), BLACK);
+	DrawLine(offset.GetX() + bagBoardSize.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY() + bagBoardSize.GetY(), BLACK);
 }
 
 Point Tetris::GetTopLeftCorner(std::array<FallingBlock*, 4> toCheck) {
@@ -518,12 +518,71 @@ void Tetris::RotateSpawned() {
 	}
 
 	//checks if the copy doesn't collide with anything
-	if (!CheckBoardCollisionY(rotatedFalling) && !CheckBoardCollisionX(rotatedFalling) && !CheckPieceCollision(rotatedFalling)) {
+	if (CheckNoBoardPieceCollision(rotatedFalling))
 
 		//Copies the temporary piece into the falling Piece
 		CopyFalling(fallingPiece, rotatedFalling);
-	}
+
+	//checks if the piece got kicked into place
+	else if (RotatedKick(rotatedFalling))
+
+		//tries to kick the piece into a suitable location
+
+		CopyFalling(fallingPiece, rotatedFalling);
 }
+
+//takes a rotated piece and tries to kick it into a suitable location
+bool Tetris::RotatedKick(std::array<FallingBlock*, 4> rotatedFalling) {
+
+	//do kick checks from the center outwards. So check the middle value and then move left to the end, 
+	//check move back to the middle and move right
+	//maybe do the same concept for checking each row
+
+	//needs to be odd number (so that the original piece is in the middle of the kick table
+	int kickCheckSize = 7;
+
+	//move the piece just outside the kicktable (xaxis)
+	ShiftSpawned(rotatedFalling, (kickCheckSize + 1) / 2, 0, 0, 0);
+
+	//x axis kick check.
+	for (int i = 0; i < kickCheckSize; i++) {
+
+		//moves the piece right one
+		ShiftSpawned(rotatedFalling, 0, 1, 0, 0);
+
+		//checks if there was no collision
+		if (CheckNoBoardPieceCollision(rotatedFalling))
+			return true;
+	}
+
+	//no suitable spots in the x axis. check full kick table from top to bottom
+
+	//moves the piece back to the fring of the bottom row of the kick table
+	ShiftSpawned(rotatedFalling, (kickCheckSize), 0, (kickCheckSize) / 2, 0);
+
+
+
+	//loop to check each row of the kick table
+	for (int i = 0; i < kickCheckSize; i++) {
+
+		//loop to check each column in this row
+		for (int j = 0; j < kickCheckSize; j++) {
+
+			//move the piece right one
+			ShiftSpawned(rotatedFalling, 1, 0, 0, 0);
+
+			//checks if there was no collision
+			if (CheckNoBoardPieceCollision(rotatedFalling))
+				return true;
+
+		}
+
+		ShiftSpawned(rotatedFalling, (kickCheckSize), 0, 0, 1);
+	}
+
+	return false;
+}
+
 
 //moves the falling block by the units passed
 void Tetris::ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up) {
@@ -562,6 +621,11 @@ bool Tetris::CheckPieceCollision(std::array<FallingBlock*, 4> toCheck) {
 		if (board[toCheck[i]->location.GetX()][toCheck[i]->location.GetY()] != nullptr)
 			return true;
 	return false;
+}
+
+//returns if the falling piece collided with the board boundaries or any pieces
+bool Tetris::CheckNoBoardPieceCollision(std::array<FallingBlock*, 4> toCheck) {
+	return (!CheckBoardCollisionY(toCheck) && !CheckBoardCollisionX(toCheck) && !CheckPieceCollision(toCheck));
 }
 
 //turns each falling block in the falling piece into a permanent piece
@@ -691,7 +755,7 @@ std::array<FallingBlock*, 4> Tetris::NullFalling() {
 	return tempFalling;
 }
 
-//returns a copy of the falling piece
+//a copy a falling piece type into another falling piece type
 void Tetris::CopyFalling(std::array<FallingBlock*, 4> copyTo, std::array<FallingBlock*, 4> copyFrom) {
 
 	for (int i = 0; i < 4; i++) {

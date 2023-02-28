@@ -98,6 +98,7 @@ private:
 	void SlideSpawned(bool left);
 	void HardDropSpawned();
 	void RotateSpawned();
+	bool RotatedKick(std::array<FallingBlock*, 4> rotatedFalling);
 	void ShiftSpawned(std::array<FallingBlock*, 4> toMove, int left, int right, int down, int up);
 	void UpdateShadow();
 	std::vector<int> CheckClearLines();
@@ -108,6 +109,7 @@ private:
 	bool CheckBoardCollisionX(std::array<FallingBlock*, 4> toCheck);
 	bool CheckBoardCollisionY(std::array<FallingBlock*, 4> toCheck);
 	bool CheckPieceCollision(std::array<FallingBlock*, 4> toCheck);
+	bool CheckNoBoardPieceCollision(std::array<FallingBlock*, 4> toCheck);
 
 	void SetFallingPiece(bool delay);
 
