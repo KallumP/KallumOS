@@ -534,18 +534,27 @@ void Tetris::RotateSpawned() {
 //takes a rotated piece and tries to kick it into a suitable location
 bool Tetris::RotatedKick(std::array<FallingBlock*, 4> rotatedFalling) {
 
-	//do kick checks from the center outwards. So check the middle value and then move left to the end, 
-	//check move back to the middle and move right
-	//maybe do the same concept for checking each row
-
 	//needs to be odd number (so that the original piece is in the middle of the kick table
-	int kickCheckSize = 7;
+	int kickCheckSize = 5;
+	int halfKickTable = (kickCheckSize - 1) / 2;
 
-	//move the piece just outside the kicktable (xaxis)
-	ShiftSpawned(rotatedFalling, (kickCheckSize + 1) / 2, 0, 0, 0);
+
+	//checks the locations to the left of the piece
+	for (int i = 0; i < halfKickTable; i++) {
+
+		//moves the piece right one
+		ShiftSpawned(rotatedFalling, 1, 0, 0, 0);
+
+		//checks if there was no collision
+		if (CheckNoBoardPieceCollision(rotatedFalling))
+			return true;
+	}
+
+	//move the piece back into the center of the row
+	ShiftSpawned(rotatedFalling, 0, halfKickTable, 0, 0);
 
 	//x axis kick check.
-	for (int i = 0; i < kickCheckSize; i++) {
+	for (int i = 0; i < halfKickTable; i++) {
 
 		//moves the piece right one
 		ShiftSpawned(rotatedFalling, 0, 1, 0, 0);
@@ -555,29 +564,42 @@ bool Tetris::RotatedKick(std::array<FallingBlock*, 4> rotatedFalling) {
 			return true;
 	}
 
-	//no suitable spots in the x axis. check full kick table from top to bottom
+	//move the piece back into the center of the row and to the bottom column
+	ShiftSpawned(rotatedFalling, halfKickTable, 0, halfKickTable, 0);
 
-	//moves the piece back to the fring of the bottom row of the kick table
-	ShiftSpawned(rotatedFalling, (kickCheckSize), 0, (kickCheckSize) / 2, 0);
 
 
 
 	//loop to check each row of the kick table
-	for (int i = 0; i < kickCheckSize; i++) {
+	for (int j = 0; j < kickCheckSize; j++) {
 
-		//loop to check each column in this row
-		for (int j = 0; j < kickCheckSize; j++) {
+		//checks the locations to the left of the piece
+		for (int i = 0; i < halfKickTable; i++) {
 
-			//move the piece right one
+			//moves the piece right one
 			ShiftSpawned(rotatedFalling, 1, 0, 0, 0);
 
 			//checks if there was no collision
 			if (CheckNoBoardPieceCollision(rotatedFalling))
 				return true;
-
 		}
 
-		ShiftSpawned(rotatedFalling, (kickCheckSize), 0, 0, 1);
+		//move the piece back into the center of the row
+		ShiftSpawned(rotatedFalling, 0, halfKickTable, 0, 0);
+
+		//x axis kick check.
+		for (int i = 0; i < halfKickTable; i++) {
+
+			//moves the piece right one
+			ShiftSpawned(rotatedFalling, 0, 1, 0, 0);
+
+			//checks if there was no collision
+			if (CheckNoBoardPieceCollision(rotatedFalling))
+				return true;
+		}
+
+		//move the piece back into the center of the row and up a row
+		ShiftSpawned(rotatedFalling, halfKickTable, 0, 0, 1);
 	}
 
 	return false;
