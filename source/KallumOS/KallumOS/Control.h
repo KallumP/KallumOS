@@ -32,7 +32,7 @@ public:
 	virtual void Draw() = 0;
 	virtual bool Hover(Point* mousePosition);
 	virtual bool Click(Point* mousePosition) = 0;
-	virtual void OnKeyPress(KeyPress* e) = 0;
+	virtual void OnKeyPress(KeyPress* e) {};
 
 
 	Point normalizePosition(Point* screenSize);
