@@ -10,9 +10,6 @@ Desktop::Desktop() : State() {
 
 	LaunchAppLauncher();
 
-	Kode* app = new Kode(Point(525, 10), Point(700, 500));
-	LaunchApp(app);
-
 	backgroundColor = VIOLET;
 }
 
@@ -141,7 +138,7 @@ void Desktop::TaskBarClickHandle() {
 
 void Desktop::LaunchAppLauncher() {
 
-	launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 400));
+	launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 420));
 	launcher->BindLaunchApp(std::bind(&Desktop::LaunchApp, this, std::placeholders::_1));
 	launcher->BindCloseApp(std::bind(&Desktop::CloseApp, this, std::placeholders::_1));
 
