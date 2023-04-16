@@ -12,6 +12,7 @@ public:
 	TestWindow(Point _position, Point _size);
 
 	void Draw(Point offset);
+	void Tick(float elapsedTime);
 
 private:
 	FileSelector fileSelector;

@@ -29,15 +29,15 @@ public:
 	Control();
 	Control(Point _position, Point _size);
 
-	virtual void Draw() = 0;
+	virtual void Draw() {}
+	virtual void Draw(Point offset) {}
 	virtual bool Hover(Point* mousePosition);
 	virtual bool Click(Point* mousePosition) = 0;
-	virtual void OnKeyPress(KeyPress* e) {};
+	virtual void OnKeyPress(KeyPress* e) {}
 
 
 	Point normalizePosition(Point* screenSize);
 	bool Within(Point* mousePosition);
 	virtual void InvertFocus(bool click);
-
 };
 

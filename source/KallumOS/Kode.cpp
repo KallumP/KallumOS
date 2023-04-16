@@ -15,8 +15,6 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//text += "z = z + z;out z;";
 	//text += "z = z + 10;out z;";
 
-	//
-
 	consoleHeight = 100;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
 	AddToConsoleOutput(1, "Press F3 to on debug outputs", BLUE);
