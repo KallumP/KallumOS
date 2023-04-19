@@ -16,7 +16,7 @@ void TestWindow::Draw(Point offset) {
 		DrawBoxBar(offset, true);
 		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
 
-		fileSelector.Draw(offset);
+		fileSelector.Draw(Point(0,0));
 	}
 }
 
