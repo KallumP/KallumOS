@@ -37,12 +37,17 @@ void Desktop::Draw() {
 	taskbar.Draw();
 	Point drawOffset = Point(0, taskbar.height);
 
-	if (focused != nullptr) {
-		DrawText(focused->GetName().c_str(), 10, drawOffset.GetY() + 5, 2, BLACK);
+
+	for (int i = 0; i < processes.size(); i++) {
+		if (processes[i] == focused)
+			continue;
+		processes[i]->Draw(drawOffset);
 	}
 
-	for (int i = 0; i < processes.size(); i++)
-		processes[i]->Draw(drawOffset);
+	if (focused != nullptr) {
+		DrawText(focused->GetName().c_str(), 10, drawOffset.GetY() + 5, 2, BLACK);
+		focused->Draw(drawOffset);
+	}
 }
 
 void Desktop::OnKeyPress(KeyPress* e) {
