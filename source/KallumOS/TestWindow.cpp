@@ -25,3 +25,13 @@ void TestWindow::Tick(float elapsedTime) {
 	fileSelector.Hover(new Point(GetMouseX(), GetMouseY()));
 
 }
+
+void TestWindow::OnMousePress(MousePress* e, int taskbarHeight) {
+
+	if (display) {
+
+		SuperMousePress(NormaliseMousePos(taskbarHeight));
+
+		fileSelector.Click(new Point(GetMouseX(), GetMouseY()));
+	}
+}

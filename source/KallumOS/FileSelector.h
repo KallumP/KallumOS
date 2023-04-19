@@ -39,7 +39,8 @@ private:
 	std::vector<FileOption> currentFiles;
 	std::vector<FileOption> currentDirectories;
 
-	void SwithPath(std::string newPath);
+	bool VerifyPath(std::filesystem::path toCheck);
+	void SwithPath();
 	void FetchAllCurrentFiles();
 	void DetectFileHover(Point* mousePosition);
 };

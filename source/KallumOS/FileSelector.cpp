@@ -13,20 +13,28 @@ FileSelector::FileSelector(Point _position, Point _size, std::filesystem::path a
 	path = osPath / "hardDrive";
 	path = path / appPath;
 
-	//checks if this path existed
-	if (!std::filesystem::exists(path)) {
-		std::cout << "Directory not found" << std::endl << "Creating directory now" << std::endl;
-
-		//makes the file path
-		if (!std::filesystem::create_directory(path)) {
-			std::cout << "Failed to create directory\n";
-			return;
-		}
-	}
+	if (!VerifyPath(path))
+		return;
 
 	fontSize = 10;
 
 	FetchAllCurrentFiles();
+}
+
+bool FileSelector::VerifyPath(std::filesystem::path toCheck) {
+
+	//checks if this path existed
+	if (!std::filesystem::exists(toCheck)) {
+		std::cout << "Directory not found" << std::endl << "Creating directory now" << std::endl;
+
+		//makes the file path
+		if (!std::filesystem::create_directory(toCheck)) {
+			std::cout << "Failed to create directory\n";
+			return false;
+		}
+	}
+
+	return true;
 }
 
 
@@ -74,7 +82,7 @@ void FileOption::Draw(Point offset) {
 
 bool FileSelector::Hover(Point* mousePosition) {
 
-	
+
 	DetectFileHover(mousePosition);
 
 	return false;
@@ -82,14 +90,35 @@ bool FileSelector::Hover(Point* mousePosition) {
 
 bool FileSelector::Click(Point* mousePosition) {
 
-	//loop through directories and files path
-	//switch path to first hovered one
+	SwithPath();
 
 	return false;
 }
 
-void FileSelector::SwithPath(std::string newPath) {
-	path = newPath;
+void FileSelector::SwithPath() {
+
+
+	std::string newPath = "";
+	for (int i = 0; i < currentDirectories.size(); i++)
+		if (currentDirectories[i].hovered)
+			newPath = currentDirectories[i].fileName;
+
+	for (int i = 0; i < currentFiles.size(); i++)
+		if (currentFiles[i].hovered)
+			newPath = currentFiles[i].fileName;
+
+
+	if (newPath == "")
+		return;
+
+	std::filesystem::path pathToCheck = path / newPath;
+	if (!VerifyPath(pathToCheck))
+		return;
+
+	path = pathToCheck;
+	currentDirectories.clear();
+	currentFiles.clear();
+	FetchAllCurrentFiles();
 }
 
 //fetches all the files in the current file path
