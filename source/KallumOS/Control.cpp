@@ -15,6 +15,7 @@ Control::Control(Point _position, Point _size) {
 	position = _position;
 	size = _size;
 	focused = false;
+	centered = true;
 }
 
 //turns a percentage position point into a pixel position point
@@ -29,7 +30,11 @@ Point Control::normalizePosition(Point* screenSize) {
 bool Control::Within(Point* mousePosition) {
 
 	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+	
+	if (centered)
+		*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+	else
+		*normalizedPosition = position;
 
 	//checks if the mousex is bigger than the positionx and smaller than the positoinx+sizex
 	//checks if the mousey is bigger than the positiony and smaller than the positoiny+sizey

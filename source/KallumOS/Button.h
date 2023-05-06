@@ -10,7 +10,7 @@
 class Button : public Control {
 
 public:
-
+	Button() {}
 	Button(Point _position, Point _size, std::string _value);
 
 	void Draw();
@@ -19,6 +19,7 @@ public:
 
 	bool GetClicked();
 	void InvertClicked();
+	void SetFontSize(int _fontSize) { fontSize = _fontSize; }
 
 private:
 

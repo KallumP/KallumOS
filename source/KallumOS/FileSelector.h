@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Control.h"
+#include "Button.h"
 #include <filesystem>
 
 struct FileOption {
@@ -33,15 +34,26 @@ public:
 	bool Hover(Point* mousePosition);
 	bool Click(Point* mousePosition);
 
+	bool GetReady() { return ready; }
+
 private:
 
 	std::filesystem::path path;
 	std::vector<FileOption> currentFiles;
 	std::vector<FileOption> currentDirectories;
+	std::filesystem::path selectedFile;
 
 	bool VerifyPath(std::filesystem::path toCheck);
 	void SwithPath();
 	void FetchAllCurrentFiles();
 	void DetectFileHover(Point* mousePosition);
+
+	void SetData();
+
+	enum class Operations {selectFile, selectDir, newFile};
+	Operations operation;
+	bool ready;
+
+	Button submit;
 };
 

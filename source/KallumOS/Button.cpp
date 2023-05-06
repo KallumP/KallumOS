@@ -24,7 +24,12 @@ Button::Button(Point _position, Point _size, std::string _value) : Control(_posi
 void Button::Draw() {
 
 	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+
+	//this should happen in a function called GetCurrentPosition();
+	if (centered)
+		*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+	else
+		*normalizedPosition = position;
 
 	//draws the button
 	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);

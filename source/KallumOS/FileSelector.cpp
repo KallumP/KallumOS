@@ -8,6 +8,11 @@ FileSelector::FileSelector(Point _position, Point _size, std::filesystem::path a
 
 	backColor = LIGHTGRAY;
 
+	operation = Operations::selectFile;
+	submit = Button(Point(position.GetX() + 10, position.GetY() + 10), Point(50, 30), "Select");
+	submit.ToggleCentered();
+	submit.SetFontSize(10);
+
 	//generates the file path for this instance
 	std::filesystem::path osPath = std::filesystem::current_path();
 	path = osPath / "hardDrive";
@@ -47,6 +52,10 @@ void FileSelector::Draw(Point offset) {
 
 	offset.Add(Point(20, 20));
 
+	submit.Draw();
+
+	offset.Add(Point(0, 40));
+
 	//draws the current file path
 	std::string currentPath = "Current directory: " + std::filesystem::relative(path, std::filesystem::current_path()).string();
 	DrawText(currentPath.c_str(), position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), fontSize, BLACK);
@@ -82,6 +91,7 @@ void FileOption::Draw(Point offset) {
 
 bool FileSelector::Hover(Point* mousePosition) {
 
+	submit.Hover(mousePosition);
 
 	DetectFileHover(mousePosition);
 
@@ -89,6 +99,9 @@ bool FileSelector::Hover(Point* mousePosition) {
 }
 
 bool FileSelector::Click(Point* mousePosition) {
+
+	if (submit.Click(mousePosition))
+		std::cout << " Clicked\n";
 
 	SwithPath();
 
@@ -139,7 +152,7 @@ void FileSelector::FetchAllCurrentFiles() {
 void FileSelector::DetectFileHover(Point* mousePosition) {
 
 	//directories
-	int listDisplayOffset = FileOption::ySize * 3 + 20;
+	int listDisplayOffset = FileOption::ySize * 3 + 20 + 40;
 	for (int i = 0; i < currentDirectories.size(); i++)
 		if (mousePosition->GetY() > currentDirectories[i].position.GetY() + listDisplayOffset &&
 			mousePosition->GetY() < currentDirectories[i].position.GetY() + listDisplayOffset + FileOption::ySize)
