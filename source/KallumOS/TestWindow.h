@@ -8,7 +8,6 @@ class TestWindow : public Process {
 
 public:
 
-	TestWindow();
 	TestWindow(Point _position, Point _size);
 
 	void Draw(Point offset);
@@ -16,6 +15,7 @@ public:
 	void OnMousePress(MousePress* e, int taskbarHeight);
 
 private:
-	FileSelector fileSelector;
+	FileSelector *fileSelector;
+	std::string foo;
 };
 
