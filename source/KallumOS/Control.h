@@ -31,8 +31,7 @@ public:
 	Control();
 	Control(Point _position, Point _size);
 
-	virtual void Draw() {}
-	virtual void Draw(Point offset) {}
+	virtual void Draw(Point offset = Point(0,0)) {}
 	virtual bool Hover(Point* mousePosition);
 	virtual bool Click(Point* mousePosition) = 0;
 	virtual void OnKeyPress(KeyPress* e) {}
@@ -42,5 +41,6 @@ public:
 	bool Within(Point* mousePosition);
 	virtual void InvertFocus(bool click);
 	virtual void ToggleCentered() { centered = !centered; }
+	virtual Point* GetPosition();
 };
 

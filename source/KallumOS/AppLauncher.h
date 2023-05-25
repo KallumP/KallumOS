@@ -7,6 +7,8 @@
 #include "Kode.h"
 #include "TestWindow.h"
 
+#include "Button.h"
+
 #include <vector>
 #include <functional>
 
@@ -16,7 +18,13 @@ public:
 	static const int buttonPadding = 30;
 	Point buttonSizes = Point(100, 50);
 
+	Button button;
 	std::string processName;
+
+	ProcessInfo(std::string _processName) {
+		processName = _processName;
+		button = Button(Point(0, 0), buttonSizes, processName);
+	}
 };
 
 class AppLauncher : public Process {

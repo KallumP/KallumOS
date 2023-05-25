@@ -60,3 +60,17 @@ bool Control::Hover(Point* mousePosition) {
 	backColor = defaultColor;
 	return false;
 }
+
+
+Point* Control::GetPosition() {
+
+	Point* normalizedPosition = new Point();
+	
+	//returns the pixel values of the position based on if it should be centered or not
+	if (centered)
+		*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+	else
+		*normalizedPosition = position;
+
+	return normalizedPosition;
+}
