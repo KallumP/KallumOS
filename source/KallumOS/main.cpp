@@ -12,6 +12,10 @@ int main() {
 	InitWindow(1280, 750, "KallumOS");
 
 	Helper::SetupHelper();
+	
+	if (!Helper::CreateHardDrive())
+		return 0;
+
 	KallumOS* os = new KallumOS();
 	Input* intputHandler = new Input();
 
@@ -33,7 +37,6 @@ int main() {
 
 		BeginDrawing();
 		os->Draw();
-		//ClearBackground(RED);
 		EndDrawing();
 	}
 

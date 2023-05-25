@@ -85,6 +85,10 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 					} else if (processInfos[i].processName == "Kode") {
 						Kode* app = new Kode(Point(525, 10), Point(700, 500));
 						LaunchApp(app);
+
+					} else if (processInfos[i].processName == "Test") {
+						TestWindow* app = new TestWindow(Point(525, 10), Point(700, 500));
+						LaunchApp(app);
 					}
 				}
 			}
@@ -93,6 +97,10 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 }
 
 void AppLauncher::SetupProcessInfos() {
+
+	ProcessInfo test;
+	test.processName = "Test";
+	processInfos.push_back(test);
 
 	ProcessInfo manager;
 	manager.processName = "Task Manager";

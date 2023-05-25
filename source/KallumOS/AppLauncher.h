@@ -5,6 +5,7 @@
 #include "TicTak.h"
 #include "Tetris.h"
 #include "Kode.h"
+#include "TestWindow.h"
 
 #include <vector>
 #include <functional>
