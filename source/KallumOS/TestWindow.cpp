@@ -39,11 +39,11 @@ void TestWindow::Tick(float elapsedTime) {
 
 }
 
-void TestWindow::OnMousePress(MousePress* e, int taskbarHeight) {
+void TestWindow::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 
 		if (fileSelector != nullptr)
 			fileSelector->Click(new Point(GetMouseX(), GetMouseY()));

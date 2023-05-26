@@ -54,16 +54,16 @@ void TaskManager::OnKeyPress(KeyPress* e) {
 }
 
 
-void TaskManager::OnMousePress(MousePress* e, int taskbarHeight) {
+void TaskManager::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = NormaliseMousePos(taskbarHeight);
+		Point normalisedMouse = NormaliseMousePos();
 
 		//loops through all the processes
 		for (int i = processes->size() - 1; i >= 0; i--) {

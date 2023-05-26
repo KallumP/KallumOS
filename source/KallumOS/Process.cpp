@@ -82,11 +82,11 @@ Point Process::NormaliseMousePos(int yOffSet) {
 	return Point(GetMouseX() - position.GetX(), GetMouseY() - position.GetY() - yOffSet);
 }
 
-void Process::OnMousePress(MousePress* e, int taskbarHeight) {
+void Process::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 	}
 }
 
@@ -139,11 +139,11 @@ bool Process::CheckIfCloseClicked(Point normMousePos) {
 	return false;
 }
 
-void Process::OnMouseHold(MousePress* e, int taskbarHeight) {
+void Process::OnMouseHold(MousePress* e) {
 
 	if (mouseDownOnBar) {
 
-		Point newMousePosition = NormaliseMousePos(taskbarHeight);
+		Point newMousePosition = NormaliseMousePos(0);
 
 		Point mouseDifference = newMousePosition.Difference(barClickLocation);
 		

@@ -37,7 +37,7 @@ public:
 
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
-	void OnMousePress(MousePress* e, int taskbarHeight);
+	void OnMousePress(MousePress* e);
 	void Tick(float elapsedTime);
 
 private:

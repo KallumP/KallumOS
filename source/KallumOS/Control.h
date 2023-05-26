@@ -23,8 +23,9 @@ protected:
 	Point padding;
 	int fontSize;
 
+private:
 	bool centered;
-
+	Point* tether;
 
 public:
 
@@ -40,7 +41,7 @@ public:
 	Point normalizePosition(Point* screenSize);
 	bool Within(Point* mousePosition);
 	virtual void InvertFocus(bool click);
-	virtual void ToggleCentered() { centered = !centered; }
+	virtual void Tether(Point* _tether);
 	virtual Point* GetPosition();
 };
 

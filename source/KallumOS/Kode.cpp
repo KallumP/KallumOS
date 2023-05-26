@@ -121,16 +121,16 @@ void Kode::OnKeyPress(KeyPress* e) {
 		Input(e->GetKeyContent());
 }
 
-void Kode::OnMousePress(MousePress* e, int taskbarHeight) {
+void Kode::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = NormaliseMousePos(taskbarHeight);
+		Point normalisedMouse = NormaliseMousePos();
 
 		//move cursore to something near the text
 	}

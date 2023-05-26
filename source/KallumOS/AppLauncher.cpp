@@ -6,6 +6,10 @@ AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Poi
 	processes = _processes;
 
 	SetupProcessInfos();
+
+	scrollUp = Button(Point(30, 30), Point(100, 30), "Scroll Up");
+	scrollUp.Tether(&position);
+	scrollUp.SetFontSize(10);
 }
 
 void AppLauncher::Draw(Point offset) {
@@ -14,6 +18,8 @@ void AppLauncher::Draw(Point offset) {
 
 		DrawBoxBar(offset, true);
 		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
+
+		scrollUp.Draw();
 
 		int padding = 30;
 		for (int i = 0; i < processInfos.size(); i++) {
@@ -43,13 +49,13 @@ void AppLauncher::OnKeyPress(KeyPress* e) {
 	}
 }
 
-void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
+void AppLauncher::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 
-		Point normalisedMouse = NormaliseMousePos(taskbarHeight + barHeight);
+		Point normalisedMouse = NormaliseMousePos(barHeight);
 
 		//loops through all the possible apps
 		for (int i = 0; i < processInfos.size(); i++) {
@@ -69,9 +75,9 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 						app->BindCloseApp(CloseApp);
 						LaunchApp(app);
 
-					} else if (processInfos[i].processName == "Word") {
+					} else if (processInfos[i].processName == "Text Editor") {
 
-						TextEditor* app = new TextEditor(Point(700, 50), Point(400, 200));
+						TextEditor* app = new TextEditor(Point(700, 60), Point(400, 200));
 						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Tic Tak") {
@@ -80,15 +86,15 @@ void AppLauncher::OnMousePress(MousePress* e, int taskbarHeight) {
 						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Tetris") {
-						Tetris* app = new Tetris(Point(525, 10));
+						Tetris* app = new Tetris(Point(525, 60));
 						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Kode") {
-						Kode* app = new Kode(Point(525, 10), Point(700, 500));
+						Kode* app = new Kode(Point(525, 60), Point(700, 500));
 						LaunchApp(app);
 
 					} else if (processInfos[i].processName == "Test") {
-						TestWindow* app = new TestWindow(Point(525, 10), Point(700, 500));
+						TestWindow* app = new TestWindow(Point(525, 60), Point(700, 500));
 						LaunchApp(app);
 					}
 				}
@@ -108,7 +114,7 @@ void AppLauncher::SetupProcessInfos() {
 	ProcessInfo kode = ProcessInfo("Kode");
 	processInfos.push_back(kode);
 
-	ProcessInfo word = ProcessInfo("Word");
+	ProcessInfo word = ProcessInfo("Text Editor");
 	processInfos.push_back(word);
 
 	ProcessInfo tic = ProcessInfo("Tic Tak");

@@ -10,8 +10,9 @@ FileSelector::FileSelector(Point _position, Point _size, std::filesystem::path a
 
 	ready = false;
 	operation = Operations::selectFile;
-	submit = Button(Point(position.GetX() + 10, position.GetY() + 10), Point(50, 30), "Select");
-	submit.ToggleCentered();
+
+	submit = Button(Point(10, 10), Point(50, 30), "Select");
+	submit.Tether(&position);
 	submit.SetFontSize(10);
 
 	//generates the file path for this instance
@@ -53,7 +54,6 @@ bool FileSelector::CreatePath(std::filesystem::path toCheck) {
 void FileSelector::Draw(Point offset) {
 
 	DrawRectangle(offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), size.GetX(), size.GetY(), backColor);
-
 
 	DrawRectangleLines(offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), size.GetX(), size.GetY(), BLACK);
 

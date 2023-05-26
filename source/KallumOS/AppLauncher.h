@@ -37,7 +37,7 @@ public:
 
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
-	void OnMousePress(MousePress* e, int taskbarHeight);
+	void OnMousePress(MousePress* e);
 
 private:
 	std::vector<ProcessInfo> processInfos;
@@ -46,6 +46,9 @@ private:
 
 	std::function<void(Process* toLaunch)> LaunchApp;
 	std::function<void(Process* toClose)> CloseApp;
+
+	Button scrollUp;
+	Button scrollDown;
 };
 
 
