@@ -32,7 +32,7 @@ void AppLauncher::Draw(Point offset) {
 
 
 		int height = size.GetY();
-		height -= scrollUp.GetPosition()->GetY() + scrollButtonPadding + ProcessInfo::buttonPadding;
+		height -= scrollUp.GetSize().GetY() + scrollButtonPadding;
 
 		int buttonCount = height / (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY());
 
@@ -40,22 +40,22 @@ void AppLauncher::Draw(Point offset) {
 
 			int zeroBasedI = i - displayStart;
 
-			if (zeroBasedI > buttonCount)
+			if (zeroBasedI > buttonCount - 1)
 				break;
 
 			DrawRectangleLines(
 				offset.GetX() + ProcessInfo::buttonPadding,
-				offset.GetY() + scrollButtonPadding + ProcessInfo::buttonPadding * (zeroBasedI + 1) + ProcessInfo::buttonSizes.GetY() * zeroBasedI,
+				offset.GetY() + scrollUp.GetSize().GetY() + scrollButtonPadding + (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY()) * zeroBasedI,
 				ProcessInfo::buttonSizes.GetX(),
 				ProcessInfo::buttonSizes.GetY(),
 				RED);
 
-			
+
 			std::string toDisplay = std::to_string(i) + ": " + processInfos[i].processName;
 			DrawText(
 				toDisplay.c_str(),
 				offset.GetX() + ProcessInfo::buttonPadding * 1.5,
-				offset.GetY() + scrollButtonPadding + ProcessInfo::buttonPadding * (zeroBasedI + 1) + ProcessInfo::buttonSizes.GetY() * zeroBasedI + ProcessInfo::buttonSizes.GetY() * 0.5,
+				offset.GetY() + scrollUp.GetSize().GetY() + scrollButtonPadding + (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY()) * zeroBasedI + ProcessInfo::buttonSizes.GetY() * 0.5,
 				defaultFontSize,
 				BLACK);
 
@@ -118,13 +118,13 @@ void AppLauncher::HandleButtonClicks() {
 	else if (scrollDown.Click(new Point(GetMouseX(), GetMouseY())))
 		displayStart++;
 
-	displayStart = Helper::Constrain(displayStart, 0, processInfos.size() -1);
+	displayStart = Helper::Constrain(displayStart, 0, processInfos.size() - 1);
 }
 
 void AppLauncher::SetupProcessInfos() {
 
 	std::function<void()> launchCode;
-	
+
 	launchCode = [this]() {
 		TestWindow* app = new TestWindow(Point(525, 60), Point(700, 500));
 		LaunchApp(app);

@@ -143,7 +143,7 @@ void Desktop::TaskBarClickHandle() {
 
 void Desktop::LaunchAppLauncher() {
 
-	launcher = new AppLauncher(&processes, Point(10, 70), Point(160, 420));
+	launcher = new AppLauncher(&processes, Point(10, 70), Point(160, 380));
 	launcher->BindLaunchApp(std::bind(&Desktop::LaunchApp, this, std::placeholders::_1));
 	launcher->BindCloseApp(std::bind(&Desktop::CloseApp, this, std::placeholders::_1));
 
