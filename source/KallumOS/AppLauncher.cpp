@@ -1,5 +1,5 @@
 #include "AppLauncher.h"
-
+#include "Helper.h"
 
 AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size) : Process("App launcher", _position, _size) {
 
@@ -7,9 +7,14 @@ AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Poi
 
 	SetupProcessInfos();
 
-	scrollUp = Button(Point(30, 30), Point(100, 30), "Scroll Up");
+	displayStart = 0;
+	scrollUp = Button(Point(30, 40), Point(40, 30), "/\\");
 	scrollUp.Tether(&position);
 	scrollUp.SetFontSize(10);
+
+	scrollDown = Button(Point(90, 40), Point(40, 30), "\\/");
+	scrollDown.Tether(&position);
+	scrollDown.SetFontSize(10);
 }
 
 void AppLauncher::Draw(Point offset) {
@@ -20,26 +25,48 @@ void AppLauncher::Draw(Point offset) {
 		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
 
 		scrollUp.Draw();
+		scrollDown.Draw();
 
-		int padding = 30;
-		for (int i = 0; i < processInfos.size(); i++) {
+		int scrollButtonPadding = scrollUp.GetSize().GetY();
+
+
+		int height = size.GetY();
+		height -= scrollUp.GetPosition()->GetY() + scrollButtonPadding + ProcessInfo::buttonPadding;
+
+		int buttonCount = height / (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY());
+
+		for (int i = displayStart; i < processInfos.size(); i++) {
+
+			int zeroBasedI = i - displayStart;
+
+			if (zeroBasedI > buttonCount)
+				break;
 
 			DrawRectangleLines(
 				offset.GetX() + ProcessInfo::buttonPadding,
-				offset.GetY() + ProcessInfo::buttonPadding * (i + 1) + processInfos[i].buttonSizes.GetY() * i,
-				processInfos[i].buttonSizes.GetX(),
-				processInfos[i].buttonSizes.GetY(),
+				offset.GetY() + scrollButtonPadding + ProcessInfo::buttonPadding * (zeroBasedI + 1) + ProcessInfo::buttonSizes.GetY() * zeroBasedI,
+				ProcessInfo::buttonSizes.GetX(),
+				ProcessInfo::buttonSizes.GetY(),
 				RED);
 
+			
+			std::string toDisplay = std::to_string(i) + ": " + processInfos[i].processName;
 			DrawText(
-				processInfos[i].processName.c_str(),
+				toDisplay.c_str(),
 				offset.GetX() + ProcessInfo::buttonPadding * 1.5,
-				offset.GetY() + ProcessInfo::buttonPadding * (i + 1) + processInfos[i].buttonSizes.GetY() * i + processInfos[i].buttonSizes.GetY() * 0.5,
+				offset.GetY() + scrollButtonPadding + ProcessInfo::buttonPadding * (zeroBasedI + 1) + ProcessInfo::buttonSizes.GetY() * zeroBasedI + ProcessInfo::buttonSizes.GetY() * 0.5,
 				defaultFontSize,
 				BLACK);
 
 		}
 	}
+}
+
+void AppLauncher::Tick(float elapsedTime) {
+
+	scrollUp.Hover(new Point(GetMouseX(), GetMouseY()));
+	scrollDown.Hover(new Point(GetMouseX(), GetMouseY()));
+
 }
 
 void AppLauncher::OnKeyPress(KeyPress* e) {
@@ -55,18 +82,24 @@ void AppLauncher::OnMousePress(MousePress* e) {
 
 		SuperMousePress(NormaliseMousePos());
 
+		HandleButtonClicks();
+
 		Point normalisedMouse = NormaliseMousePos(barHeight);
 
+		int scrollButtonPadding = scrollUp.GetSize().GetY();
+
 		//loops through all the possible apps
-		for (int i = 0; i < processInfos.size(); i++) {
+		for (int i = displayStart; i < processInfos.size(); i++) {
+
+			int zeroBasedI = i - displayStart;
 
 			//checks if the mouse was within the x of the buttons
-			if (normalisedMouse.GetX() > ProcessInfo::buttonPadding && 
+			if (normalisedMouse.GetX() > ProcessInfo::buttonPadding &&
 				normalisedMouse.GetX() < ProcessInfo::buttonPadding + processInfos[i].buttonSizes.GetX()) {
 
 				//checks if the mouse was within the y of the buttons
-				if (normalisedMouse.GetY() > ProcessInfo::buttonPadding * (i + 1) + processInfos[i].buttonSizes.GetY() * i &&
-					normalisedMouse.GetY() < ProcessInfo::buttonPadding * (i + 1) + processInfos[i].buttonSizes.GetY() * i + processInfos[i].buttonSizes.GetY()) {
+				if (normalisedMouse.GetY() - scrollButtonPadding > ProcessInfo::buttonPadding * (zeroBasedI + 1) + processInfos[i].buttonSizes.GetY() * zeroBasedI &&
+					normalisedMouse.GetY() - scrollButtonPadding < ProcessInfo::buttonPadding * (zeroBasedI + 1) + processInfos[i].buttonSizes.GetY() * zeroBasedI + processInfos[i].buttonSizes.GetY()) {
 
 					//calls the right method to open the clicked app
 					if (processInfos[i].processName == "Task Manager") {
@@ -101,6 +134,19 @@ void AppLauncher::OnMousePress(MousePress* e) {
 			}
 		}
 	}
+}
+
+void AppLauncher::HandleButtonClicks() {
+
+	if (scrollUp.Click(new Point(GetMouseX(), GetMouseY())))
+		displayStart++;
+
+	else if (scrollDown.Click(new Point(GetMouseX(), GetMouseY())))
+		displayStart--;
+
+	displayStart = Helper::Constrain(displayStart, 0, processInfos.size() -1);
+
+
 }
 
 void AppLauncher::SetupProcessInfos() {

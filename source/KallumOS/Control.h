@@ -32,7 +32,7 @@ public:
 	Control();
 	Control(Point _position, Point _size);
 
-	virtual void Draw(Point offset = Point(0,0)) {}
+	virtual void Draw(Point offset = Point(0, 0)) {}
 	virtual bool Hover(Point* mousePosition);
 	virtual bool Click(Point* mousePosition) = 0;
 	virtual void OnKeyPress(KeyPress* e) {}
@@ -43,5 +43,7 @@ public:
 	virtual void InvertFocus(bool click);
 	virtual void Tether(Point* _tether);
 	virtual Point* GetPosition();
+
+	virtual Point GetSize() { return size; }
 };
 
