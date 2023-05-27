@@ -18,12 +18,12 @@ public:
 	static inline int buttonPadding = 30;
 	static inline Point buttonSizes = Point(100, 50);
 
-	Button button;
 	std::string processName;
+	std::function<void()> launchCode;
 
-	ProcessInfo(std::string _processName) {
+	ProcessInfo(std::string _processName, std::function<void()> _launchCode) {
 		processName = _processName;
-		button = Button(Point(0, 0), buttonSizes, processName);
+		launchCode = _launchCode;
 	}
 };
 

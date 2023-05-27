@@ -1,6 +1,7 @@
 #include "AppLauncher.h"
 #include "Helper.h"
 
+
 AppLauncher::AppLauncher(std::vector<Process*>* _processes, Point _position, Point _size) : Process("App launcher", _position, _size) {
 
 	processes = _processes;
@@ -101,35 +102,8 @@ void AppLauncher::OnMousePress(MousePress* e) {
 				if (normalisedMouse.GetY() - scrollButtonPadding > ProcessInfo::buttonPadding * (zeroBasedI + 1) + processInfos[i].buttonSizes.GetY() * zeroBasedI &&
 					normalisedMouse.GetY() - scrollButtonPadding < ProcessInfo::buttonPadding * (zeroBasedI + 1) + processInfos[i].buttonSizes.GetY() * zeroBasedI + processInfos[i].buttonSizes.GetY()) {
 
-					//calls the right method to open the clicked app
-					if (processInfos[i].processName == "Task Manager") {
-
-						TaskManager* app = new TaskManager(processes, Point(200, 60), Point(450, 300));
-						app->BindCloseApp(CloseApp);
-						LaunchApp(app);
-
-					} else if (processInfos[i].processName == "Text Editor") {
-
-						TextEditor* app = new TextEditor(Point(700, 60), Point(400, 200));
-						LaunchApp(app);
-
-					} else if (processInfos[i].processName == "Tic Tak") {
-
-						TicTak* app = new TicTak(Point(700, 350), Point(400, 200));
-						LaunchApp(app);
-
-					} else if (processInfos[i].processName == "Tetris") {
-						Tetris* app = new Tetris(Point(525, 60));
-						LaunchApp(app);
-
-					} else if (processInfos[i].processName == "Kode") {
-						Kode* app = new Kode(Point(525, 60), Point(700, 500));
-						LaunchApp(app);
-
-					} else if (processInfos[i].processName == "Test") {
-						TestWindow* app = new TestWindow(Point(525, 60), Point(700, 500));
-						LaunchApp(app);
-					}
+					//calls the right method within the clicked button to open the app
+					processInfos[i].launchCode();
 				}
 			}
 		}
@@ -139,34 +113,62 @@ void AppLauncher::OnMousePress(MousePress* e) {
 void AppLauncher::HandleButtonClicks() {
 
 	if (scrollUp.Click(new Point(GetMouseX(), GetMouseY())))
-		displayStart++;
-
-	else if (scrollDown.Click(new Point(GetMouseX(), GetMouseY())))
 		displayStart--;
 
+	else if (scrollDown.Click(new Point(GetMouseX(), GetMouseY())))
+		displayStart++;
+
 	displayStart = Helper::Constrain(displayStart, 0, processInfos.size() -1);
-
-
 }
 
 void AppLauncher::SetupProcessInfos() {
 
-	ProcessInfo test = ProcessInfo("Test");
+	std::function<void()> launchCode;
+	
+	launchCode = [this]() {
+		TestWindow* app = new TestWindow(Point(525, 60), Point(700, 500));
+		LaunchApp(app);
+	};
+	ProcessInfo test = ProcessInfo("Test", launchCode);
 	processInfos.push_back(test);
 
-	ProcessInfo manager = ProcessInfo("Task Manager");
-	processInfos.push_back(manager);
-
-	ProcessInfo kode = ProcessInfo("Kode");
+	launchCode = [this]() {
+		Kode* app = new Kode(Point(525, 60), Point(700, 500));
+		LaunchApp(app);
+	};
+	ProcessInfo kode = ProcessInfo("Kode", launchCode);
 	processInfos.push_back(kode);
 
-	ProcessInfo word = ProcessInfo("Text Editor");
-	processInfos.push_back(word);
 
-	ProcessInfo tic = ProcessInfo("Tic Tak");
-	processInfos.push_back(tic);
+	launchCode = [this]() {
+		TaskManager* app = new TaskManager(processes, Point(200, 60), Point(450, 300));
+		app->BindCloseApp(CloseApp);
+		LaunchApp(app);
+	};
+	ProcessInfo manager = ProcessInfo("Task Manager", launchCode);
+	processInfos.push_back(manager);
 
-	ProcessInfo tetris = ProcessInfo("Tetris");
+
+	launchCode = [this]() {
+		Tetris* app = new Tetris(Point(525, 60));
+		LaunchApp(app);
+	};
+	ProcessInfo tetris = ProcessInfo("Tetris", launchCode);
 	processInfos.push_back(tetris);
 
+
+	launchCode = [this]() {
+		TextEditor* app = new TextEditor(Point(700, 60), Point(400, 200));
+		LaunchApp(app);
+	};
+	ProcessInfo word = ProcessInfo("Text Editor", launchCode);
+	processInfos.push_back(word);
+
+
+	launchCode = [this]() {
+		TicTak* app = new TicTak(Point(700, 350), Point(400, 200));
+		LaunchApp(app);
+	};
+	ProcessInfo tic = ProcessInfo("Tic Tak", launchCode);
+	processInfos.push_back(tic);
 }
