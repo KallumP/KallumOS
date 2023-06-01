@@ -40,14 +40,15 @@ public:
 	bool Click(Point* mousePosition);
 
 	bool GetReady() { return ready; }
-	std::string GetSelectedFileName() { return selectedFile.string(); }
+	std::string GetSelectedFileName() { return selectedFile->fileName; }
+	std::filesystem::path GetSelectedFilePath() { return selectedFile->filePath; }
 
 private:
 
 	std::filesystem::path path;
 	std::vector<FileOption> currentFiles;
 	std::vector<FileOption> currentDirectories;
-	std::filesystem::path selectedFile;
+	FileOption* selectedFile;
 
 	void HandleFileClick();
 	void FetchAllCurrentFiles();

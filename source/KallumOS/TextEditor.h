@@ -25,7 +25,7 @@ private:
 	void DeleteChar();
 	void HandleButtonClicks();
 
-	void LoadFromFile(std::string selectedPath);
+	void LoadFromFile(std::filesystem::path selectedPath);
 
 	std::string text;
 

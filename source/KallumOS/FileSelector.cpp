@@ -106,7 +106,7 @@ void FileSelector::HandleFileClick() {
 	//checks if a new file was clicked into
 	for (int i = 0; i < currentFiles.size(); i++)
 		if (currentFiles[i].hovered) {
-			selectedFile = currentFiles[i].fileName;
+			selectedFile = &currentFiles[i];
 			currentFiles[i].fontColor = BLUE;
 			return;
 		} else
@@ -141,9 +141,9 @@ void FileSelector::FetchAllCurrentFiles() {
 	//loops through all the files in the current directory and adds them to the list
 	for (const auto& entry : std::filesystem::directory_iterator(path))
 		if (entry.is_regular_file())
-			currentFiles.push_back(FileOption(std::filesystem::relative(entry.path(), path).string(), currentFiles.size(), position, entry));
+			currentFiles.push_back(FileOption(std::filesystem::relative(entry.path(), path).string(), currentFiles.size(), position, entry.path()));
 		else
-			currentDirectories.push_back(FileOption(std::filesystem::relative(entry.path(), path).string(), currentDirectories.size(), position, entry));
+			currentDirectories.push_back(FileOption(std::filesystem::relative(entry.path(), path).string(), currentDirectories.size(), position, entry.path()));
 }
 
 void FileSelector::DetectFileHover(Point* mousePosition) {
@@ -172,6 +172,6 @@ void FileSelector::DetectFileHover(Point* mousePosition) {
 void FileSelector::SetData() {
 
 	if (operation == Operations::selectFile)
-		if (selectedFile != L"")
+		if (selectedFile->filePath != L"")
 			ready = true;
 }

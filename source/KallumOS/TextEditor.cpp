@@ -96,7 +96,7 @@ void TextEditor::OnMousePress(MousePress* e) {
 
 			if (fileSelector->GetReady()) {
 
-				LoadFromFile(fileSelector->GetSelectedFileName());
+				LoadFromFile(fileSelector->GetSelectedFilePath());
 
 				delete fileSelector;
 				fileSelector = nullptr;
@@ -153,13 +153,16 @@ void TextEditor::HandleButtonClicks() {
 }
 
 //loads the content of the selected file into the text editor
-void TextEditor::LoadFromFile(std::string selectedPath) {
+void TextEditor::LoadFromFile(std::filesystem::path selectedPath) {
 
-	std::string fullPath = "hardDrive/TextEditor/" + selectedPath;
+
+	std::string fullPath = "hardDrive/" + std::filesystem::relative(selectedPath, "hardDrive/").string();
 
 	//tries to open the selected file
 	std::ifstream selectedFile;
 	selectedFile.open(fullPath);
+
+	text = "";
 
 	//checks if the file was opened
 	if (selectedFile.is_open()) {
