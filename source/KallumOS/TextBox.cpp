@@ -29,10 +29,9 @@ void TextBox::SetObfuscation(std::string _obfuscation) {
 	obfuscation = _obfuscation;
 }
 
-void TextBox::Draw() {
+void TextBox::Draw(Point offset) {
 
-	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+	Point* normalizedPosition = GetPosition();
 
 	//draws the text box
 	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);

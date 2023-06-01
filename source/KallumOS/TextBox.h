@@ -15,7 +15,7 @@ public:
 	TextBox(Point _position, Point _size, std::string _value, std::string _placeholder);
 
 	void SetObfuscation(std::string);
-	void Draw();
+	void Draw(Point offset = Point(0,0));
 	bool Click(Point*);
 	void OnKeyPress(KeyPress*);
 

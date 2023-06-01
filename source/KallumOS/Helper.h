@@ -47,6 +47,19 @@ public:
 		return true;
 	}
 
+	//returns the value after constraining it between the upper and lower limits
+	static int Constrain(int value, int lower, int upper) {
+
+
+		if (value > upper)
+			return upper;
+
+		if (value < lower)
+			return lower;
+
+		return value;
+	}
+
 private:
 	static void SetSeed() {
 		std::srand(std::time(nullptr));

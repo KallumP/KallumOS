@@ -35,7 +35,7 @@ void Desktop::Draw() {
 	ClearBackground(backgroundColor);
 
 	taskbar.Draw();
-	Point drawOffset = Point(0, taskbar.height);
+	Point drawOffset = Point(0, 0);
 
 
 	for (int i = 0; i < processes.size(); i++) {
@@ -45,7 +45,7 @@ void Desktop::Draw() {
 	}
 
 	if (focused != nullptr) {
-		DrawText(focused->GetName().c_str(), 10, drawOffset.GetY() + 5, 2, BLACK);
+		DrawText(focused->GetName().c_str(), 10, drawOffset.GetY() + taskbar.height + 5, 2, BLACK);
 		focused->Draw(drawOffset);
 	}
 }
@@ -73,7 +73,7 @@ void Desktop::OnMousePress(MousePress* e) {
 	if (focused != nullptr) {
 
 		//send the click to the focused process
-		focused->OnMousePress(e, taskbar.height);
+		focused->OnMousePress(e);
 
 		//checks if this was nullptr (incase this was the task manager)
 		if (focused != nullptr) {
@@ -100,7 +100,7 @@ void Desktop::OnMouseHold(MousePress* e) {
 	if (focused != nullptr) {
 
 		//send the click to the focused process
-		focused->OnMouseHold(e, taskbar.height);
+		focused->OnMouseHold(e);
 	}
 }
 
@@ -143,7 +143,7 @@ void Desktop::TaskBarClickHandle() {
 
 void Desktop::LaunchAppLauncher() {
 
-	launcher = new AppLauncher(&processes, Point(10, 50), Point(160, 420));
+	launcher = new AppLauncher(&processes, Point(10, 70), Point(160, 380));
 	launcher->BindLaunchApp(std::bind(&Desktop::LaunchApp, this, std::placeholders::_1));
 	launcher->BindCloseApp(std::bind(&Desktop::CloseApp, this, std::placeholders::_1));
 

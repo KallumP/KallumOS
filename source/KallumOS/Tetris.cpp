@@ -245,13 +245,13 @@ void Tetris::OnKeyPress(KeyPress* e) {
 
 	}
 }
-void Tetris::OnMousePress(MousePress* e, int taskbarHeight) {
+void Tetris::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 
-		Point normalisedMouse = NormaliseMousePos(taskbarHeight + barHeight);
+		Point normalisedMouse = NormaliseMousePos(barHeight);
 	}
 }
 

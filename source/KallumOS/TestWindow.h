@@ -12,7 +12,7 @@ public:
 
 	void Draw(Point offset);
 	void Tick(float elapsedTime);
-	void OnMousePress(MousePress* e, int taskbarHeight);
+	void OnMousePress(MousePress* e);
 
 private:
 	FileSelector *fileSelector;

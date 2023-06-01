@@ -59,16 +59,16 @@ void TextEditor::OnKeyPress(KeyPress* e) {
 }
 
 
-void TextEditor::OnMousePress(MousePress* e, int taskbarHeight) {
+void TextEditor::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = NormaliseMousePos(taskbarHeight);
+		Point normalisedMouse = NormaliseMousePos();
 
 		//move cursore to something near the text
 	}
