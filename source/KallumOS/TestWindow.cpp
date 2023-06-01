@@ -2,7 +2,15 @@
 
 TestWindow::TestWindow(Point _position, Point _size) : Process("Test window", _position, _size) {
 
-	std::filesystem::path appPath = "TestWindow";
+	std::filesystem::path appPath = "hardDrive/TestWindow";
+
+	//if the path didn't exist
+	if (!Helper::VerifyPathExists(appPath))
+
+		//if the path could not be made
+		if (!Helper::CreatePath(appPath))
+
+			return;
 
 	foo = "Nothing selected yet";
 	fileSelector = new FileSelector(Point(200, 100), Point(300, 300), appPath);
@@ -31,7 +39,7 @@ void TestWindow::Tick(float elapsedTime) {
 		fileSelector->Hover(new Point(GetMouseX(), GetMouseY()));
 
 		if (fileSelector->GetReady()) {
-			foo = fileSelector->GetSelectedFile();
+			foo = fileSelector->GetSelectedFileName();
 			delete fileSelector;
 			fileSelector = nullptr;
 		}

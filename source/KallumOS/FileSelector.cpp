@@ -17,37 +17,15 @@ FileSelector::FileSelector(Point _position, Point _size, std::filesystem::path a
 
 	//generates the file path for this instance
 	std::filesystem::path osPath = std::filesystem::current_path();
-	path = osPath / "hardDrive";
-	path = path / appPath;
+	path = osPath / appPath;
 
 	//if the path didn't exist
-	if (!VerifyPathExists(path))
-
-		//if the path could not be made
-		if (!CreatePath(path))
-			return;
+	if (!Helper::VerifyPathExists(path))
+		return;
 
 	fontSize = 10;
 
 	FetchAllCurrentFiles();
-}
-
-bool FileSelector::VerifyPathExists(std::filesystem::path toCheck) {
-
-	return std::filesystem::exists(toCheck);
-}
-
-bool FileSelector::CreatePath(std::filesystem::path toCheck) {
-
-	std::cout << "Creating directory" << std::endl;
-
-	//makes the file path
-	if (!std::filesystem::create_directory(toCheck)) {
-		std::cout << "Failed to create directory\n";
-		return false;
-	}
-
-	return true;
 }
 
 
@@ -145,7 +123,7 @@ void FileSelector::HandleFileClick() {
 			return;
 
 		std::filesystem::path pathToCheck = path / newPath;
-		if (!VerifyPathExists(pathToCheck))
+		if (!Helper::VerifyPathExists(pathToCheck))
 			return;
 
 		path = pathToCheck;
