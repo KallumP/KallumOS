@@ -32,7 +32,6 @@ public:
 		std::filesystem::path osPath = std::filesystem::current_path();
 		std::filesystem::path drivePath = osPath / "hardDrive";
 
-
 		//checks if this path existed
 		if (!std::filesystem::exists(drivePath)) {
 			std::cout << "Virtual hard drive not found" << std::endl << "Creating drive now" << std::endl;
@@ -42,6 +41,27 @@ public:
 				std::cout << "Failed to create drive\n";
 				return false;
 			}
+		}
+
+		return true;
+	}
+
+	//returns if a path exists
+	static bool VerifyPathExists(std::filesystem::path toCheck) {
+
+		return std::filesystem::exists(toCheck);
+
+	}
+
+	//creates a path and returns if that was successful
+	static bool CreatePath(std::filesystem::path toCheck) {
+
+		std::cout << "Creating directory" << std::endl;
+
+		//makes the file path
+		if (!std::filesystem::create_directory(toCheck)) {
+			std::cout << "Failed to create directory\n";
+			return false;
 		}
 
 		return true;

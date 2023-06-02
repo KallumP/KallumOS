@@ -40,10 +40,12 @@ public:
 
 	Point normalizePosition(Point* screenSize);
 	bool Within(Point* mousePosition);
-	virtual void InvertFocus(bool click);
-	virtual void Tether(Point* _tether);
-	virtual Point* GetPosition();
+	void InvertFocus(bool click);
+	void Tether(Point* _tether);
+	Point* GetPosition();
 
-	virtual Point GetSize() { return size; }
+	Point GetSize() { return size; }
+
+	void SetFontSize(int _fontSize) { fontSize = _fontSize; }
 };
 
