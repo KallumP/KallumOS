@@ -19,7 +19,7 @@ public:
 
 	bool GetClicked();
 	void InvertClicked();
-	void SetFontSize(int _fontSize) { fontSize = _fontSize; }
+	
 
 private:
 

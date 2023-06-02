@@ -2,6 +2,7 @@
 #include "Process.h"
 #include "Button.h"
 #include "FileSelector.h"
+#include "FileSaver.h"
 
 #include <fstream>
 #include <iostream>
@@ -26,6 +27,7 @@ private:
 	void HandleButtonClicks();
 
 	void LoadFromFile(std::filesystem::path selectedPath);
+	void SaveToFile(std::filesystem::path selectedPath);
 
 	std::string text;
 
@@ -34,5 +36,6 @@ private:
 	Button open;
 	Button save;
 	FileSelector *fileSelector;
+	FileSaver *fileSaver;
 };
 

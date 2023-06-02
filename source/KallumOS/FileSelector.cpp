@@ -23,7 +23,6 @@ void FileSelector::Draw(Point offset) {
 
 	//draws the button
 	submit.Draw();
-
 }
 
 
@@ -72,6 +71,6 @@ void FileSelector::HandleFileClick() {
 
 void FileSelector::SetData() {
 
-	if (selectedFile->filePath != L"")
+	if (selectedFile != nullptr)
 		ready = true;
 }

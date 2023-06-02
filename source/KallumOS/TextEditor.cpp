@@ -16,17 +16,14 @@ TextEditor::TextEditor(Point _position, Point _size) : Process("Text Editor", _p
 
 void TextEditor::Tick(float elapsedTime) {
 
-	if (fileSelector != nullptr) {
-
+	if (fileSelector != nullptr)
 		fileSelector->Hover(new Point(GetMouseX(), GetMouseY()));
 
-	} else {
+	if (fileSaver != nullptr)
+		fileSaver->Hover(new Point(GetMouseX(), GetMouseY()));
 
-		open.Hover(new Point(GetMouseX(), GetMouseY()));
-		save.Hover(new Point(GetMouseX(), GetMouseY()));
-
-	}
-
+	open.Hover(new Point(GetMouseX(), GetMouseY()));
+	save.Hover(new Point(GetMouseX(), GetMouseY()));
 }
 
 void TextEditor::Draw(Point offset) {
@@ -64,24 +61,34 @@ void TextEditor::Draw(Point offset) {
 
 		if (fileSelector != nullptr)
 			fileSelector->Draw(Point(0, 0));
+
+		if (fileSaver != nullptr)
+			fileSaver->Draw(Point(0, 0));
 	}
 }
 
 void TextEditor::OnKeyPress(KeyPress* e) {
 
-	if (e->GetKeyCode() == KEY_BACKSPACE) {
-		DeleteChar();
-		return;
-	} else if (e->GetKeyCode() == KEY_LEFT) {
-		//MoveCursor(-1);
-		return;
-	} else if (e->GetKeyCode() == KEY_RIGHT) {
-		//MoveCursor(1);
-		return;
-	}
+	//passes the key input into the file saver if its open
+	if (fileSaver != nullptr)
+		fileSaver->OnKeyPress(e);
 
-	if (e->GetKeyContent().length() != 0)
-		Input(e->GetKeyContent());
+	else {
+
+		if (e->GetKeyCode() == KEY_BACKSPACE) {
+			DeleteChar();
+			return;
+		} else if (e->GetKeyCode() == KEY_LEFT) {
+			//MoveCursor(-1);
+			return;
+		} else if (e->GetKeyCode() == KEY_RIGHT) {
+			//MoveCursor(1);
+			return;
+		}
+
+		if (e->GetKeyContent().length() != 0)
+			Input(e->GetKeyContent());
+	}
 }
 
 void TextEditor::OnMousePress(MousePress* e) {
@@ -90,7 +97,7 @@ void TextEditor::OnMousePress(MousePress* e) {
 
 		SuperMousePress(NormaliseMousePos());
 
-		if (fileSelector != nullptr) {
+		if (fileSelector != nullptr) { // file selector to open a file
 
 			fileSelector->Click(new Point(GetMouseX(), GetMouseY()));
 
@@ -102,6 +109,18 @@ void TextEditor::OnMousePress(MousePress* e) {
 				fileSelector = nullptr;
 			}
 
+		} else if (fileSaver != nullptr) { // file saver to save to a file
+
+			fileSaver->Click(new Point(GetMouseX(), GetMouseY()));
+
+			if (fileSaver->GetReady()) {
+
+				SaveToFile(fileSaver->GetSelectedFilePath());
+
+				delete fileSaver;
+				fileSaver = nullptr;
+			}
+
 		} else {
 
 			HandleButtonClicks();
@@ -111,7 +130,7 @@ void TextEditor::OnMousePress(MousePress* e) {
 			//saves the height of the mouse
 			Point normalisedMouse = NormaliseMousePos();
 
-			//move cursore to something near the text
+			//move cursor to something near the text
 		}
 	}
 }
@@ -122,34 +141,24 @@ void TextEditor::Input(std::string input) {
 
 void TextEditor::DeleteChar() {
 
-	if (text.length() != 0) {
-
+	if (text.length() != 0)
 		text.pop_back();
-
-		std::cout << "Pressed: Backspace" << std::endl;
-
-	} else {
-
-		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
-	}
 }
 
 //handles what happens if the open or save buttons are clicked
 void TextEditor::HandleButtonClicks() {
 
-	if (open.Click(new Point(GetMouseX(), GetMouseY()))) {
-		std::filesystem::path appPath = "hardDrive/TextEditor";
+	std::filesystem::path appPath = "hardDrive/TextEditor";
 
-		//if the path didn't exist
-		if (!Helper::VerifyPathExists(appPath))
+	if (!Helper::VerifyPathExists(appPath)) //if the path didn't exist
+		if (!Helper::CreatePath(appPath)) //if the path could not be made
+			return;
 
-			//if the path could not be made
-			if (!Helper::CreatePath(appPath))
-
-				return;
-
+	if (open.Click(new Point(GetMouseX(), GetMouseY())))
 		fileSelector = new FileSelector(Point(200, 100), Point(300, 300), appPath);
-	}
+
+	if (save.Click(new Point(GetMouseX(), GetMouseY())))
+		fileSaver = new FileSaver(Point(200, 100), Point(300, 300), appPath);
 }
 
 //loads the content of the selected file into the text editor
@@ -170,15 +179,39 @@ void TextEditor::LoadFromFile(std::filesystem::path selectedPath) {
 		//loads each line
 		std::string line;
 		while (std::getline(selectedFile, line))
-			
+
 			//adds each line
 			text += line;
-		
+
 		//loads the file
 		selectedFile.close();
 
-	} else 
+	} else
 
 		//adds the error message
 		text = "Could not open file";
+}
+
+void TextEditor::SaveToFile(std::filesystem::path selectedPath) {
+
+	std::string fullPath = "hardDrive/" + std::filesystem::relative(selectedPath, "hardDrive/").string();
+
+	//tries to open the selected file
+	std::ofstream selectedFile;
+	selectedFile.open(fullPath);
+
+	//checks if the file was opened
+	if (selectedFile.is_open()) {
+
+		//writes the text into the file
+		selectedFile << text;
+
+		//loads the file
+		selectedFile.close();
+
+	} else
+
+		//adds the error message
+		text = "Could not save file";
+
 }

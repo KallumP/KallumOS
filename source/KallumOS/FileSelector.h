@@ -23,13 +23,10 @@ public:
 	std::filesystem::path GetSelectedFilePath() { return selectedFile->filePath; }
 
 private:
-
-	FileOption* selectedFile;
-
 	void HandleFileClick();
-	
 	void SetData();
 
+	FileOption* selectedFile;
 	Button submit;
 	bool ready;
 };

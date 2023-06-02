@@ -24,6 +24,7 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="CreateAccount.cpp" />
     <ClCompile Include="Desktop.cpp" />
+    <ClCompile Include="FileSaver.cpp" />
     <ClCompile Include="FileSelector.cpp" />
     <ClCompile Include="FileViewer.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="CreateAccount.h" />
     <ClInclude Include="Desktop.h" />
+    <ClInclude Include="FileSaver.h" />
     <ClInclude Include="FileSelector.h" />
     <ClInclude Include="FileViewer.h" />
     <ClInclude Include="Helper.h" />

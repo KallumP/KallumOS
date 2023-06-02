@@ -187,6 +187,10 @@ std::string TextBox::GetValue() {
 	return value;
 }
 
+void TextBox::SetValue(std::string _value) {
+	value = _value;
+}
+
 void TextBox::InvertFocus(bool click) {
 	focused = !focused;
 
