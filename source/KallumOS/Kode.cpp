@@ -15,8 +15,6 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//text += "z = z + z;out z;";
 	//text += "z = z + 10;out z;";
 
-	//
-
 	consoleHeight = 100;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
 	AddToConsoleOutput(1, "Press F3 to on debug outputs", BLUE);
@@ -123,16 +121,16 @@ void Kode::OnKeyPress(KeyPress* e) {
 		Input(e->GetKeyContent());
 }
 
-void Kode::OnMousePress(MousePress* e, int taskbarHeight) {
+void Kode::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = NormaliseMousePos(taskbarHeight);
+		Point normalisedMouse = NormaliseMousePos();
 
 		//move cursore to something near the text
 	}

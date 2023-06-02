@@ -3,12 +3,18 @@
 
 #include "KallumOS.h"
 #include "Input.h"
+#include "Helper.h"
 
 int main() {
 
 	//sets up the window
 	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-	InitWindow(1280, 720, "KallumOS");
+	InitWindow(1280, 750, "KallumOS");
+
+	Helper::SetupHelper();
+	
+	if (!Helper::CreateHardDrive())
+		return 0;
 
 	KallumOS* os = new KallumOS();
 	Input* intputHandler = new Input();
@@ -31,7 +37,6 @@ int main() {
 
 		BeginDrawing();
 		os->Draw();
-		//ClearBackground(RED);
 		EndDrawing();
 	}
 

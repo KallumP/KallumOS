@@ -23,21 +23,29 @@ protected:
 	Point padding;
 	int fontSize;
 
+private:
+	bool centered;
+	Point* tether;
 
 public:
 
 	Control();
 	Control(Point _position, Point _size);
 
-	virtual void Draw() = 0;
+	virtual void Draw(Point offset = Point(0, 0)) {}
 	virtual bool Hover(Point* mousePosition);
 	virtual bool Click(Point* mousePosition) = 0;
-	virtual void OnKeyPress(KeyPress* e) = 0;
+	virtual void OnKeyPress(KeyPress* e) {}
 
 
 	Point normalizePosition(Point* screenSize);
 	bool Within(Point* mousePosition);
-	virtual void InvertFocus(bool click);
+	void InvertFocus(bool click);
+	void Tether(Point* _tether);
+	Point* GetPosition();
 
+	Point GetSize() { return size; }
+
+	void SetFontSize(int _fontSize) { fontSize = _fontSize; }
 };
 

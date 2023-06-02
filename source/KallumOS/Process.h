@@ -27,7 +27,7 @@ protected:
 	int buttonWidth = 40; //px
 	void DrawBoxBar(Point offset, bool fill);
 	void SuperMousePress(Point normMousePos);
-	Point NormaliseMousePos(int yOffSet);
+	Point NormaliseMousePos(int yOffSet = 0);
 
 
 public:
@@ -40,8 +40,8 @@ public:
 	virtual std::string GetName();
 
 	virtual void OnKeyPress(KeyPress* e) {}
-	virtual void OnMousePress(MousePress* e, int taskbarHeight);
-	virtual void OnMouseHold(MousePress* e, int taskBarHeight);
+	virtual void OnMousePress(MousePress* e);
+	virtual void OnMouseHold(MousePress* e);
 	virtual void OnMouseRelease(MousePress* e);
 
 	bool GetHidden() { return hidden; }

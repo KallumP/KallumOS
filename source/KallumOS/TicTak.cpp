@@ -41,14 +41,13 @@ void TicTak::OnKeyPress(KeyPress* e) {
 	}
 }
 
-void TicTak::OnMousePress(MousePress* e, int taskbarHeight) {
+void TicTak::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos(taskbarHeight));
+		SuperMousePress(NormaliseMousePos());
 
-		Point normalisedMouse = NormaliseMousePos(taskbarHeight + barHeight);
-
+		Point normalisedMouse = NormaliseMousePos(barHeight);
 
 		if (!win) {
 

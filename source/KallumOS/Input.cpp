@@ -18,6 +18,8 @@ void Input::GenerateKeyPressList() {
 	//null input
 	allKeyPressOptions.push_back(KeyPress(KEY_NULL, ""));
 
+	//add capital letters, change the secondary key constructor to use optional parameters
+
 	//letter inputs
 	allKeyPressOptions.push_back(KeyPress(KEY_A, "a"));
 	allKeyPressOptions.push_back(KeyPress(KEY_B, "b"));

@@ -21,10 +21,9 @@ Button::Button(Point _position, Point _size, std::string _value) : Control(_posi
 	fontSize = 20;
 }
 
-void Button::Draw() {
+void Button::Draw(Point offset) {
 
-	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+	Point* normalizedPosition = GetPosition();
 
 	//draws the button
 	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);

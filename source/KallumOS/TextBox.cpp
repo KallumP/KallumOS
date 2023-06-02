@@ -29,10 +29,9 @@ void TextBox::SetObfuscation(std::string _obfuscation) {
 	obfuscation = _obfuscation;
 }
 
-void TextBox::Draw() {
+void TextBox::Draw(Point offset) {
 
-	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+	Point* normalizedPosition = GetPosition();
 
 	//draws the text box
 	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
@@ -186,6 +185,10 @@ void TextBox::DeleteWord() {
 
 std::string TextBox::GetValue() {
 	return value;
+}
+
+void TextBox::SetValue(std::string _value) {
+	value = _value;
 }
 
 void TextBox::InvertFocus(bool click) {

@@ -24,6 +24,9 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="CreateAccount.cpp" />
     <ClCompile Include="Desktop.cpp" />
+    <ClCompile Include="FileSaver.cpp" />
+    <ClCompile Include="FileSelector.cpp" />
+    <ClCompile Include="FileViewer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="KallumOS.cpp" />
     <ClCompile Include="Kode.cpp" />
@@ -33,6 +36,7 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Taskbar.cpp" />
     <ClCompile Include="TaskManager.cpp" />
+    <ClCompile Include="TestWindow.cpp" />
     <ClCompile Include="Tetris.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextEditor.cpp" />
@@ -44,6 +48,9 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="CreateAccount.h" />
     <ClInclude Include="Desktop.h" />
+    <ClInclude Include="FileSaver.h" />
+    <ClInclude Include="FileSelector.h" />
+    <ClInclude Include="FileViewer.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="KallumOS.h" />
@@ -55,6 +62,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="Taskbar.h" />
     <ClInclude Include="TaskManager.h" />
+    <ClInclude Include="TestWindow.h" />
     <ClInclude Include="Tetris.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextEditor.h" />
@@ -158,6 +166,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -172,6 +181,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
