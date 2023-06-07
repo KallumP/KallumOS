@@ -125,12 +125,12 @@ void AppLauncher::SetupProcessInfos() {
 
 	std::function<void()> launchCode;
 
-	launchCode = [this]() {
+	/*launchCode = [this]() {
 		TestWindow* app = new TestWindow(Point(525, 60), Point(700, 500));
 		LaunchApp(app);
 	};
 	ProcessInfo test = ProcessInfo("Test", launchCode);
-	processInfos.push_back(test);
+	processInfos.push_back(test);*/
 
 	launchCode = [this]() {
 		Kode* app = new Kode(Point(525, 60), Point(700, 500));
