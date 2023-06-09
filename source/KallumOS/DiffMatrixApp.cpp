@@ -33,7 +33,6 @@ void DiffMatrixApp::Tick(float elapsedTime) {
 		target.Hover(new Point(GetMouseX(), GetMouseY()));
 		source.Hover(new Point(GetMouseX(), GetMouseY()));
 		go.Hover(new Point(GetMouseX(), GetMouseY()));
-
 	}
 }
 
@@ -45,12 +44,11 @@ void DiffMatrixApp::Draw(Point offset) {
 		DrawBoxBar(offset, true);
 		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
 
-
 		go.Draw(offset);
 		source.Draw(offset);
 		target.Draw(offset);
 
-		int buttonOffSet = go.GetSize().GetY() + 20;
+		int buttonOffSet = source.GetSize().GetY() + 20;
 		offset.Add(Point(0, buttonOffSet));
 
 
@@ -62,13 +60,15 @@ void DiffMatrixApp::Draw(Point offset) {
 		if (dimensions.GetY() != 0)
 			boxSize.SetY((size.GetY() - buttonOffSet) / dimensions.GetY());
 
+		DrawPath(offset, dimensions, boxSize);
 		DrawBorders(offset, dimensions, boxSize);
 		DrawStrings(offset, dimensions, boxSize);
+		DrawMatrix(offset, dimensions, boxSize);
 	}
 }
 
 void DiffMatrixApp::DrawBorders(Point offset, Point dimensions, Point boxSize) {
-	
+
 	for (int i = 0; i < dimensions.GetX(); i++) {
 
 		DrawLine(
@@ -92,18 +92,53 @@ void DiffMatrixApp::DrawBorders(Point offset, Point dimensions, Point boxSize) {
 void DiffMatrixApp::DrawStrings(Point offset, Point dimensions, Point boxSize) {
 
 
+	int lastRow = dimensions.GetY() - 1;
+	for (int i = 0; i < target.GetValue().size(); i++)
 
+		DrawText(
+			target.GetValue().substr(i, 1).c_str(),
+			offset.GetX() + (i + 1) * boxSize.GetX() + boxSize.GetX() / 2,
+			offset.GetY() + lastRow * boxSize.GetY() + boxSize.GetY() / 2,
+			10, BLACK);
+
+	int lastCol = dimensions.GetX() - 1;
+	for (int i = 0; i < source.GetValue().size(); i++)
+
+		DrawText(
+			source.GetValue().substr(i, 1).c_str(),
+			offset.GetX() + lastCol * boxSize.GetX() + boxSize.GetX() / 2,
+			offset.GetY() + (i + 1) * boxSize.GetY() + boxSize.GetY() / 2,
+			10, BLACK);
 
 }
+void DiffMatrixApp::DrawMatrix(Point offset, Point dimensions, Point boxSize) {
+
+	for (int i = 0; i < distanceMatrix.size(); i++) {
+
+		for (int j = 0; j < distanceMatrix[i].size(); j++) {
+
+			std::string content = "";
+			content += std::to_string(distanceMatrix[i][j]);
+			content += fromMatrix[i][j];
+
+			DrawText(
+				content.c_str(),
+				offset.GetX() + j * boxSize.GetX() + boxSize.GetX() / 2,
+				offset.GetY() + i * boxSize.GetY() + boxSize.GetY() / 2,
+				10, BLACK);
+		}
+
+	}
+}
+void DiffMatrixApp::DrawPath(Point offset, Point dimensions, Point boxSize) {
+
+	for (int i = 0; i < path.size(); i++) {
+		DrawRectangle(offset.GetX() + path[i].GetX() * boxSize.GetX(), offset.GetY() + path[i].GetY() * boxSize.GetY(), boxSize.GetX(), boxSize.GetY(), GREEN);
+	}
+}
+
 
 void DiffMatrixApp::OnKeyPress(KeyPress* e) {
-
-	//enter key should hit go
-	if (e->GetKeyCode() == KEY_ENTER) {
-
-		Go();
-		return;
-	}
 
 	//no text box was selected
 	if (focused == nullptr)
@@ -111,12 +146,12 @@ void DiffMatrixApp::OnKeyPress(KeyPress* e) {
 
 	//sends the keypress into the focused textbox
 	focused->OnKeyPress(e);
-
+	Go();
 }
+
 void DiffMatrixApp::OnMousePress(MousePress* e) {
 
 	SuperMousePress(NormaliseMousePos());
-
 
 	if (source.Click(new Point(GetMouseX(), GetMouseY())))
 		focused = &source;
@@ -126,10 +161,12 @@ void DiffMatrixApp::OnMousePress(MousePress* e) {
 
 	else if (go.Click(new Point(GetMouseX(), GetMouseY())))
 		Go();
-
 }
 
 void DiffMatrixApp::GenerateEmptyMatrix() {
+
+	distanceMatrix.clear();
+	fromMatrix.clear();
 
 	std::vector<int> rowInts;
 	std::vector<std::string> rowStrings;
@@ -149,10 +186,8 @@ void DiffMatrixApp::GenerateEmptyMatrix() {
 
 		distanceMatrix.push_back(rowInts);
 		fromMatrix.push_back(rowStrings);
-
 	}
 }
-
 
 void DiffMatrixApp::FillMatrix() {
 
@@ -202,56 +237,33 @@ void DiffMatrixApp::FillMatrix() {
 
 				distanceMatrix[row][col] = leftValue + 1; //insert rule
 				fromMatrix[row][col] = insert;
-
-			} else {
-
-				distanceMatrix[row][col] = aboveValue + 1; // delete rule
-				fromMatrix[row][col] = delete_;
+				continue;
 			}
+
+			distanceMatrix[row][col] = aboveValue + 1; // delete rule
+			fromMatrix[row][col] = delete_;
 		}
 	}
 }
 
-void DiffMatrixApp::OutputMatrix() {
+void DiffMatrixApp::FindPath() {
 
-	std::filesystem::path appPath = "hardDrive/DiffMatrix";
+	path.clear();
+	Point currentSpot = Point(fromMatrix[fromMatrix.size() - 1].size() - 1, fromMatrix.size() - 1);
 
-	if (!Helper::VerifyPathExists(appPath)) //if the path didn't exist
-		if (!Helper::CreatePath(appPath)) //if the path could not be made
-			return;
+	while (currentSpot.GetX() != 0 && currentSpot.GetY() != 0) {
 
+		path.push_back(currentSpot);
 
-	std::cout << "\nWriting to file\n";
-	std::ofstream matrixFile("hardDrive/DiffMatrix/Matrix.csv");
+		if (fromMatrix[currentSpot.GetY()][currentSpot.GetX()] == skip)
+			currentSpot.Add(Point(-1, -1));
 
-	std::string line;
+		else if (fromMatrix[currentSpot.GetY()][currentSpot.GetX()] == insert)
+			currentSpot.Add(Point(-1, 0));
 
-	for (int i = 0; i < distanceMatrix.size(); i++) {
-
-		line = "";
-		for (int j = 0; j < distanceMatrix[i].size(); j++) {
-
-			line += std::to_string(distanceMatrix[i][j]) + fromMatrix[i][j];
-			line += ",";
-		}
-
-		if (i == 0)
-			line += " ";
-		else
-			line += source.GetValue().substr(i - 1, 1);
-
-		matrixFile << line << std::endl;
+		else if (fromMatrix[currentSpot.GetY()][currentSpot.GetX()] == delete_)
+			currentSpot.Add(Point(0, -1));
 	}
 
-	//adds the target at the bottom
-	line = " ";
-	for (int i = 0; i < target.GetValue().size(); i++) {
-		line += ",";
-		line += target.GetValue().substr(i, 1);
-	}
-	matrixFile << line << std::endl;
-
-
-	matrixFile.close();
-	std::cout << "\nWriting finished\n";
+	path.push_back(currentSpot);
 }

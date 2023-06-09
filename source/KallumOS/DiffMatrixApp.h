@@ -25,16 +25,21 @@ private:
 
 	void DrawBorders(Point offset, Point dimensions, Point boxSize);
 	void DrawStrings(Point offset, Point dimensions, Point boxSize);
+	void DrawMatrix(Point offset, Point dimensions, Point boxSize);
+	void DrawPath(Point offset, Point dimensions, Point boxSize);
 
 	void Go() {
 		GenerateEmptyMatrix();
 		FillMatrix();
-		OutputMatrix();
+		FindPath();
+		//OutputMatrix();
 	}
 
 	void GenerateEmptyMatrix();
 	void FillMatrix();
+	void FindPath();
 	void OutputMatrix();
+
 
 	Button go;
 	TextBox source;
@@ -43,6 +48,7 @@ private:
 
 	std::vector<std::vector<int>> distanceMatrix;
 	std::vector<std::vector<std::string>> fromMatrix;
+	std::vector<Point> path;
 
 	std::string skip = "s";
 	std::string insert = "i";
