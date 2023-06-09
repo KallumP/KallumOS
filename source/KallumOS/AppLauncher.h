@@ -5,6 +5,7 @@
 #include "TicTak.h"
 #include "Tetris.h"
 #include "Kode.h"
+#include "DiffMatrixApp.h"
 #include "TestWindow.h"
 
 #include "Button.h"
