@@ -7,7 +7,7 @@ DiffMatrixApp::DiffMatrixApp() {
 
 DiffMatrixApp::DiffMatrixApp(Point _position, Point _size) : Process("DiffMatrix", _position, _size) {
 
-	int boxSize = 200;
+	int boxSize = size.GetX() / 2  - 15;
 
 
 	source = TextBox(Point(10, 40), Point(boxSize, 30), "", "Source");
@@ -141,13 +141,20 @@ void DiffMatrixApp::OnKeyPress(KeyPress* e) {
 
 void DiffMatrixApp::OnMousePress(MousePress* e) {
 
-	SuperMousePress(NormaliseMousePos());
+	SuperMousePress(Helper::NormaliseMousePos(position));
+
+	//unfocuses the clicked text box if there was one
+	if (focused != nullptr)
+		focused->InvertFocus();
 
 	if (source.Click(new Point(GetMouseX(), GetMouseY())))
 		focused = &source;
-
 	else if (target.Click(new Point(GetMouseX(), GetMouseY())))
 		focused = &target;
+
+	//focuses the clicked text box if there was one
+	if (focused != nullptr)
+		focused->InvertFocus();
 }
 
 void DiffMatrixApp::GenerateEmptyMatrix() {

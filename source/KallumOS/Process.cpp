@@ -1,5 +1,6 @@
 #include "Process.h"
 #include "Point.h"
+#include "Helper.h"
 
 
 Process::Process() {
@@ -76,17 +77,13 @@ std::string Process::GetName() {
 
 }
 
-//normalises the mouse position be relative to the window position
-Point Process::NormaliseMousePos(int yOffSet) {
 
-	return Point(GetMouseX() - position.GetX(), GetMouseY() - position.GetY() - yOffSet);
-}
 
 void Process::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 	}
 }
 
@@ -143,7 +140,7 @@ void Process::OnMouseHold(MousePress* e) {
 
 	if (mouseDownOnBar) {
 
-		Point newMousePosition = NormaliseMousePos(0);
+		Point newMousePosition = Helper::NormaliseMousePos(position);
 
 		Point mouseDifference = newMousePosition.Difference(barClickLocation);
 		

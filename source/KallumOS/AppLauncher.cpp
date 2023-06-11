@@ -81,11 +81,11 @@ void AppLauncher::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
 		HandleButtonClicks();
 
-		Point normalisedMouse = NormaliseMousePos(barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
 
 		int scrollButtonPadding = scrollUp.GetSize().GetY();
 
