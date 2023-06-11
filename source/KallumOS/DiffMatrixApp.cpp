@@ -17,13 +17,7 @@ DiffMatrixApp::DiffMatrixApp(Point _position, Point _size) : Process("DiffMatrix
 	target = TextBox(Point(10 + boxSize + 10, 40), Point(boxSize, 30), "", "Target");
 	target.Tether(&position);
 	target.SetFontSize(10);
-
-	go = Button(Point(10 + (boxSize + 10) * 2, 40), Point(30, 30), "Go");
-	go.Tether(&position);
-	go.SetFontSize(10);
-
 }
-
 
 void DiffMatrixApp::Tick(float elapsedTime) {
 
@@ -32,10 +26,8 @@ void DiffMatrixApp::Tick(float elapsedTime) {
 
 		target.Hover(new Point(GetMouseX(), GetMouseY()));
 		source.Hover(new Point(GetMouseX(), GetMouseY()));
-		go.Hover(new Point(GetMouseX(), GetMouseY()));
 	}
 }
-
 
 void DiffMatrixApp::Draw(Point offset) {
 
@@ -44,7 +36,6 @@ void DiffMatrixApp::Draw(Point offset) {
 		DrawBoxBar(offset, true);
 		offset.Set(new Point(offset.GetX() + position.GetX(), offset.GetY() + position.GetY() + barHeight));
 
-		go.Draw(offset);
 		source.Draw(offset);
 		target.Draw(offset);
 
@@ -66,7 +57,6 @@ void DiffMatrixApp::Draw(Point offset) {
 		DrawMatrix(offset, dimensions, boxSize);
 	}
 }
-
 void DiffMatrixApp::DrawBorders(Point offset, Point dimensions, Point boxSize) {
 
 	for (int i = 0; i < dimensions.GetX(); i++) {
@@ -158,9 +148,6 @@ void DiffMatrixApp::OnMousePress(MousePress* e) {
 
 	else if (target.Click(new Point(GetMouseX(), GetMouseY())))
 		focused = &target;
-
-	else if (go.Click(new Point(GetMouseX(), GetMouseY())))
-		Go();
 }
 
 void DiffMatrixApp::GenerateEmptyMatrix() {
@@ -251,7 +238,7 @@ void DiffMatrixApp::FindPath() {
 	path.clear();
 	Point currentSpot = Point(fromMatrix[fromMatrix.size() - 1].size() - 1, fromMatrix.size() - 1);
 
-	while (currentSpot.GetX() != 0 && currentSpot.GetY() != 0) {
+	while (currentSpot.GetX() != 0 || currentSpot.GetY() != 0) {
 
 		path.push_back(currentSpot);
 

@@ -134,8 +134,6 @@ void TextBox::Input(std::string input) {
 	value.insert(cursor, input);
 
 	MoveCursor(1);;
-	std::cout << "Pressed: " << input << std::endl;
-
 }
 
 void TextBox::DeleteOne(bool backward) {
@@ -149,11 +147,6 @@ void TextBox::DeleteOne(bool backward) {
 				value.erase(cursor - 1, 1);
 
 				MoveCursor(-1);
-				std::cout << "Pressed: Backspace" << std::endl;
-
-			} else {
-
-				std::cout << "Pressed: Backspace; Nothing before the cursor to delete" << std::endl;
 			}
 
 		} else {
@@ -164,19 +157,9 @@ void TextBox::DeleteOne(bool backward) {
 				value.erase(cursor + 1, 1);
 
 				MoveCursor(-1);
-				std::cout << "Pressed: Backspace" << std::endl;
-
-			} else {
-
-				std::cout << "Pressed: Backspace; Nothing after the cursor to delete" << std::endl;
 			}
 		}
-
-
-	} else
-
-		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
-
+	}
 }
 
 void TextBox::DeleteWord() {

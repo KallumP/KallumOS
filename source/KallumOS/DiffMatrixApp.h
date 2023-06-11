@@ -32,16 +32,12 @@ private:
 		GenerateEmptyMatrix();
 		FillMatrix();
 		FindPath();
-		//OutputMatrix();
 	}
 
 	void GenerateEmptyMatrix();
 	void FillMatrix();
 	void FindPath();
-	void OutputMatrix();
 
-
-	Button go;
 	TextBox source;
 	TextBox target;
 	TextBox* focused;
