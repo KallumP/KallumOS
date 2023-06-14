@@ -95,7 +95,7 @@ void TextEditor::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
 		if (fileSelector != nullptr) { // file selector to open a file
 
@@ -128,7 +128,7 @@ void TextEditor::OnMousePress(MousePress* e) {
 			int checkOffset;
 
 			//saves the height of the mouse
-			Point normalisedMouse = NormaliseMousePos();
+			Point normalisedMouse = Helper::NormaliseMousePos(position);
 
 			//move cursor to something near the text
 		}

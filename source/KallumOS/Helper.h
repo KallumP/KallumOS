@@ -1,4 +1,7 @@
 #pragma once
+#include "raylib.h"
+#include "Point.h"
+
 #include <ctime>
 #include <cstdlib>
 #include <filesystem>
@@ -7,14 +10,14 @@
 class Helper {
 
 public:
-	
+
 	static void SetupHelper() {
 		SetSeed();
 	}
 
 	//creates a random number between (inclusivley) the start and end
 	static int Random(int start, int end) {
-		
+
 		//shifts the random number up by one if the end is 0
 		int shift = 0;
 		if (end == 0)
@@ -78,6 +81,12 @@ public:
 			return lower;
 
 		return value;
+	}
+
+	//normalises the mouse position be relative to the window position
+	static Point NormaliseMousePos(Point normaliseFrom, int yOffSet = 0) {
+
+		return Point(GetMouseX() - normaliseFrom.GetX(), GetMouseY() - normaliseFrom.GetY() - yOffSet);
 	}
 
 private:

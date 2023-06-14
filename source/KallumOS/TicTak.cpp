@@ -1,4 +1,5 @@
 #include "TicTak.h"
+#include "Helper.h"
 
 TicTak::TicTak(Point _position, Point _size) : Process("Tic Tak", _position, _size) {
 
@@ -45,9 +46,9 @@ void TicTak::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
-		Point normalisedMouse = NormaliseMousePos(barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
 
 		if (!win) {
 

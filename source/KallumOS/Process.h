@@ -27,8 +27,6 @@ protected:
 	int buttonWidth = 40; //px
 	void DrawBoxBar(Point offset, bool fill);
 	void SuperMousePress(Point normMousePos);
-	Point NormaliseMousePos(int yOffSet = 0);
-
 
 public:
 	Process();

@@ -51,7 +51,7 @@ void TestWindow::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
 		if (fileSelector != nullptr)
 			fileSelector->Click(new Point(GetMouseX(), GetMouseY()));

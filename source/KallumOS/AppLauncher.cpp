@@ -81,11 +81,11 @@ void AppLauncher::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
 		HandleButtonClicks();
 
-		Point normalisedMouse = NormaliseMousePos(barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
 
 		int scrollButtonPadding = scrollUp.GetSize().GetY();
 
@@ -131,6 +131,15 @@ void AppLauncher::SetupProcessInfos() {
 	};
 	ProcessInfo test = ProcessInfo("Test", launchCode);
 	processInfos.push_back(test);*/
+
+
+	launchCode = [this]() {
+		DiffMatrixApp* app = new DiffMatrixApp(Point(525, 60), Point(700, 500));
+		LaunchApp(app);
+	};
+	ProcessInfo diff = ProcessInfo("Diff", launchCode);
+	processInfos.push_back(diff);
+
 
 	launchCode = [this]() {
 		Kode* app = new Kode(Point(525, 60), Point(700, 500));

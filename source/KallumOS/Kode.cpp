@@ -1,4 +1,5 @@
 #include "Kode.h"
+#include "Helper.h"
 
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
@@ -125,12 +126,12 @@ void Kode::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = NormaliseMousePos();
+		Point normalisedMouse = Helper::NormaliseMousePos(position);
 
 		//move cursore to something near the text
 	}
