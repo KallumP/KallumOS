@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "Taskbar.h"
 
 Taskbar::Taskbar() {
@@ -19,7 +20,7 @@ Taskbar::Taskbar(std::vector<Process*>* _processes) : Control(Point(), Point()) 
 
 void Taskbar::Draw() {
 
-	DrawRectangle(0, 0, GetScreenWidth(), height, DARKBLUE);
+	kGraphics::FillRect(0, 0, GetScreenWidth(), height, DARKBLUE);
 
 	int nonHiddenIndex = 0;
 
@@ -33,14 +34,14 @@ void Taskbar::Draw() {
 		if (!processesDeref[i]->GetHidden()) {
 
 			if (processesDeref[i] == focusedProcess) 
-				DrawRectangle(height * nonHiddenIndex, 0, height, height, BLUE);
+				kGraphics::FillRect(height * nonHiddenIndex, 0, height, height, BLUE);
 
 			//draws a square for the current process
-			DrawRectangleLines(height * nonHiddenIndex, 0, height, height, BLACK);
+			kGraphics::DrawRect(height * nonHiddenIndex, 0, height, height, BLACK);
 
 			
 			//draws the index of the current process
-			DrawText(std::to_string(i).c_str(), nonHiddenIndex * height + 10, height / 2, 2, BLACK);
+			kGraphics::DrawString(std::to_string(i), nonHiddenIndex * height + 10, height / 2, 2, BLACK);
 
 			nonHiddenIndex++;
 		}

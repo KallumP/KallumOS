@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "kGraphics.h"
 #include "Button.h"
 #include "Point.h"
 #include "InputPress.h"
@@ -26,14 +27,14 @@ void Button::Draw(Point offset) {
 	Point* normalizedPosition = GetPosition();
 
 	//draws the button
-	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
+	kGraphics::FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
 
 	//draws the textbox value
-	DrawText(value.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+	kGraphics::DrawString(value, normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 
 	//draws the focus outline
 	if (focused)
-		DrawRectangleLines(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
+		kGraphics::DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 }
 
 bool Button::Click(Point* mousePosition) {

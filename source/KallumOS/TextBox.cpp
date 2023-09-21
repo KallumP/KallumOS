@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "kGraphics.h"
 
 #include "TextBox.h"
 #include "Point.h"
@@ -36,37 +37,37 @@ void TextBox::Draw(Point offset) {
 	Point* normalizedPosition = GetPosition();
 
 	//draws the text box
-	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
+	kGraphics::FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
 
 	if (value != "")
 
 		if (obfuscation == "") {
 
 			//draws the textbox value
-			DrawText(value.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+			kGraphics::DrawString(value, normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 		} else {
 
 			std::string obfuscatedString;
 			for (int i = 0; i < value.size(); i++)
 				obfuscatedString.append(obfuscation);
 
-			DrawText(obfuscatedString.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+			kGraphics::DrawString(obfuscatedString, normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 		}
 
 	else
-		DrawText(placeholder.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+		kGraphics::DrawString(placeholder, normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 
 	if (focused) {
 
 		//draws the focus outline
-		DrawRectangleLines(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
+		kGraphics::DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 
 		int textWidthToCursor = 0;
 		if (value.length() > 0)
 			textWidthToCursor = MeasureText(value.substr(0, cursor).c_str(), fontSize);
 
 		//draws the cursor
-		DrawLine(
+		kGraphics::kDrawLine(
 			normalizedPosition->GetX() + padding.GetX() + textWidthToCursor,
 			normalizedPosition->GetY() + padding.GetY(),
 			normalizedPosition->GetX() + padding.GetX() + textWidthToCursor,

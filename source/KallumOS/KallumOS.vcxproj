@@ -57,6 +57,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="KallumOS.h" />
     <ClInclude Include="InputPress.h" />
+    <ClInclude Include="kGraphics.h" />
     <ClInclude Include="Kode.h" />
     <ClInclude Include="Login.h" />
     <ClInclude Include="Point.h" />

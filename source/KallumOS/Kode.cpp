@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "Kode.h"
 #include "Helper.h"
 
@@ -59,7 +60,7 @@ void Kode::DrawTextInput(Point offset) {
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
 
-			DrawText(text.c_str(), padding + offset.GetX(), offset.GetY() + padding + (GetNextLineY(lineCount)), fontSize, BLACK);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (GetNextLineY(lineCount)), fontSize, BLACK);
 			lineCount++;
 
 		} else {
@@ -73,7 +74,7 @@ void Kode::DrawTextInput(Point offset) {
 				std::string line;
 				line = text.substr(i * charsPerLine, charsPerLine);
 
-				DrawText(line.c_str(), padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, BLACK);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, BLACK);
 				lineCount++;
 			}
 		}
@@ -84,7 +85,7 @@ void Kode::DrawConsole(Point offset) {
 	int padding = 10;
 
 	offset.SetY(offset.GetY() + size.GetY() - consoleHeight);
-	DrawRectangle(offset.GetX(), offset.GetY(), size.GetX(), consoleHeight, BLACK);
+	kGraphics::FillRect(offset.GetX(), offset.GetY(), size.GetX(), consoleHeight, BLACK);
 
 
 	for (int i = 0; i < console.size(); i++) {
@@ -94,7 +95,7 @@ void Kode::DrawConsole(Point offset) {
 		text += std::to_string(console[i].linkedToStatement) + ". ";
 		text += console[i].text;
 
-		DrawText(text.c_str(), padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(i), fontSize, console[i].textColor);
+		kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(i), fontSize, console[i].textColor);
 	}
 }
 
