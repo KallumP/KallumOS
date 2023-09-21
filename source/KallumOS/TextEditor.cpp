@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "TextEditor.h"
 
 TextEditor::TextEditor(Point _position, Point _size) : Process("Text Editor", _position, _size) {
@@ -46,7 +47,7 @@ void TextEditor::Draw(Point offset) {
 
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
-			DrawText(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), defaultFontSize, BLACK);
+			kGraphics::DrawString(text.c_str(), padding + offset.GetX(), 10 + offset.GetY(), defaultFontSize, BLACK);
 
 		} else {
 
@@ -55,7 +56,7 @@ void TextEditor::Draw(Point offset) {
 				std::string line;
 				line = text.substr(i * charsPerLine, charsPerLine);
 
-				DrawText(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize)) + offset.GetY(), defaultFontSize, BLACK);
+				kGraphics::DrawString(line.c_str(), padding + offset.GetX(), padding + (i * MeasureText("X", defaultFontSize)) + offset.GetY(), defaultFontSize, BLACK);
 			}
 		}
 

@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "Desktop.h"
 #include "Taskbar.h"
 #include "Process.h"

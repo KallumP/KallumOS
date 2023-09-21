@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "AppLauncher.h"
 #include "Helper.h"
 
@@ -42,8 +43,8 @@ void AppLauncher::Draw(Point offset) {
 
 			if (zeroBasedI > buttonCount - 1)
 				break;
-
-			DrawRectangleLines(
+			
+			kGraphics::DrawRect(
 				offset.GetX() + ProcessInfo::buttonPadding,
 				offset.GetY() + scrollUp.GetSize().GetY() + scrollButtonPadding + (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY()) * zeroBasedI,
 				ProcessInfo::buttonSizes.GetX(),
@@ -52,8 +53,8 @@ void AppLauncher::Draw(Point offset) {
 
 
 			std::string toDisplay = std::to_string(i) + ": " + processInfos[i].processName;
-			DrawText(
-				toDisplay.c_str(),
+			kGraphics::DrawString(
+				toDisplay,
 				offset.GetX() + ProcessInfo::buttonPadding * 1.5,
 				offset.GetY() + scrollUp.GetSize().GetY() + scrollButtonPadding + (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY()) * zeroBasedI + ProcessInfo::buttonSizes.GetY() * 0.5,
 				defaultFontSize,

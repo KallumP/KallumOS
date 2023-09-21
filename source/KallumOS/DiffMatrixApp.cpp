@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "DiffMatrixApp.h"
 
 
@@ -61,7 +62,7 @@ void DiffMatrixApp::DrawBorders(Point offset, Point dimensions, Point boxSize) {
 
 	for (int i = 0; i < dimensions.GetX(); i++) {
 
-		DrawLine(
+		kGraphics::kDrawLine(
 			offset.GetX() + i * boxSize.GetX(),
 			offset.GetY(),
 			offset.GetX() + i * boxSize.GetX(),
@@ -71,7 +72,7 @@ void DiffMatrixApp::DrawBorders(Point offset, Point dimensions, Point boxSize) {
 
 	for (int i = 0; i < dimensions.GetY(); i++) {
 
-		DrawLine(
+		kGraphics::kDrawLine(
 			offset.GetX(),
 			offset.GetY() + i * boxSize.GetY(),
 			offset.GetX() + dimensions.GetX() * boxSize.GetX(),
@@ -85,8 +86,8 @@ void DiffMatrixApp::DrawStrings(Point offset, Point dimensions, Point boxSize) {
 	int lastRow = dimensions.GetY() - 1;
 	for (int i = 0; i < target.GetValue().size(); i++)
 
-		DrawText(
-			target.GetValue().substr(i, 1).c_str(),
+		kGraphics::DrawString(
+			target.GetValue().substr(i, 1),
 			offset.GetX() + (i + 1) * boxSize.GetX() + boxSize.GetX() / 2,
 			offset.GetY() + lastRow * boxSize.GetY() + boxSize.GetY() / 2,
 			10, BLACK);
@@ -94,8 +95,8 @@ void DiffMatrixApp::DrawStrings(Point offset, Point dimensions, Point boxSize) {
 	int lastCol = dimensions.GetX() - 1;
 	for (int i = 0; i < source.GetValue().size(); i++)
 
-		DrawText(
-			source.GetValue().substr(i, 1).c_str(),
+		kGraphics::DrawString(
+			source.GetValue().substr(i, 1),
 			offset.GetX() + lastCol * boxSize.GetX() + boxSize.GetX() / 2,
 			offset.GetY() + (i + 1) * boxSize.GetY() + boxSize.GetY() / 2,
 			10, BLACK);
@@ -111,19 +112,18 @@ void DiffMatrixApp::DrawMatrix(Point offset, Point dimensions, Point boxSize) {
 			content += std::to_string(distanceMatrix[i][j]);
 			content += fromMatrix[i][j];
 
-			DrawText(
-				content.c_str(),
+			kGraphics::DrawString(
+				content,
 				offset.GetX() + j * boxSize.GetX() + boxSize.GetX() / 2,
 				offset.GetY() + i * boxSize.GetY() + boxSize.GetY() / 2,
 				10, BLACK);
 		}
-
 	}
 }
 void DiffMatrixApp::DrawPath(Point offset, Point dimensions, Point boxSize) {
 
 	for (int i = 0; i < path.size(); i++) {
-		DrawRectangle(offset.GetX() + path[i].GetX() * boxSize.GetX(), offset.GetY() + path[i].GetY() * boxSize.GetY(), boxSize.GetX(), boxSize.GetY(), GREEN);
+		kGraphics::FillRect(offset.GetX() + path[i].GetX() * boxSize.GetX(), offset.GetY() + path[i].GetY() * boxSize.GetY(), boxSize.GetX(), boxSize.GetY(), GREEN);
 	}
 }
 

@@ -161,5 +161,8 @@
     <ClInclude Include="DiffMatrixApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="kGraphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
