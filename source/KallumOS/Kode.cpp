@@ -1,4 +1,6 @@
+#include "kGraphics.h"
 #include "Kode.h"
+#include "Helper.h"
 
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
@@ -58,7 +60,7 @@ void Kode::DrawTextInput(Point offset) {
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
 
-			DrawText(text.c_str(), padding + offset.GetX(), offset.GetY() + padding + (GetNextLineY(lineCount)), fontSize, BLACK);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (GetNextLineY(lineCount)), fontSize, BLACK);
 			lineCount++;
 
 		} else {
@@ -72,7 +74,7 @@ void Kode::DrawTextInput(Point offset) {
 				std::string line;
 				line = text.substr(i * charsPerLine, charsPerLine);
 
-				DrawText(line.c_str(), padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, BLACK);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, BLACK);
 				lineCount++;
 			}
 		}
@@ -83,7 +85,7 @@ void Kode::DrawConsole(Point offset) {
 	int padding = 10;
 
 	offset.SetY(offset.GetY() + size.GetY() - consoleHeight);
-	DrawRectangle(offset.GetX(), offset.GetY(), size.GetX(), consoleHeight, BLACK);
+	kGraphics::FillRect(offset.GetX(), offset.GetY(), size.GetX(), consoleHeight, BLACK);
 
 
 	for (int i = 0; i < console.size(); i++) {
@@ -93,7 +95,7 @@ void Kode::DrawConsole(Point offset) {
 		text += std::to_string(console[i].linkedToStatement) + ". ";
 		text += console[i].text;
 
-		DrawText(text.c_str(), padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(i), fontSize, console[i].textColor);
+		kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(i), fontSize, console[i].textColor);
 	}
 }
 
@@ -125,12 +127,12 @@ void Kode::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = NormaliseMousePos();
+		Point normalisedMouse = Helper::NormaliseMousePos(position);
 
 		//move cursore to something near the text
 	}
@@ -484,38 +486,4 @@ std::string Kode::HandleFunction(int statementNumber, std::vector<std::string> c
 }
 
 
-//instructions
-//pressing f5 will compile the kode
-//pressing f3 will make most functionality output to the console in red
-// 
-//kode consists of statements
-//a statement is ended by a ;
-//each statement consists of chunks
-//chunk are to be separated by a space
-//the first chunk is the opcode (or variable name)
-//this is what states what will happen next
-// 
-// 
-//the "out" opcode will take whatever is after it and output it to the console
-//if the following chunks a valid function (which will output the result of that function)
-//else output all chunks as string literal
-// 
-// 
-//the "int" opcode will declare and assign a new integer variable
-//the second chunk is the variable identifier
-//the third chunk is the  = symbol
-//the fourth chunk is the variable value. This value can be a function
-//Declaration must follow <type> <identifier> = <value>.
-//
-//a variable identifier initiates works as an alias to the assign opcode
-//assign cannot be called directly
-//the second chunk must be an = symbol
-//the third chunk must be a value (function) that can be turned into the variable type that is being assigned to
-//
-//
-//A valid function will have an odd number of chunks
-//A valid function will start with either a number or a variable name, 
-// and then follow with a supported symbol like (+, -. /, *) + a number or variable name
-//It will continue the previous step until the end of the list.
-//curent order of operations is each symbol will be handled in the order it appears
-//if trying to divide by zero it will return an error and skip that division
+//To see instructions, go to the readme at https://github.com/KallumP/KallumOS/tree/readme#readme

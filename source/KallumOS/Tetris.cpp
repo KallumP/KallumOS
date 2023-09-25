@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "Tetris.h"
 #include "Helper.h"
 
@@ -61,7 +62,7 @@ void Tetris::Draw(Point offset) {
 
 			DrawHold(offset);
 			offset.SetY(offset.GetY() + 4 * blockSize + 5);
-			DrawText("Hold", offset.GetX(), offset.GetY(), 20, BLACK);
+			kGraphics::DrawString("Hold", offset.GetX(), offset.GetY(), 20, BLACK);
 			offset.SetY(offset.GetY() - (4 * blockSize + 5));
 
 			offset.SetX(offset.GetX() + 4 * blockSize + 20);
@@ -73,13 +74,13 @@ void Tetris::Draw(Point offset) {
 
 			offset.SetX(offset.GetX() - (boardWidth * blockSize + 20));
 			offset.SetY(offset.GetY() + boardHeight * blockSize + 5);
-			DrawText(("Time: " + timeString + "s Lines: " + std::to_string(linesLeft)).c_str(), offset.GetX(), offset.GetY(), 20, BLACK);
+			kGraphics::DrawString(("Time: " + timeString + "s Lines: " + std::to_string(linesLeft)).c_str(), offset.GetX(), offset.GetY(), 20, BLACK);
 
 		} else if (lost)
-			DrawText(("You survived for: " + timeString + " seconds.\nYou had: " + std::to_string(linesLeft) + " lines left to clear\nPress R to restart").c_str(), offset.GetX(), offset.GetY(), 20, RED);
+			kGraphics::DrawString(("You survived for: " + timeString + " seconds.\nYou had: " + std::to_string(linesLeft) + " lines left to clear\nPress R to restart").c_str(), offset.GetX(), offset.GetY(), 20, RED);
 
 		else if (won)
-			DrawText(("You cleared " + std::to_string(toClear) + " in: " + timeString + " seconds.\nPress R to restart").c_str(), offset.GetX(), offset.GetY(), 20, GREEN);
+			kGraphics::DrawString(("You cleared " + std::to_string(toClear) + " in: " + timeString + " seconds.\nPress R to restart").c_str(), offset.GetX(), offset.GetY(), 20, GREEN);
 
 	}
 }
@@ -94,27 +95,27 @@ void Tetris::DrawHold(Point offset) {
 		Point leeway = Point(((4 * blockSize) - pieceSize.GetX()) / 2, ((4 * blockSize) - pieceSize.GetY()) / 2);
 
 		for (int i = 0; i < 4; i++)
-			DrawRectangle(
+			kGraphics::FillRect(
 				offset.GetX() + blockSize * (hold[i]->location.GetX() - topCorner.GetX()) + leeway.GetX(),
 				offset.GetY() + blockSize * (hold[i]->location.GetY() - topCorner.GetY()) + leeway.GetY(),
 				blockSize, blockSize, hold[i]->color);
 	}
 
 	//draws the borders
-	DrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + blockSize * 4, BLACK);
-	DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + blockSize * 4, offset.GetY(), BLACK);
-	DrawLine(offset.GetX(), offset.GetY() + blockSize * 4, offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4, BLACK);
-	DrawLine(offset.GetX() + blockSize * 4, offset.GetY(), offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4, BLACK);
+	kGraphics::kDrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + blockSize * 4, BLACK);
+	kGraphics::kDrawLine(offset.GetX(), offset.GetY(), offset.GetX() + blockSize * 4, offset.GetY(), BLACK);
+	kGraphics::kDrawLine(offset.GetX(), offset.GetY() + blockSize * 4, offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4, BLACK);
+	kGraphics::kDrawLine(offset.GetX() + blockSize * 4, offset.GetY(), offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4, BLACK);
 }
 void Tetris::DrawBoardBoarders(Point offset) {
 
 	//draws all vertical lines
 	for (int i = 0; i < boardWidth + 1; i++)
-		DrawLine(offset.GetX() + blockSize * i, offset.GetY(), offset.GetX() + blockSize * i, offset.GetY() + boardHeight * blockSize, BLACK);
+		kGraphics::kDrawLine(offset.GetX() + blockSize * i, offset.GetY(), offset.GetX() + blockSize * i, offset.GetY() + boardHeight * blockSize, BLACK);
 
 	//draws all horizontal lines
 	for (int i = 0; i < boardHeight + 1; i++)
-		DrawLine(offset.GetX(), offset.GetY() + blockSize * i, offset.GetX() + boardWidth * blockSize, offset.GetY() + blockSize * i, BLACK);
+		kGraphics::kDrawLine(offset.GetX(), offset.GetY() + blockSize * i, offset.GetX() + boardWidth * blockSize, offset.GetY() + blockSize * i, BLACK);
 }
 void Tetris::DrawPieces(Point offset) {
 
@@ -122,7 +123,7 @@ void Tetris::DrawPieces(Point offset) {
 	for (int i = 0; i < boardWidth; i++)
 		for (int j = 0; j < boardHeight; j++)
 			if (board[i][j] != nullptr)
-				DrawRectangle(
+				kGraphics::FillRect(
 					offset.GetX() + blockSize * i,
 					offset.GetY() + blockSize * j,
 					blockSize, blockSize, board[i][j]->color);
@@ -130,14 +131,14 @@ void Tetris::DrawPieces(Point offset) {
 	//draws the shadow
 	UpdateShadow();
 	for (int i = 0; i < 4; i++)
-		DrawRectangle(
+		kGraphics::FillRect(
 			offset.GetX() + blockSize * fallingPieceShadow[i]->location.GetX(),
 			offset.GetY() + blockSize * fallingPieceShadow[i]->location.GetY(),
 			blockSize, blockSize, fallingPieceShadow[i]->color);
 
 	//draws the falling piece
 	for (int i = 0; i < 4; i++)
-		DrawRectangle(
+		kGraphics::FillRect(
 			offset.GetX() + blockSize * fallingPiece[i]->location.GetX(),
 			offset.GetY() + blockSize * fallingPiece[i]->location.GetY(),
 			blockSize, blockSize, fallingPiece[i]->color);
@@ -163,13 +164,13 @@ void Tetris::DrawBag(Point offset) {
 
 		Point corner = GetTopLeftCorner(toDraw);
 		for (int k = 0; k < 4; k++)
-			DrawRectangle(
+			kGraphics::FillRect(
 				offset.GetX() + blockSize * (toDraw[k]->location.GetX() - topCorner.GetX()) + leeway.GetX(),
 				offset.GetY() + blockSize * (toDraw[k]->location.GetY() - topCorner.GetY()) + leeway.GetY() + 4 * blockSize * i,
 				blockSize, blockSize, toDraw[k]->color);
 
 		//draws a line under this bag piece
-		DrawLine(offset.GetX(), offset.GetY() + blockSize * 4 * i, offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4 * i, BLACK);
+		kGraphics::kDrawLine(offset.GetX(), offset.GetY() + blockSize * 4 * i, offset.GetX() + blockSize * 4, offset.GetY() + blockSize * 4 * i, BLACK);
 	}
 
 	Point bagBoardSize = Point();
@@ -177,10 +178,10 @@ void Tetris::DrawBag(Point offset) {
 	bagBoardSize.SetY(piecesToDraw * 4 * blockSize);
 
 	//draws the borders
-	DrawLine(offset.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY(), BLACK);
-	DrawLine(offset.GetX(), offset.GetY() + bagBoardSize.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY() + bagBoardSize.GetY(), BLACK);
-	DrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + piecesToDraw * blockSize * 4, BLACK);
-	DrawLine(offset.GetX() + bagBoardSize.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY() + bagBoardSize.GetY(), BLACK);
+	kGraphics::kDrawLine(offset.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY(), BLACK);
+	kGraphics::kDrawLine(offset.GetX(), offset.GetY() + bagBoardSize.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY() + bagBoardSize.GetY(), BLACK);
+	kGraphics::kDrawLine(offset.GetX(), offset.GetY(), offset.GetX(), offset.GetY() + piecesToDraw * blockSize * 4, BLACK);
+	kGraphics::kDrawLine(offset.GetX() + bagBoardSize.GetX(), offset.GetY(), offset.GetX() + bagBoardSize.GetX(), offset.GetY() + bagBoardSize.GetY(), BLACK);
 }
 
 Point Tetris::GetTopLeftCorner(std::array<FallingBlock*, 4> toCheck) {
@@ -249,9 +250,9 @@ void Tetris::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
-		Point normalisedMouse = NormaliseMousePos(barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
 	}
 }
 

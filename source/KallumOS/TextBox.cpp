@@ -1,8 +1,10 @@
 #include "raylib.h"
+#include "kGraphics.h"
 
 #include "TextBox.h"
 #include "Point.h"
 #include "InputPress.h"
+#include "Helper.h"
 
 #include <string>
 #include <iostream>
@@ -18,6 +20,7 @@ TextBox::TextBox(Point _position, Point _size, std::string _value, std::string _
 
 	padding = Point(10, 10);
 	fontSize = 20;
+	singleCharWidth = fontSize * 0.7;
 
 	value = _value;
 	placeholder = _placeholder;
@@ -34,37 +37,37 @@ void TextBox::Draw(Point offset) {
 	Point* normalizedPosition = GetPosition();
 
 	//draws the text box
-	DrawRectangle(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
+	kGraphics::FillRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), backColor);
 
 	if (value != "")
 
 		if (obfuscation == "") {
 
 			//draws the textbox value
-			DrawText(value.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+			kGraphics::DrawString(value, normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 		} else {
 
 			std::string obfuscatedString;
 			for (int i = 0; i < value.size(); i++)
 				obfuscatedString.append(obfuscation);
 
-			DrawText(obfuscatedString.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+			kGraphics::DrawString(obfuscatedString, normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 		}
 
 	else
-		DrawText(placeholder.c_str(), normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
+		kGraphics::DrawString(placeholder, normalizedPosition->GetX() + padding.GetX(), normalizedPosition->GetY() + padding.GetY(), fontSize, fontColor);
 
 	if (focused) {
 
 		//draws the focus outline
-		DrawRectangleLines(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
+		kGraphics::DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 
 		int textWidthToCursor = 0;
 		if (value.length() > 0)
 			textWidthToCursor = MeasureText(value.substr(0, cursor).c_str(), fontSize);
 
 		//draws the cursor
-		DrawLine(
+		kGraphics::kDrawLine(
 			normalizedPosition->GetX() + padding.GetX() + textWidthToCursor,
 			normalizedPosition->GetY() + padding.GetY(),
 			normalizedPosition->GetX() + padding.GetX() + textWidthToCursor,
@@ -103,14 +106,13 @@ void TextBox::OnKeyPress(KeyPress* e) {
 
 void TextBox::FindNewCursorPosition(int mouseX) {
 
-	Point* normalizedPosition = new Point();
-	*normalizedPosition = normalizePosition(new Point(GetScreenWidth(), GetScreenHeight()));
+	Point normMouse = Helper::NormaliseMousePos(*GetPosition());
 
 	//loops through each of the characters in the string
 	for (int i = 0; i < value.size(); i++) {
 
 		//checks if the click was behind the next character
-		if (mouseX < singleCharWidth * i) {
+		if (normMouse.GetX() < singleCharWidth * i) {
 			cursor = i;
 			return;
 		}
@@ -134,8 +136,6 @@ void TextBox::Input(std::string input) {
 	value.insert(cursor, input);
 
 	MoveCursor(1);;
-	std::cout << "Pressed: " << input << std::endl;
-
 }
 
 void TextBox::DeleteOne(bool backward) {
@@ -149,11 +149,6 @@ void TextBox::DeleteOne(bool backward) {
 				value.erase(cursor - 1, 1);
 
 				MoveCursor(-1);
-				std::cout << "Pressed: Backspace" << std::endl;
-
-			} else {
-
-				std::cout << "Pressed: Backspace; Nothing before the cursor to delete" << std::endl;
 			}
 
 		} else {
@@ -164,19 +159,9 @@ void TextBox::DeleteOne(bool backward) {
 				value.erase(cursor + 1, 1);
 
 				MoveCursor(-1);
-				std::cout << "Pressed: Backspace" << std::endl;
-
-			} else {
-
-				std::cout << "Pressed: Backspace; Nothing after the cursor to delete" << std::endl;
 			}
 		}
-
-
-	} else
-
-		std::cout << "Pressed: Backspace; There was nothing to delete" << std::endl;
-
+	}
 }
 
 void TextBox::DeleteWord() {
@@ -191,10 +176,6 @@ void TextBox::SetValue(std::string _value) {
 	value = _value;
 }
 
-void TextBox::InvertFocus(bool click) {
+void TextBox::InvertFocus() {
 	focused = !focused;
-
-	if (focused && !click) {
-		cursor = value.length();
-	}
 }

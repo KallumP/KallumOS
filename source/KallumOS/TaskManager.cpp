@@ -1,5 +1,6 @@
+#include "kGraphics.h"
 #include "TaskManager.h"
-
+#include "Helper.h"
 
 TaskManager::TaskManager() {
 
@@ -27,21 +28,21 @@ void TaskManager::Draw(Point offset) {
 			offset.Set(new Point(offset.GetX(), offset.GetY() + processPadding));
 
 			//outputs a rectangle for the current process
-			DrawRectangleLines(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, GREEN);
+			kGraphics::DrawRect(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, GREEN);
 
 			if (selected == i)
-				DrawRectangle(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, GREEN);
+				kGraphics::FillRect(0 + offset.GetX(), i * processBoxHeight + offset.GetY(), size.GetX(), processBoxHeight, GREEN);
 
 			//saves the name of the curretn process
 			std::string processName = (*processes)[i]->GetName();
 
 			//outputs the name of the process
 			std::string processNameBuffer = std::to_string(i) + ": " + processName;
-			DrawText(processNameBuffer.c_str(), 10 + offset.GetX(), 5 + i * processBoxHeight + offset.GetY(), defaultFontSize, BLACK);
+			kGraphics::DrawString(processNameBuffer.c_str(), 10 + offset.GetX(), 5 + i * processBoxHeight + offset.GetY(), defaultFontSize, BLACK);
 
 			//draws the end process button
-			DrawRectangleLines(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, RED);
-			DrawRectangle(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, RED);
+			kGraphics::DrawRect(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, RED);
+			kGraphics::FillRect(size.GetX() - endProcWidth + offset.GetX(), i * processBoxHeight + offset.GetY(), endProcWidth, processBoxHeight, RED);
 		}
 	}
 }
@@ -58,12 +59,12 @@ void TaskManager::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = NormaliseMousePos();
+		Point normalisedMouse = Helper::NormaliseMousePos(position);
 
 		//loops through all the processes
 		for (int i = processes->size() - 1; i >= 0; i--) {

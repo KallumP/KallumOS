@@ -21,32 +21,32 @@ void Input::GenerateKeyPressList() {
 	//add capital letters, change the secondary key constructor to use optional parameters
 
 	//letter inputs
-	allKeyPressOptions.push_back(KeyPress(KEY_A, "a"));
-	allKeyPressOptions.push_back(KeyPress(KEY_B, "b"));
-	allKeyPressOptions.push_back(KeyPress(KEY_C, "c"));
-	allKeyPressOptions.push_back(KeyPress(KEY_D, "d"));
-	allKeyPressOptions.push_back(KeyPress(KEY_E, "e"));
-	allKeyPressOptions.push_back(KeyPress(KEY_F, "f"));
-	allKeyPressOptions.push_back(KeyPress(KEY_G, "g"));
-	allKeyPressOptions.push_back(KeyPress(KEY_H, "h"));
-	allKeyPressOptions.push_back(KeyPress(KEY_I, "i"));
-	allKeyPressOptions.push_back(KeyPress(KEY_J, "j"));
-	allKeyPressOptions.push_back(KeyPress(KEY_K, "k"));
-	allKeyPressOptions.push_back(KeyPress(KEY_L, "l"));
-	allKeyPressOptions.push_back(KeyPress(KEY_M, "m"));
-	allKeyPressOptions.push_back(KeyPress(KEY_N, "n"));
-	allKeyPressOptions.push_back(KeyPress(KEY_O, "o"));
-	allKeyPressOptions.push_back(KeyPress(KEY_P, "p"));
-	allKeyPressOptions.push_back(KeyPress(KEY_Q, "q"));
-	allKeyPressOptions.push_back(KeyPress(KEY_R, "r"));
-	allKeyPressOptions.push_back(KeyPress(KEY_S, "s"));
-	allKeyPressOptions.push_back(KeyPress(KEY_T, "t"));
-	allKeyPressOptions.push_back(KeyPress(KEY_U, "u"));
-	allKeyPressOptions.push_back(KeyPress(KEY_V, "v"));
-	allKeyPressOptions.push_back(KeyPress(KEY_W, "w"));
-	allKeyPressOptions.push_back(KeyPress(KEY_X, "x"));
-	allKeyPressOptions.push_back(KeyPress(KEY_Y, "y"));
-	allKeyPressOptions.push_back(KeyPress(KEY_Z, "z"));
+	allKeyPressOptions.push_back(KeyPress(KEY_A, "a", "A"));
+	allKeyPressOptions.push_back(KeyPress(KEY_B, "b", "B"));
+	allKeyPressOptions.push_back(KeyPress(KEY_C, "c", "C"));
+	allKeyPressOptions.push_back(KeyPress(KEY_D, "d", "D"));
+	allKeyPressOptions.push_back(KeyPress(KEY_E, "e", "E"));
+	allKeyPressOptions.push_back(KeyPress(KEY_F, "f", "F"));
+	allKeyPressOptions.push_back(KeyPress(KEY_G, "g", "G"));
+	allKeyPressOptions.push_back(KeyPress(KEY_H, "h", "H"));
+	allKeyPressOptions.push_back(KeyPress(KEY_I, "i", "I"));
+	allKeyPressOptions.push_back(KeyPress(KEY_J, "j", "J"));
+	allKeyPressOptions.push_back(KeyPress(KEY_K, "k", "K"));
+	allKeyPressOptions.push_back(KeyPress(KEY_L, "l", "L"));
+	allKeyPressOptions.push_back(KeyPress(KEY_M, "m", "M"));
+	allKeyPressOptions.push_back(KeyPress(KEY_N, "n", "N"));
+	allKeyPressOptions.push_back(KeyPress(KEY_O, "o", "O"));
+	allKeyPressOptions.push_back(KeyPress(KEY_P, "p", "P"));
+	allKeyPressOptions.push_back(KeyPress(KEY_Q, "q", "Q"));
+	allKeyPressOptions.push_back(KeyPress(KEY_R, "r", "R"));
+	allKeyPressOptions.push_back(KeyPress(KEY_S, "s", "S"));
+	allKeyPressOptions.push_back(KeyPress(KEY_T, "t", "T"));
+	allKeyPressOptions.push_back(KeyPress(KEY_U, "u", "U"));
+	allKeyPressOptions.push_back(KeyPress(KEY_V, "v", "V"));
+	allKeyPressOptions.push_back(KeyPress(KEY_W, "w", "W"));
+	allKeyPressOptions.push_back(KeyPress(KEY_X, "x", "X"));
+	allKeyPressOptions.push_back(KeyPress(KEY_Y, "y", "Y"));
+	allKeyPressOptions.push_back(KeyPress(KEY_Z, "z", "Z"));
 	allKeyPressOptions.push_back(KeyPress(KEY_SPACE, " "));
 
 	//symbol inputs

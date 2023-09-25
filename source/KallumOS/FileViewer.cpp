@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "FileViewer.h"
 
 FileViewer::FileViewer() : Control() {
@@ -22,9 +23,9 @@ FileViewer::FileViewer(Point _position, Point _size, std::filesystem::path appPa
 
 void FileViewer::Draw(Point offset) {
 
-	DrawRectangle(offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), size.GetX(), size.GetY(), backColor);
+	kGraphics::FillRect(offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), size.GetX(), size.GetY(), backColor);
 
-	DrawRectangleLines(offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), size.GetX(), size.GetY(), BLACK);
+	kGraphics::DrawRect(offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), size.GetX(), size.GetY(), BLACK);
 
 	offset.Add(Point(20, 20));
 
@@ -33,12 +34,12 @@ void FileViewer::Draw(Point offset) {
 
 	//draws the current file path
 	std::string currentPath = "Current directory: " + std::filesystem::relative(path, std::filesystem::current_path()).string();
-	DrawText(currentPath.c_str(), position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), fontSize, BLACK);
+	kGraphics::DrawString(currentPath, position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), fontSize, BLACK);
 	offset.Add(Point(0, FileOption::ySize)); //moves the offset down by the text height
 
 
 	offset.Add(Point(10, FileOption::ySize)); //indents the text and adds a gap between the texts
-	DrawText("Directories", position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), fontSize, BLACK);
+	kGraphics::DrawString("Directories", position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), fontSize, BLACK);
 	offset.Add(Point(10, FileOption::ySize)); //indents the text moves the offset down by the text height
 
 	//draws the directories
@@ -48,7 +49,7 @@ void FileViewer::Draw(Point offset) {
 
 
 	offset.Add(Point(-10, FileOption::ySize)); //unindents the text and adds a gap between the directories and the files
-	DrawText("Files", position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), fontSize, BLACK);
+	kGraphics::DrawString("Files", position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), fontSize, BLACK);
 	offset.Add(Point(10, FileOption::ySize)); //indents and moves the text down by the text height
 
 	//draws the files
@@ -59,9 +60,9 @@ void FileViewer::Draw(Point offset) {
 
 void FileOption::Draw(Point offset) {
 	if (hovered)
-		DrawText(fileName.c_str(), offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), fontSize, RED);
+		kGraphics::DrawString(fileName, offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), fontSize, RED);
 	else
-		DrawText(fileName.c_str(), offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), fontSize, fontColor);
+		kGraphics::DrawString(fileName, offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), fontSize, fontColor);
 }
 
 bool FileViewer::Hover(Point* mousePosition) {

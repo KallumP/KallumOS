@@ -1,3 +1,4 @@
+#include "kGraphics.h"
 #include "AppLauncher.h"
 #include "Helper.h"
 
@@ -42,8 +43,8 @@ void AppLauncher::Draw(Point offset) {
 
 			if (zeroBasedI > buttonCount - 1)
 				break;
-
-			DrawRectangleLines(
+			
+			kGraphics::DrawRect(
 				offset.GetX() + ProcessInfo::buttonPadding,
 				offset.GetY() + scrollUp.GetSize().GetY() + scrollButtonPadding + (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY()) * zeroBasedI,
 				ProcessInfo::buttonSizes.GetX(),
@@ -52,8 +53,8 @@ void AppLauncher::Draw(Point offset) {
 
 
 			std::string toDisplay = std::to_string(i) + ": " + processInfos[i].processName;
-			DrawText(
-				toDisplay.c_str(),
+			kGraphics::DrawString(
+				toDisplay,
 				offset.GetX() + ProcessInfo::buttonPadding * 1.5,
 				offset.GetY() + scrollUp.GetSize().GetY() + scrollButtonPadding + (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY()) * zeroBasedI + ProcessInfo::buttonSizes.GetY() * 0.5,
 				defaultFontSize,
@@ -81,11 +82,11 @@ void AppLauncher::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
 		HandleButtonClicks();
 
-		Point normalisedMouse = NormaliseMousePos(barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
 
 		int scrollButtonPadding = scrollUp.GetSize().GetY();
 
@@ -125,12 +126,21 @@ void AppLauncher::SetupProcessInfos() {
 
 	std::function<void()> launchCode;
 
-	launchCode = [this]() {
+	/*launchCode = [this]() {
 		TestWindow* app = new TestWindow(Point(525, 60), Point(700, 500));
 		LaunchApp(app);
 	};
 	ProcessInfo test = ProcessInfo("Test", launchCode);
-	processInfos.push_back(test);
+	processInfos.push_back(test);*/
+
+
+	launchCode = [this]() {
+		DiffMatrixApp* app = new DiffMatrixApp(Point(525, 60), Point(700, 500));
+		LaunchApp(app);
+	};
+	ProcessInfo diff = ProcessInfo("Diff", launchCode);
+	processInfos.push_back(diff);
+
 
 	launchCode = [this]() {
 		Kode* app = new Kode(Point(525, 60), Point(700, 500));

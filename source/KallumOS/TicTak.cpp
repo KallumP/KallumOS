@@ -1,4 +1,7 @@
+#include "kGraphics.h"
+
 #include "TicTak.h"
+#include "Helper.h"
 
 TicTak::TicTak(Point _position, Point _size) : Process("Tic Tak", _position, _size) {
 
@@ -28,7 +31,7 @@ void TicTak::Draw(Point offset) {
 					DrawSquare(offset, i, j, YELLOW);
 		}
 
-		DrawText(message.c_str(), 10 + offset.GetX(), 5 + offset.GetY() + square.GetY() * 3, defaultFontSize, messageColor);
+		kGraphics::DrawString(message.c_str(), 10 + offset.GetX(), 5 + offset.GetY() + square.GetY() * 3, defaultFontSize, messageColor);
 	}
 }
 
@@ -45,9 +48,9 @@ void TicTak::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 
-		Point normalisedMouse = NormaliseMousePos(barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
 
 		if (!win) {
 
@@ -110,7 +113,7 @@ void TicTak::OutputConsoleBoard() {
 
 void TicTak::DrawSquare(Point offset, int i, int j, Color c) {
 
-	DrawRectangle(offset.GetX() + square.GetX() * i, offset.GetY() + square.GetY() * j, square.GetX(), square.GetY(), c);
+	kGraphics::FillRect(offset.GetX() + square.GetX() * i, offset.GetY() + square.GetY() * j, square.GetX(), square.GetY(), c);
 
 }
 

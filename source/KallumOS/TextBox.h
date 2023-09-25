@@ -22,7 +22,7 @@ public:
 
 	std::string GetValue();
 	void SetValue(std::string _value);
-	void InvertFocus(bool click);
+	void InvertFocus();
 
 
 private:

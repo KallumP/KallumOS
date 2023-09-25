@@ -24,6 +24,7 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="CreateAccount.cpp" />
     <ClCompile Include="Desktop.cpp" />
+    <ClCompile Include="DiffMatrixApp.cpp" />
     <ClCompile Include="FileSaver.cpp" />
     <ClCompile Include="FileSelector.cpp" />
     <ClCompile Include="FileViewer.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="Control.h" />
     <ClInclude Include="CreateAccount.h" />
     <ClInclude Include="Desktop.h" />
+    <ClInclude Include="DiffMatrixApp.h" />
     <ClInclude Include="FileSaver.h" />
     <ClInclude Include="FileSelector.h" />
     <ClInclude Include="FileViewer.h" />
@@ -55,6 +57,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="KallumOS.h" />
     <ClInclude Include="InputPress.h" />
+    <ClInclude Include="kGraphics.h" />
     <ClInclude Include="Kode.h" />
     <ClInclude Include="Login.h" />
     <ClInclude Include="Point.h" />

@@ -1,5 +1,7 @@
+#include "kGraphics.h"
 #include "Process.h"
 #include "Point.h"
+#include "Helper.h"
 
 
 Process::Process() {
@@ -47,27 +49,27 @@ void Process::DrawBoxBar(Point offset, bool fill) {
 
 	//draws the box around which the process output will be displayed
 
-	DrawRectangleLines(position.GetX() + offset.GetX(), position.GetY() + barHeight + offset.GetY(), size.GetX(), size.GetY(), WHITE);
+	kGraphics::DrawRect(position.GetX() + offset.GetX(), position.GetY() + barHeight + offset.GetY(), size.GetX(), size.GetY(), WHITE);
 	if (fill)
-		DrawRectangle(position.GetX() + offset.GetX(), position.GetY() + barHeight + offset.GetY(), size.GetX(), size.GetY(), WHITE);
+		kGraphics::FillRect(position.GetX() + offset.GetX(), position.GetY() + barHeight + offset.GetY(), size.GetX(), size.GetY(), WHITE);
 
 	//draws the control bar
-	DrawRectangle(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, GRAY);
-	DrawRectangleLines(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, GRAY);
+	kGraphics::FillRect(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, GRAY);
+	kGraphics::DrawRect(position.GetX() + offset.GetX(), position.GetY() + offset.GetY(), size.GetX(), barHeight, GRAY);
 
 	//draws the name of the process
-	DrawText(name.c_str(), position.GetX() + 10 + offset.GetX(), position.GetY() + offset.GetY() + 7, defaultFontSize, BLACK);
+	kGraphics::DrawString(name.c_str(), position.GetX() + 10 + offset.GetX(), position.GetY() + offset.GetY() + 7, defaultFontSize, BLACK);
 
 
 	//draws the controls
 
 	//close button
-	DrawRectangle(position.GetX() + size.GetX() - buttonWidth + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, RED);
-	DrawRectangleLines(position.GetX() + size.GetX() - buttonWidth + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, RED);
+	kGraphics::FillRect(position.GetX() + size.GetX() - buttonWidth + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, RED);
+	kGraphics::DrawRect(position.GetX() + size.GetX() - buttonWidth + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, RED);
 
 	//minimise button
-	DrawRectangle(position.GetX() + size.GetX() - buttonWidth * 2 + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, SKYBLUE);
-	DrawRectangleLines(position.GetX() + size.GetX() - buttonWidth * 2 + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, SKYBLUE);
+	kGraphics::FillRect(position.GetX() + size.GetX() - buttonWidth * 2 + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, SKYBLUE);
+	kGraphics::DrawRect(position.GetX() + size.GetX() - buttonWidth * 2 + offset.GetX(), position.GetY() + offset.GetY(), buttonWidth, barHeight, SKYBLUE);
 }
 
 std::string Process::GetName() {
@@ -76,17 +78,13 @@ std::string Process::GetName() {
 
 }
 
-//normalises the mouse position be relative to the window position
-Point Process::NormaliseMousePos(int yOffSet) {
 
-	return Point(GetMouseX() - position.GetX(), GetMouseY() - position.GetY() - yOffSet);
-}
 
 void Process::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(NormaliseMousePos());
+		SuperMousePress(Helper::NormaliseMousePos(position));
 	}
 }
 
@@ -143,7 +141,7 @@ void Process::OnMouseHold(MousePress* e) {
 
 	if (mouseDownOnBar) {
 
-		Point newMousePosition = NormaliseMousePos(0);
+		Point newMousePosition = Helper::NormaliseMousePos(position);
 
 		Point mouseDifference = newMousePosition.Difference(barClickLocation);
 		
