@@ -4,7 +4,7 @@ Welcome to my mock operating system. My vision for this program is to emulate us
 
 This program is essentially just that, a program. However when using it, one should be able to feel as though they are using an operating system and not need to leave back to Windows to achieve what they want to achieve. It is of course a working progress, and for a long time, will not be usable in this manner.
 
-Features are being added in all the time, and the release logs can be found here.
+Features are being added in all the time, and the release logs can be found [here](releaseNotes.md).
 
 #### OS usage
 
