@@ -486,38 +486,4 @@ std::string Kode::HandleFunction(int statementNumber, std::vector<std::string> c
 }
 
 
-//instructions
-//pressing f5 will compile the kode
-//pressing f3 will make most functionality output to the console in red
-// 
-//kode consists of statements
-//a statement is ended by a ;
-//each statement consists of chunks
-//chunk are to be separated by a space
-//the first chunk is the opcode (or variable name)
-//this is what states what will happen next
-// 
-// 
-//the "out" opcode will take whatever is after it and output it to the console
-//if the following chunks a valid function (which will output the result of that function)
-//else output all chunks as string literal
-// 
-// 
-//the "int" opcode will declare and assign a new integer variable
-//the second chunk is the variable identifier
-//the third chunk is the  = symbol
-//the fourth chunk is the variable value. This value can be a function
-//Declaration must follow <type> <identifier> = <value>.
-//
-//a variable identifier initiates works as an alias to the assign opcode
-//assign cannot be called directly
-//the second chunk must be an = symbol
-//the third chunk must be a value (function) that can be turned into the variable type that is being assigned to
-//
-//
-//A valid function will have an odd number of chunks
-//A valid function will start with either a number or a variable name, 
-// and then follow with a supported symbol like (+, -. /, *) + a number or variable name
-//It will continue the previous step until the end of the list.
-//curent order of operations is each symbol will be handled in the order it appears
-//if trying to divide by zero it will return an error and skip that division
+//To see instructions, go to the readme at https://github.com/KallumP/KallumOS/tree/readme#readme
