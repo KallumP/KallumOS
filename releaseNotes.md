@@ -1,56 +1,34 @@
-### 0.0.1
+### 1.2
 
--   Control objects added (button)
+-   Refactored graphic handling
 
--   Control object added (text box)
+### 1.1
 
-### 0.0.2
+-   Diff matrix added
 
--   Event system implemented
+-   Textbox focusing refactored
 
-### 0.1.0
+### 1.0
 
--   Log in implemented
+-   Release of all previous features
 
-### 0.1.1
+### 0.6.2
 
--   Create account implemented
+-   File saver completed
 
-### 0.2.0
+-   Text editor uses file open and file save
 
--   Desktop implemented
+### 0.6.1
 
-### 0.2.1
+-   File selector completed
 
--   Task manager implemented
+### 0.6.0
 
-### 0.2.2
+-   File system started
 
--   text editor implemented
+### 0.5.1
 
-### 0.2.3
-
--   Tik tak implemented
-
-### 0.2.4
-
--   App launcher implemented
-
-### 0.3
-
--   Tetris game implemented
-
-### 0.4
-
--   Ability to move windows by dragging on the bar
-
-### 0.4.1
-
--   Tetris bugs fixed (hold only once per turn, y collision -1 bug fixed, hold piece swap location fixed)
-
-### 0.4.2
-
--   Performance increase (app launcher and task manager now using function pointers)
+-   Tetris Kick rotate and 7bag implemented
 
 ### 0.5.0
 
@@ -66,34 +44,56 @@
 
 -   Can do arithmetic functionality as assignation to variable or output
 
-### 0.5.1
+### 0.4.2
 
--   Tetris Kick rotate and 7bag implemented
+-   Performance increase (app launcher and task manager now using function pointers)
 
-### 0.6.0
+### 0.4.1
 
--   File system started
+-   Tetris bugs fixed (hold only once per turn, y collision -1 bug fixed, hold piece swap location fixed)
 
-### 0.6.1
+### 0.4
 
--   File selector completed
+-   Ability to move windows by dragging on the bar
 
-### 0.6.2
+### 0.3
 
--   File saver completed
+-   Tetris game implemented
 
--   Text editor uses file open and file save
+### 0.2.4
 
-### 1.0
+-   App launcher implemented
 
--   Release of all previous features
+### 0.2.3
 
-### 1.1
+-   Tik tak implemented
 
--   Diff matrix added
+### 0.2.2
 
--   Textbox focusing refactored
+-   text editor implemented
 
-### 1.2
+### 0.2.1
 
--   Refactored graphic handling
+-   Task manager implemented
+
+### 0.2.0
+
+-   Desktop implemented
+
+### 0.1.1
+
+-   Create account implemented
+
+### 0.1.0
+
+-   Log in implemented
+
+### 0.0.2
+
+-   Event system implemented
+
+### 0.0.1
+
+-   Control objects added (button)
+
+-   Control object added (text box)
