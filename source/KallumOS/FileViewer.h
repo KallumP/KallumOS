@@ -36,8 +36,8 @@ public:
 	FileViewer(Point _position, Point _size, std::filesystem::path appPath);
 
 	void Draw(Point offset);
-	bool Hover(Point* mousePosition);
-	bool Click(Point* mousePosition);
+	bool OnMousePress(MousePress* e);
+	bool OnMouseMove(Point* e);
 
 
 protected:

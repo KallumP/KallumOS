@@ -27,11 +27,9 @@ protected:
 
 	std::vector<Control*> controls;
 
-	Point* mousePosition;
 	bool mouseClicked;
 	Control* focused;
 	States nextState;
-
 
 public:
 
@@ -41,20 +39,17 @@ public:
 	virtual void Tick(float elapsedTime) = 0;
 	virtual void Draw() = 0;
 
-	virtual	void Click() {}
-	virtual void MouseMove() {}
 	virtual void OnKeyPress(KeyPress* e) = 0;
 	virtual void OnMousePress(MousePress* e) = 0;
 	virtual void OnMouseHold(MousePress* e) {}
 	virtual void OnMouseRelease(MousePress* e) {}
+	virtual void OnMouseMove(Point* e) {}
 	virtual States GetNextState();
 
 	void Focus(Control* toFocus, bool click);
 	void NextFocus();
 
 private:
-
-
 
 };
 

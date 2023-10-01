@@ -65,20 +65,19 @@ void FileOption::Draw(Point offset) {
 		kGraphics::DrawString(fileName, offset.GetX() + position.GetX(), offset.GetY() + position.GetY(), fontSize, fontColor);
 }
 
-bool FileViewer::Hover(Point* mousePosition) {
-
-	DetectFileHover(mousePosition);
-
-	return false;
-}
-
-bool FileViewer::Click(Point* mousePosition) {
+bool FileViewer::OnMousePress(MousePress* e) {
 
 	HandleFileClick();
 
 	return false;
 }
 
+bool FileViewer::OnMouseMove(Point* e) {
+
+	DetectFileHover(e);
+
+	return false;
+}
 
 //handles what happens when a file or directory is clicked on
 void FileViewer::HandleFileClick() {
@@ -107,7 +106,6 @@ void FileViewer::HandleFileClick() {
 	FetchAllCurrentFiles();
 }
 
-
 //fetches all the files in the current file path
 void FileViewer::FetchAllCurrentFiles() {
 
@@ -121,7 +119,6 @@ void FileViewer::FetchAllCurrentFiles() {
 		else
 			currentDirectories.push_back(FileOption(std::filesystem::relative(entry.path(), path).string(), currentDirectories.size(), position, entry.path()));
 }
-
 
 void FileViewer::DetectFileHover(Point* mousePosition) {
 

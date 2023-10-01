@@ -73,7 +73,6 @@ public:
 	//returns the value after constraining it between the upper and lower limits
 	static int Constrain(int value, int lower, int upper) {
 
-
 		if (value > upper)
 			return upper;
 
@@ -84,9 +83,13 @@ public:
 	}
 
 	//normalises the mouse position be relative to the window position
-	static Point NormaliseMousePos(Point normaliseFrom, int yOffSet = 0) {
+	static Point NormaliseMousePos(Point* mousePos, Point normaliseFrom, int yOffSet = 0) {
 
-		return Point(GetMouseX() - normaliseFrom.GetX(), GetMouseY() - normaliseFrom.GetY() - yOffSet);
+		return Point(mousePos->GetX() - normaliseFrom.GetX(), mousePos->GetY() - normaliseFrom.GetY() - yOffSet);
+	}
+
+	static Point GetMousePosition() {
+		return Point(GetMouseX(), GetMouseY());
 	}
 
 private:

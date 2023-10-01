@@ -17,14 +17,6 @@ TextEditor::TextEditor(Point _position, Point _size) : Process("Text Editor", _p
 
 void TextEditor::Tick(float elapsedTime) {
 
-	if (fileSelector != nullptr)
-		fileSelector->Hover(new Point(GetMouseX(), GetMouseY()));
-
-	if (fileSaver != nullptr)
-		fileSaver->Hover(new Point(GetMouseX(), GetMouseY()));
-
-	open.Hover(new Point(GetMouseX(), GetMouseY()));
-	save.Hover(new Point(GetMouseX(), GetMouseY()));
 }
 
 void TextEditor::Draw(Point offset) {
@@ -96,11 +88,11 @@ void TextEditor::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(Helper::NormaliseMousePos(position));
+		SuperMousePress(Helper::NormaliseMousePos(e->GetMousePosition(), position));
 
 		if (fileSelector != nullptr) { // file selector to open a file
 
-			fileSelector->Click(new Point(GetMouseX(), GetMouseY()));
+			fileSelector->OnMousePress(e);
 
 			if (fileSelector->GetReady()) {
 
@@ -112,7 +104,7 @@ void TextEditor::OnMousePress(MousePress* e) {
 
 		} else if (fileSaver != nullptr) { // file saver to save to a file
 
-			fileSaver->Click(new Point(GetMouseX(), GetMouseY()));
+			fileSaver->OnMousePress(e);
 
 			if (fileSaver->GetReady()) {
 
@@ -124,15 +116,30 @@ void TextEditor::OnMousePress(MousePress* e) {
 
 		} else {
 
-			HandleButtonClicks();
+			HandleButtonClicks(e);
 
 			int checkOffset;
 
 			//saves the height of the mouse
-			Point normalisedMouse = Helper::NormaliseMousePos(position);
+			Point normalisedMouse = Helper::NormaliseMousePos(e->GetMousePosition(), position);
 
 			//move cursor to something near the text
 		}
+	}
+}
+
+void TextEditor::OnMouseMove(Point* e) {
+
+	if (display) {
+
+		if (fileSelector != nullptr)
+			fileSelector->OnMouseMove(e);
+
+		if (fileSaver != nullptr)
+			fileSaver->OnMouseMove(e);
+
+		open.OnMouseMove(e);
+		save.OnMouseMove(e);
 	}
 }
 
@@ -147,7 +154,7 @@ void TextEditor::DeleteChar() {
 }
 
 //handles what happens if the open or save buttons are clicked
-void TextEditor::HandleButtonClicks() {
+void TextEditor::HandleButtonClicks(MousePress* e) {
 
 	std::filesystem::path appPath = "hardDrive/TextEditor";
 
@@ -155,16 +162,15 @@ void TextEditor::HandleButtonClicks() {
 		if (!Helper::CreatePath(appPath)) //if the path could not be made
 			return;
 
-	if (open.Click(new Point(GetMouseX(), GetMouseY())))
+	if (open.OnMousePress(e))
 		fileSelector = new FileSelector(Point(200, 100), Point(300, 300), appPath);
 
-	if (save.Click(new Point(GetMouseX(), GetMouseY())))
+	if (save.OnMousePress(e))
 		fileSaver = new FileSaver(Point(200, 100), Point(300, 300), appPath);
 }
 
 //loads the content of the selected file into the text editor
 void TextEditor::LoadFromFile(std::filesystem::path selectedPath) {
-
 
 	std::string fullPath = "hardDrive/" + std::filesystem::relative(selectedPath, "hardDrive/").string();
 

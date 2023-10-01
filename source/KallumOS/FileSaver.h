@@ -10,9 +10,9 @@ public:
 	FileSaver(Point _position, Point _size, std::filesystem::path appPath);
 
 	void Draw(Point offset);
-	bool Hover(Point* mousePosition);
-	bool Click(Point* mousePosition);
 	void OnKeyPress(KeyPress* e);
+	bool OnMousePress(MousePress* e);
+	bool OnMouseMove(Point* e);
 
 	bool GetReady() { return ready; }
 	std::string GetSelectedFileName() { return name.GetValue(); }

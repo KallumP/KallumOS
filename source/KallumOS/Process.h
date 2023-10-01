@@ -41,6 +41,7 @@ public:
 	virtual void OnMousePress(MousePress* e);
 	virtual void OnMouseHold(MousePress* e);
 	virtual void OnMouseRelease(MousePress* e);
+	virtual void OnMouseMove(Point* e) {}
 
 	bool GetHidden() { return hidden; }
 	bool GetDisplay() { return display; }

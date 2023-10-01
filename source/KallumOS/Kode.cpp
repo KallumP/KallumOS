@@ -127,14 +127,14 @@ void Kode::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(Helper::NormaliseMousePos(position));
+		SuperMousePress(Helper::NormaliseMousePos(e->GetMousePosition(), position));
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = Helper::NormaliseMousePos(position);
+		Point normalisedMouse = Helper::NormaliseMousePos(e->GetMousePosition(), position);
 
-		//move cursore to something near the text
+		//move cursor to something near the text
 	}
 }
 

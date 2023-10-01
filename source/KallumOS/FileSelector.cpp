@@ -25,20 +25,10 @@ void FileSelector::Draw(Point offset) {
 	submit.Draw();
 }
 
-
-bool FileSelector::Hover(Point* mousePosition) {
-
-	submit.Hover(mousePosition);
-
-	FileViewer::DetectFileHover(mousePosition);
-
-	return false;
-}
-
-bool FileSelector::Click(Point* mousePosition) {
+bool FileSelector::OnMousePress(MousePress* e) {
 
 	//select button was clicked
-	if (submit.Click(mousePosition)) {
+	if (submit.OnMousePress(e)) {
 		SetData();
 		return false;
 	}
@@ -47,6 +37,15 @@ bool FileSelector::Click(Point* mousePosition) {
 	ready = false;
 
 	HandleFileClick();
+
+	return false;
+}
+
+bool FileSelector::OnMouseMove(Point* e) {
+
+	submit.OnMouseMove(e);
+
+	FileViewer::DetectFileHover(e);
 
 	return false;
 }
@@ -67,7 +66,6 @@ void FileSelector::HandleFileClick() {
 
 	FileViewer::HandleFileClick();
 }
-
 
 void FileSelector::SetData() {
 

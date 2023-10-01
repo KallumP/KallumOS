@@ -20,6 +20,7 @@ public:
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
+	void OnMouseMove(Point* e);
 
 private:
 

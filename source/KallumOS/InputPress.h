@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "Helper.h"
 
 #include <string>
 
@@ -46,14 +47,24 @@ public:
 
 	MousePress(int _mouseButton) {
 		mouseButton = _mouseButton;
+		mousePosition = Helper::GetMousePosition();
 	}
 
 	int GetMouseCode() {
 		return mouseButton;
 	}
 
+	void SetMousePosition() {
+		mousePosition = Helper::GetMousePosition();
+	}
+
+	Point* GetMousePosition() {
+		return &mousePosition;
+	}
+
 private:
 	int mouseButton;
+	Point mousePosition;
 	//mouse buttons are as follows
 	//left: 0, right: 1, middle: 2
 };

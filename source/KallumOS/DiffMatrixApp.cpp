@@ -22,12 +22,6 @@ DiffMatrixApp::DiffMatrixApp(Point _position, Point _size) : Process("DiffMatrix
 
 void DiffMatrixApp::Tick(float elapsedTime) {
 
-
-	if (display) {
-
-		target.Hover(new Point(GetMouseX(), GetMouseY()));
-		source.Hover(new Point(GetMouseX(), GetMouseY()));
-	}
 }
 
 void DiffMatrixApp::Draw(Point offset) {
@@ -141,20 +135,29 @@ void DiffMatrixApp::OnKeyPress(KeyPress* e) {
 
 void DiffMatrixApp::OnMousePress(MousePress* e) {
 
-	SuperMousePress(Helper::NormaliseMousePos(position));
+	SuperMousePress(Helper::NormaliseMousePos(e->GetMousePosition(), position));
 
 	//unfocuses the clicked text box if there was one
 	if (focused != nullptr)
 		focused->InvertFocus();
 
-	if (source.Click(new Point(GetMouseX(), GetMouseY())))
+	if (source.OnMousePress(e))
 		focused = &source;
-	else if (target.Click(new Point(GetMouseX(), GetMouseY())))
+	else if (target.OnMousePress(e))
 		focused = &target;
 
 	//focuses the clicked text box if there was one
 	if (focused != nullptr)
 		focused->InvertFocus();
+}
+
+void DiffMatrixApp::OnMouseMove(Point* e) {
+
+	if (display) {
+
+		target.OnMouseMove(e);
+		source.OnMouseMove(e);
+	}
 }
 
 void DiffMatrixApp::GenerateEmptyMatrix() {

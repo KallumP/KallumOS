@@ -6,7 +6,6 @@
 #include "Tetris.h"
 #include "Kode.h"
 #include "DiffMatrixApp.h"
-#include "TestWindow.h"
 
 #include "Button.h"
 
@@ -40,12 +39,13 @@ public:
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
+	void OnMouseMove(Point* e);
 
 private:
 	std::vector<ProcessInfo> processInfos;
 	std::vector<Process*>* processes;
 	void SetupProcessInfos();
-	void HandleButtonClicks();
+	void HandleButtonClicks(MousePress* e);
 
 	std::function<void(Process* toLaunch)> LaunchApp;
 	std::function<void(Process* toClose)> CloseApp;

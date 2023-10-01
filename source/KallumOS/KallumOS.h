@@ -20,6 +20,7 @@ public:
 	void OnMouseHold(MousePress* e);
 	void OnMousePress(MousePress* e);
 	void OnMouseRelease(MousePress* e);
+	void OnMouseMove(Point* e);
 
 private:
 

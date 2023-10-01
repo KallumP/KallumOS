@@ -15,7 +15,6 @@ Taskbar::Taskbar(std::vector<Process*>* _processes) : Control(Point(), Point()) 
 	height = 50;
 
 	processes = _processes;
-
 }
 
 void Taskbar::Draw() {
@@ -48,11 +47,11 @@ void Taskbar::Draw() {
 	}
 }
 
-bool Taskbar::Click(Point* mousePosition) {
+bool Taskbar::OnMousePress(MousePress* e) {
 
-	if (GetMouseY() < height) {
+	if (e->GetMousePosition()->GetY() < height) {
 
-		HandleClickedProcess();
+		HandleClickedProcess(e->GetMousePosition());
 
 		return true;
 	}
@@ -60,9 +59,9 @@ bool Taskbar::Click(Point* mousePosition) {
 }
 
 
-void Taskbar::HandleClickedProcess() {
+void Taskbar::HandleClickedProcess(Point* mousePos) {
 
-	int mouseX = GetMouseX();
+	int mouseX = mousePos->GetX();
 
 	int nonHiddenIndex = 0;
 

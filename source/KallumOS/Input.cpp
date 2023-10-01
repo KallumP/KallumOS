@@ -10,6 +10,7 @@ Input::Input() {
 
 	GenerateKeyPressList();
 	GenerateMousePressList();
+	mousePosition = Point(0, 0);
 }
 
 //generates the list of all the supported keys
@@ -17,8 +18,6 @@ void Input::GenerateKeyPressList() {
 
 	//null input
 	allKeyPressOptions.push_back(KeyPress(KEY_NULL, ""));
-
-	//add capital letters, change the secondary key constructor to use optional parameters
 
 	//letter inputs
 	allKeyPressOptions.push_back(KeyPress(KEY_A, "a", "A"));
@@ -218,6 +217,8 @@ bool Input::InKeyDelayList(KeyPress* key) {
 	return false;
 }
 
+
+
 //populates the list of all possible mouse presses
 void Input::GenerateMousePressList() {
 
@@ -232,6 +233,9 @@ void Input::GetMouseInputs(float elapsedTime, KallumOS* caller) {
 
 	//loops through the already registered presses
 	for (int i = mousePresses.size() - 1; i >= 0; i--) {
+
+		//updates the mouse position for this click
+		mousePresses[i].SetMousePosition();
 
 		//checks if the current press from list was held this tick
 		if (IsMouseButtonDown(mousePresses[i].GetMouseCode()))
@@ -259,6 +263,9 @@ void Input::GetMouseInputs(float elapsedTime, KallumOS* caller) {
 			//checks if the press wasn't already registered
 			if (!InMousePressedList(allMousePressOptions[i])) {
 
+				//updates the mouse position for this click
+				allMousePressOptions[i].SetMousePosition();
+
 				//calls the mouse press method
 				caller->OnMousePress(&allMousePressOptions[i]);
 
@@ -268,7 +275,6 @@ void Input::GetMouseInputs(float elapsedTime, KallumOS* caller) {
 		}
 	}
 }
-
 
 //returns if the passed in key was present in the delay list
 bool Input::InMousePressedList(MousePress press) {
@@ -281,4 +287,16 @@ bool Input::InMousePressedList(MousePress press) {
 			return true;
 
 	return false;
+}
+
+
+void Input::GetMouseMovement(float elapsedTime, KallumOS* caller) {
+
+	Point newMousePosition = Point(GetMouseX(), GetMouseY());
+
+	if (newMousePosition.Different(&mousePosition)) {
+
+		mousePosition = newMousePosition;
+		caller->OnMouseMove(&mousePosition);
+	}
 }

@@ -37,7 +37,6 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Taskbar.cpp" />
     <ClCompile Include="TaskManager.cpp" />
-    <ClCompile Include="TestWindow.cpp" />
     <ClCompile Include="Tetris.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextEditor.cpp" />
@@ -65,7 +64,6 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="Taskbar.h" />
     <ClInclude Include="TaskManager.h" />
-    <ClInclude Include="TestWindow.h" />
     <ClInclude Include="Tetris.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextEditor.h" />

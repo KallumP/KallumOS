@@ -77,16 +77,6 @@ void TextBox::Draw(Point offset) {
 
 }
 
-bool TextBox::Click(Point* mousePosition) {
-
-	if (Within(mousePosition)) {
-		FindNewCursorPosition(mousePosition->GetX());
-		return true;
-	}
-
-	return false;
-}
-
 void TextBox::OnKeyPress(KeyPress* e) {
 
 	if (e->GetKeyCode() == KEY_BACKSPACE) {
@@ -104,9 +94,19 @@ void TextBox::OnKeyPress(KeyPress* e) {
 		Input(e->GetKeyContent());
 }
 
-void TextBox::FindNewCursorPosition(int mouseX) {
+bool TextBox::OnMousePress(MousePress* e) {
 
-	Point normMouse = Helper::NormaliseMousePos(*GetPosition());
+	if (Within(e->GetMousePosition())) {
+		FindNewCursorPosition(e->GetMousePosition());
+		return true;
+	}
+
+	return false;
+}
+
+void TextBox::FindNewCursorPosition(Point* mousePos) {
+
+	Point normMouse = Helper::NormaliseMousePos(mousePos, *GetPosition());
 
 	//loops through each of the characters in the string
 	for (int i = 0; i < value.size(); i++) {

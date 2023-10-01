@@ -21,6 +21,7 @@ public:
 	void OnMousePress(MousePress* e);
 	void OnMouseHold(MousePress* e); 
 	void OnMouseRelease(MousePress* e);
+	void OnMouseMove(Point* e);
 
 
 private:

@@ -17,7 +17,7 @@ int main() {
 		return 0;
 
 	KallumOS* os = new KallumOS();
-	Input* intputHandler = new Input();
+	Input* inputHandler = new Input();
 
 	float targetFrameRate = 60;
 	float targetFrameTime = 1 / targetFrameRate;
@@ -29,8 +29,9 @@ int main() {
 		timeSinceLastFrame = GetFrameTime();
 		runtime += timeSinceLastFrame;
 
-		intputHandler->GetKeyPress(timeSinceLastFrame, os);
-		intputHandler->GetMouseInputs(timeSinceLastFrame, os);
+		inputHandler->GetKeyPress(timeSinceLastFrame, os);
+		inputHandler->GetMouseInputs(timeSinceLastFrame, os);
+		inputHandler->GetMouseMovement(timeSinceLastFrame, os);
 
 		os->Tick(timeSinceLastFrame);
 		timeSinceLastFrame = 0;

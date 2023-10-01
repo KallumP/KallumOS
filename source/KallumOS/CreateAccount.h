@@ -16,13 +16,10 @@ public:
 	void Draw();
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
-
-
+	void OnMouseMove(Point* e);
 
 private:
 
-	void Click();
-	void MouseMove();
 
 	void CheckCreateClicked();
 	void CheckSwitchToLoginClicked();
