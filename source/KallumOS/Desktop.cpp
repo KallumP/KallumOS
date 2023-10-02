@@ -16,18 +16,8 @@ Desktop::Desktop() : State() {
 
 void Desktop::Tick(float elapsedTime) {
 
-	//turns the window mouse values into a point
-	Point* newMouse = new Point(GetMouseX(), GetMouseY());
-
-	//checks if the new mouse is different from the old
-	if (mousePosition->Different(newMouse)) {
-		mousePosition->Set(newMouse);
-		MouseMove();
-	}
-
-	if (focused != nullptr) {
+	if (focused != nullptr)
 		focused->Tick(elapsedTime);
-	}
 }
 
 void Desktop::Draw() {
@@ -67,7 +57,7 @@ void Desktop::OnKeyPress(KeyPress* e) {
 void Desktop::OnMousePress(MousePress* e) {
 
 	//passes the click event to the taskbar
-	if (taskbar.Click(mousePosition))
+	if (taskbar.OnMousePress(e))
 		TaskBarClickHandle();
 
 	//if there was a focused window
@@ -113,6 +103,12 @@ void Desktop::OnMouseRelease(MousePress* e) {
 		//send the click to the focused process
 		focused->OnMouseRelease(e);
 	}
+}
+
+void Desktop::OnMouseMove(Point* e) {
+
+	if (focused != nullptr)
+		focused->OnMouseMove(e);
 }
 
 void Desktop::TaskBarClickHandle() {

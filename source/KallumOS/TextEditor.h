@@ -19,12 +19,13 @@ public:
 	void Draw(Point offset);
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
+	void OnMouseMove(Point* e);
 
 private:
 
 	void Input(std::string input);
 	void DeleteChar();
-	void HandleButtonClicks();
+	void HandleButtonClicks(MousePress* e);
 
 	void LoadFromFile(std::filesystem::path selectedPath);
 	void SaveToFile(std::filesystem::path selectedPath);

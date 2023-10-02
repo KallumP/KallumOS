@@ -33,9 +33,9 @@ public:
 	Control(Point _position, Point _size);
 
 	virtual void Draw(Point offset = Point(0, 0)) {}
-	virtual bool Hover(Point* mousePosition);
-	virtual bool Click(Point* mousePosition) = 0;
 	virtual void OnKeyPress(KeyPress* e) {}
+	virtual bool OnMousePress(MousePress* e) = 0;
+	virtual bool OnMouseMove(Point* e);
 
 
 	Point normalizePosition(Point* screenSize);

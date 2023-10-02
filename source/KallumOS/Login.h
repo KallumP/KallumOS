@@ -17,6 +17,7 @@ public:
 	void Draw();
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
+	void OnMouseMove(Point* e);
 
 
 private:
@@ -24,8 +25,6 @@ private:
 	void CheckSwitchToCreateClicked();
 	void GetAllUsers();
 
-	void Click();
-	void MouseMove();
 	void ValidateLogin();
 	bool ValidateCredentials(std::string _username, std::string _password, Credentials toCheck);
 

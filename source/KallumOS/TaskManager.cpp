@@ -59,12 +59,12 @@ void TaskManager::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(Helper::NormaliseMousePos(position));
+		SuperMousePress(Helper::NormaliseMousePos(e->GetMousePosition(), position));
 
 		int checkOffset;
 
 		//saves the height of the mouse
-		Point normalisedMouse = Helper::NormaliseMousePos(position);
+		Point normalisedMouse = Helper::NormaliseMousePos(e->GetMousePosition(), position);
 
 		//loops through all the processes
 		for (int i = processes->size() - 1; i >= 0; i--) {

@@ -250,9 +250,9 @@ void Tetris::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(Helper::NormaliseMousePos(position));
+		SuperMousePress(Helper::NormaliseMousePos(e->GetMousePosition(), position));
 
-		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(e->GetMousePosition(), position, barHeight);
 	}
 }
 

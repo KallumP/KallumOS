@@ -4,6 +4,7 @@
 #include "KallumOS.h"
 #include "Control.h"
 #include "InputPress.h" 
+#include "Point.h"
 
 #include <vector>
 #include <string>
@@ -60,6 +61,7 @@ public:
 	Input();
 	void GetKeyPress(float elapsedTime, KallumOS* caller);
 	void GetMouseInputs(float elapsedTime, KallumOS* caller);
+	void GetMouseMovement(float elapsedTime, KallumOS* caller);
 
 private:
 
@@ -75,4 +77,5 @@ private:
 	std::vector<KeyDelayer> keyPressesOnDelay;
 	std::vector<MousePress> mousePresses;
 
+	Point mousePosition;
 };

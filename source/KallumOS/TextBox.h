@@ -17,8 +17,8 @@ public:
 
 	void SetObfuscation(std::string _obfuscation);
 	void Draw(Point offset = Point(0,0));
-	bool Click(Point* mousePosition);
 	void OnKeyPress(KeyPress* e);
+	bool OnMousePress(MousePress* e);
 
 	std::string GetValue();
 	void SetValue(std::string _value);
@@ -30,7 +30,7 @@ private:
 	void Input(std::string input);
 	void DeleteOne(bool back);
 	void DeleteWord();
-	void FindNewCursorPosition(int mouseX);
+	void FindNewCursorPosition(Point* mousePos);
 	void MoveCursor(int toMove);
 
 	float singleCharWidth;

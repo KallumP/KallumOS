@@ -6,7 +6,6 @@
 
 State::State() {
 
-	mousePosition = new Point();
 	mouseClicked = false;
 	nextState = States::null;
 }

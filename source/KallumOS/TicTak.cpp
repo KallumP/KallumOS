@@ -34,6 +34,10 @@ void TicTak::Draw(Point offset) {
 		kGraphics::DrawString(message.c_str(), 10 + offset.GetX(), 5 + offset.GetY() + square.GetY() * 3, defaultFontSize, messageColor);
 	}
 }
+void TicTak::DrawSquare(Point offset, int i, int j, Color c) {
+
+	kGraphics::FillRect(offset.GetX() + square.GetX() * i, offset.GetY() + square.GetY() * j, square.GetX(), square.GetY(), c);
+}
 
 void TicTak::OnKeyPress(KeyPress* e) {
 
@@ -48,9 +52,9 @@ void TicTak::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(Helper::NormaliseMousePos(position));
+		SuperMousePress(Helper::NormaliseMousePos(e->GetMousePosition(), position));
 
-		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(e->GetMousePosition(), position, barHeight);
 
 		if (!win) {
 
@@ -87,12 +91,6 @@ void TicTak::OnMousePress(MousePress* e) {
 	}
 }
 
-
-
-
-
-
-
 void TicTak::SetupBoard() {
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
@@ -108,12 +106,6 @@ void TicTak::SetupBoard() {
 }
 
 void TicTak::OutputConsoleBoard() {
-
-}
-
-void TicTak::DrawSquare(Point offset, int i, int j, Color c) {
-
-	kGraphics::FillRect(offset.GetX() + square.GetX() * i, offset.GetY() + square.GetY() * j, square.GetX(), square.GetY(), c);
 
 }
 

@@ -43,7 +43,7 @@ void AppLauncher::Draw(Point offset) {
 
 			if (zeroBasedI > buttonCount - 1)
 				break;
-			
+
 			kGraphics::DrawRect(
 				offset.GetX() + ProcessInfo::buttonPadding,
 				offset.GetY() + scrollUp.GetSize().GetY() + scrollButtonPadding + (ProcessInfo::buttonPadding + ProcessInfo::buttonSizes.GetY()) * zeroBasedI,
@@ -66,9 +66,6 @@ void AppLauncher::Draw(Point offset) {
 
 void AppLauncher::Tick(float elapsedTime) {
 
-	scrollUp.Hover(new Point(GetMouseX(), GetMouseY()));
-	scrollDown.Hover(new Point(GetMouseX(), GetMouseY()));
-
 }
 
 void AppLauncher::OnKeyPress(KeyPress* e) {
@@ -82,11 +79,11 @@ void AppLauncher::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(Helper::NormaliseMousePos(position));
+		SuperMousePress(Helper::NormaliseMousePos(e->GetMousePosition(), position));
 
-		HandleButtonClicks();
+		HandleButtonClicks(e);
 
-		Point normalisedMouse = Helper::NormaliseMousePos(position, barHeight);
+		Point normalisedMouse = Helper::NormaliseMousePos(e->GetMousePosition(), position, barHeight);
 
 		int scrollButtonPadding = scrollUp.GetSize().GetY();
 
@@ -111,12 +108,21 @@ void AppLauncher::OnMousePress(MousePress* e) {
 	}
 }
 
-void AppLauncher::HandleButtonClicks() {
+void AppLauncher::OnMouseMove(Point* e) {
 
-	if (scrollUp.Click(new Point(GetMouseX(), GetMouseY())))
+	if (display) {
+
+		scrollUp.OnMouseMove(e);
+		scrollDown.OnMouseMove(e);
+	}
+}
+
+void AppLauncher::HandleButtonClicks(MousePress* e) {
+
+	if (scrollUp.OnMousePress(e))
 		displayStart--;
 
-	else if (scrollDown.Click(new Point(GetMouseX(), GetMouseY())))
+	else if (scrollDown.OnMousePress(e))
 		displayStart++;
 
 	displayStart = Helper::Constrain(displayStart, 0, processInfos.size() - 1);

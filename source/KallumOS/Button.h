@@ -14,7 +14,7 @@ public:
 	Button(Point _position, Point _size, std::string _value);
 
 	void Draw(Point offset = Point(0,0));
-	bool Click(Point* mousePosition);
+	bool OnMousePress(MousePress* e);
 	void OnKeyPress(KeyPress* e);
 
 	bool GetClicked();

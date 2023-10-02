@@ -9,9 +9,6 @@
 
 #include <fstream>
 
-
-
-
 Login::Login(std::string _accountsFilePath) : State() {
 
 	accountsFilePath = _accountsFilePath;
@@ -57,32 +54,18 @@ void Login::GetAllUsers() {
 	}
 
 	toRead.close();
-
 }
 
 Login::~Login() {
 
 }
 
-
-//Tick event
 void Login::Tick(float ElapsedTime) {
-
-	//turns the window mouse values into a point
-	Point* newMouse = new Point(GetMouseX(), GetMouseY());
-
-	//checks if the new mouse is different from the old
-	if (mousePosition->Different(newMouse)) {
-		mousePosition->Set(newMouse);
-		MouseMove();
-	}
 
 	CheckLoginClicked();
 	CheckSwitchToCreateClicked();
 }
 
-
-//Draw event
 void Login::Draw() {
 
 	//clears all graphics on the window
@@ -92,30 +75,26 @@ void Login::Draw() {
 		controls[i]->Draw();
 }
 
-//Click event
-void Login::Click() {
+void Login::OnMousePress(MousePress* e) {
 
 	for (int i = 0; i < (int)controls.size(); i++) {
 
 		//checks if the control being checked was clicked
-		if (controls[i]->Click(mousePosition)) {
+		if (controls[i]->OnMousePress(e)) {
 
 			//sets the focus to this control
 			Focus(controls[i], true);
-
 			break;
 		}
 	}
 }
 
-//Mouse move event
-void Login::MouseMove() {
+void Login::OnMouseMove(Point* e) {
 
 	for (int i = 0; i < (int)controls.size(); i++)
-		controls[i]->Hover(mousePosition);
+		controls[i]->OnMouseMove(e);
 }
 
-//Keypress event
 void Login::OnKeyPress(KeyPress* e) {
 
 	if (e->GetKeyCode() == KEY_ENTER)
@@ -128,11 +107,6 @@ void Login::OnKeyPress(KeyPress* e) {
 		NextFocus();
 	else
 		focused->OnKeyPress(e);
-}
-
-void Login::OnMousePress(MousePress* e) {
-
-	Click();
 }
 
 void Login::CheckLoginClicked() {
@@ -162,10 +136,8 @@ void Login::ValidateLogin() {
 
 		} else {
 			backgroundColor = RED;
-
 		}
 	}
-
 }
 
 bool Login::ValidateCredentials(std::string _username, std::string _password, Credentials toCheck) {

@@ -21,7 +21,7 @@ public:
 	Taskbar(std::vector<Process*>* _processes);
 
 	void Draw();
-	bool Click(Point* mousePosition);
+	bool OnMousePress(MousePress* e);
 	void OnKeyPress(KeyPress* e) {}
 
 	Process* GetClickedProcess();
@@ -33,6 +33,6 @@ private:
 	Process* clickedProcess;
 	Process* focusedProcess;
 
-	void HandleClickedProcess();
+	void HandleClickedProcess(Point* mousePos);
 };
 

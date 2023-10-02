@@ -55,6 +55,10 @@ void KallumOS::OnMouseRelease(MousePress* e) {
 	state->OnMouseRelease(e);
 }
 
+void KallumOS::OnMouseMove(Point* e) {
+	state->OnMouseMove(e);
+}
+
 void KallumOS::SwitchStates() {
 
 	States toSwitch = state->GetNextState();

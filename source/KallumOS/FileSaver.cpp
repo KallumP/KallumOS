@@ -30,20 +30,10 @@ void FileSaver::Draw(Point offset) {
 	name.Draw();
 }
 
-bool FileSaver::Hover(Point* mousePosition) {
-
-	submit.Hover(mousePosition);
-	name.Hover(mousePosition);
-	FileViewer::DetectFileHover(mousePosition);
-
-	return false;
-}
-
-
-bool FileSaver::Click(Point* mousePosition) {
+bool FileSaver::OnMousePress(MousePress* e) {
 
 	//select button was clicked
-	if (submit.Click(mousePosition)) {
+	if (submit.OnMousePress(e)) {
 		SetData();
 		return false;
 	}
@@ -51,13 +41,21 @@ bool FileSaver::Click(Point* mousePosition) {
 	//button not clicked means not ready
 	ready = false;
 
-	name.Click(mousePosition);
+	name.OnMousePress(e);
 
 	HandleFileClick();
 
 	return false;
 }
 
+bool FileSaver::OnMouseMove(Point* e) {
+
+	submit.OnMouseMove(e);
+	name.OnMouseMove(e);
+	FileViewer::DetectFileHover(e);
+
+	return false;
+}
 
 void FileSaver::HandleFileClick() {
 

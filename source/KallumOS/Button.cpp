@@ -37,9 +37,9 @@ void Button::Draw(Point offset) {
 		kGraphics::DrawRect(normalizedPosition->GetX(), normalizedPosition->GetY(), size.GetX(), size.GetY(), BLACK);
 }
 
-bool Button::Click(Point* mousePosition) {
+bool Button::OnMousePress(MousePress* e) {
 
-	if (Within(mousePosition)) {
+	if (Within(e->GetMousePosition())) {
 		InvertClicked();
 		return true;
 	}
@@ -47,14 +47,12 @@ bool Button::Click(Point* mousePosition) {
 	return false;
 }
 
-//Keypress event
 void Button::OnKeyPress(KeyPress* e) {
 }
 
 bool Button::GetClicked() {
 	return clicked;
 }
-
 
 void Button::InvertClicked() {
 	clicked = !clicked;

@@ -44,9 +44,9 @@ void Control::InvertFocus(bool click) {
 	focused = !focused;
 }
 
-bool Control::Hover(Point* mousePosition) {
+bool Control::OnMouseMove(Point* e) {
 
-	if (Within(mousePosition)) {
+	if (Within(e)) {
 
 		backColor = hoverColor;
 		return true;

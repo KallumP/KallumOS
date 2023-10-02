@@ -29,7 +29,6 @@ public:
 
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
-	void Tick(float elapsedTime) {}
 
 private:
 

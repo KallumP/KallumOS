@@ -10,7 +10,6 @@ Process::Process() {
 	mouseDownOnBar = false;
 }
 
-
 Process::Process(std::string _name) {
 
 	name = _name;
@@ -20,7 +19,6 @@ Process::Process(std::string _name) {
 	close = false;
 	mouseDownOnBar = false;
 	defaultFontSize = 20;
-
 }
 
 Process::Process(std::string _name, Point _position, Point _size) {
@@ -34,16 +32,13 @@ Process::Process(std::string _name, Point _position, Point _size) {
 	display = true;
 	close = false;
 	mouseDownOnBar = false;
-
 }
 
 void Process::Draw(Point offset) {
 
 	if (display)
-
 		DrawBoxBar(offset, true);
 }
-
 
 void Process::DrawBoxBar(Point offset, bool fill) {
 
@@ -75,21 +70,18 @@ void Process::DrawBoxBar(Point offset, bool fill) {
 std::string Process::GetName() {
 
 	return name;
-
 }
-
 
 
 void Process::OnMousePress(MousePress* e) {
 
 	if (display) {
 
-		SuperMousePress(Helper::NormaliseMousePos(position));
+		SuperMousePress(Helper::NormaliseMousePos(e->GetMousePosition(), position));
 	}
 }
 
 void Process::SuperMousePress(Point normMousePos) {
-
 
 	if (CheckBarClicked(normMousePos)) {
 
@@ -141,7 +133,7 @@ void Process::OnMouseHold(MousePress* e) {
 
 	if (mouseDownOnBar) {
 
-		Point newMousePosition = Helper::NormaliseMousePos(position);
+		Point newMousePosition = Helper::NormaliseMousePos(e->GetMousePosition(), position);
 
 		Point mouseDifference = newMousePosition.Difference(barClickLocation);
 		
@@ -153,7 +145,6 @@ void Process::OnMouseRelease(MousePress* e) {
 
 	mouseDownOnBar = false;
 }
-
 
 void Process::UpdatePosition(Point change) {
 

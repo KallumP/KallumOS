@@ -68,15 +68,6 @@ void CreateAccount::GetAllUsers() {
 
 void CreateAccount::Tick(float elapsedTime) {
 
-	//turns the window mouse values into a point
-	Point* newMouse = new Point(GetMouseX(), GetMouseY());
-
-	//checks if the new mouse is different from the old
-	if (mousePosition->Different(newMouse)) {
-		mousePosition->Set(newMouse);
-		MouseMove();
-	}
-
 	CheckCreateClicked();
 	CheckSwitchToLoginClicked();
 }
@@ -90,25 +81,9 @@ void CreateAccount::Draw() {
 		controls[i]->Draw();
 }
 
-void CreateAccount::Click() {
-
-	//loops through all of the controls
-	for (int i = 0; i < (int)controls.size(); i++) {
-
-		//checks if the control being checked was clicked
-		if (controls[i]->Click(mousePosition)) {
-
-			//sets the focus to this control
-			Focus(controls[i], true);
-
-			break;
-		}
-	}
-}
-
-void CreateAccount::MouseMove() {
+void CreateAccount::OnMouseMove(Point* e) {
 	for (int i = 0; i < (int)controls.size(); i++)
-		controls[i]->Hover(mousePosition);
+		controls[i]->OnMouseMove(e);
 }
 
 void CreateAccount::OnKeyPress(KeyPress* e) {
@@ -127,7 +102,18 @@ void CreateAccount::OnKeyPress(KeyPress* e) {
 
 void CreateAccount::OnMousePress(MousePress* e) {
 
-	Click();
+	//loops through all of the controls
+	for (int i = 0; i < (int)controls.size(); i++) {
+
+		//checks if the control being checked was clicked
+		if (controls[i]->OnMousePress(e)) {
+
+			//sets the focus to this control
+			Focus(controls[i], true);
+
+			break;
+		}
+	}
 }
 
 void CreateAccount::CheckCreateClicked() {
