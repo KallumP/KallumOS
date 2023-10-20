@@ -10,12 +10,12 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
 	text = "out Hello world!;out Hello second line!:);";
-	//text = "int x = 20;int y = 30;";
-	//text += "int z = y - x;out z;";
-	//text += "z = y + x;out z;";
-	//text += "z = y * x;out z;";
-	//text += "z = z + z;out z;";
-	//text += "z = z + 10;out z;";
+	text = "int x = 20;int y = 30;";
+	text += "int z = y - x;out z;";
+	text += "z = y + x;out z;";
+	text += "z = y * x;out z;";
+	text += "z = z + z;out z;";
+	text += "z = z + 10;out z;";
 
 	consoleHeight = 100;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
@@ -474,7 +474,7 @@ std::string Kode::HandleFunction(int statementNumber, std::vector<std::string> c
 
 			if (toWorkWith == 0) {
 				//if (debug)
-					AddToConsoleOutput(i, "Tried to divide by zero. Division operation skipped", RED);
+					AddToConsoleOutput(statementNumber, "Tried to divide by zero. Division operation skipped", RED);
 				continue;
 			}
 
