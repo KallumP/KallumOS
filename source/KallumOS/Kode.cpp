@@ -9,13 +9,28 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	SetupSupportedSymbols();
 
 	fontSize = 20;
-	text = "out Hello world!;out Hello second line!:);";
-	text = "int x = 20;int y = 30;";
-	text += "int z = y - x;out z;";
-	text += "z = y + x;out z;";
-	text += "z = y * x;out z;";
-	text += "z = z + z;out z;";
-	text += "z = z + 10;out z;";
+
+	statements.push_back("out Hello world!");
+	statements.push_back("out Hello second line! :)sssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+
+	/*statements.push_back("int x = 20");
+	statements.push_back("int y = 30");
+	statements.push_back("int z = y - x");
+	statements.push_back("out z");
+
+	statements.push_back("z = y + x");
+	statements.push_back("out z");
+
+	statements.push_back("z = y * x");
+	statements.push_back("out z");
+
+	statements.push_back("z = z + z");
+	statements.push_back("out z");
+
+	statements.push_back("z = z + 10");
+	statements.push_back("out z");*/
+
+	statementFocus = statements.size() - 1;
 
 	consoleHeight = 100;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
@@ -42,20 +57,12 @@ void Kode::DrawTextInput(Point offset) {
 	//how many of the biggest char can fit in the box
 	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
 
-	//gets each statement in a vector
-	std::vector<std::string> statements = Split(text, ";");
-
 	//loops through each statement
 	int lineCount = 0;
 	for (int i = 0; i < statements.size(); i++) {
 
-		//gets the string to output
-		std::string text = "";
-		text += std::to_string(lineCount) + ". ";
-		text += statements[i];
-		if (i != statements.size() - 1)
-			text += ";";
-
+		//sets up the statement with the line number
+		std::string text = std::to_string(i) + ". " + statements[i];
 
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
@@ -69,11 +76,9 @@ void Kode::DrawTextInput(Point offset) {
 			int linesToDraw = std::ceil(text.size() / (float)charsPerLine);
 
 			//loops through each line
-			for (int i = 0; i < linesToDraw; i++) {
+			for (int j = 0; j < linesToDraw; j++) {
 
-				std::string line;
-				line = text.substr(i * charsPerLine, charsPerLine);
-
+				std::string line = text.substr(j * charsPerLine, charsPerLine);
 				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, BLACK);
 				lineCount++;
 			}
@@ -87,18 +92,35 @@ void Kode::DrawConsole(Point offset) {
 	offset.SetY(offset.GetY() + size.GetY() - consoleHeight);
 	kGraphics::FillRect(offset.GetX(), offset.GetY(), size.GetX(), consoleHeight, BLACK);
 
+	//how many of the biggest char can fit in the box
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
 
+	int lineCount = 0;
 	for (int i = 0; i < console.size(); i++) {
 
 		//gets the string to output
-		std::string text = "";
-		text += std::to_string(console[i].linkedToStatement) + ". ";
-		text += console[i].text;
+		std::string text = std::to_string(console[i].linkedToStatement) + ". " + console[i].text;
 
-		kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(i), fontSize, console[i].textColor);
+		if (text.size() < charsPerLine) {
+		
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, console[i].textColor);
+			lineCount++;
+
+		} else {
+
+			//gets the number of lines that need to be drawn for this statemenet
+			int linesToDraw = std::ceil(text.size() / (float)charsPerLine);
+
+			//loops through each line
+			for (int j = 0; j < linesToDraw; j++) {
+
+				std::string line = text.substr(j * charsPerLine, charsPerLine);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, console[i].textColor);
+				lineCount++;
+			}
+		}
 	}
 }
-
 
 void Kode::OnKeyPress(KeyPress* e) {
 
@@ -116,6 +138,9 @@ void Kode::OnKeyPress(KeyPress* e) {
 		return;
 	} else if (e->GetKeyCode() == KEY_F3) {
 		debug = !debug;
+		return;
+	} else if (e->GetKeyCode() == KEY_ENTER) {
+		NewStatement();
 		return;
 	}
 
@@ -138,23 +163,40 @@ void Kode::OnMousePress(MousePress* e) {
 	}
 }
 
+void Kode::NewStatement() {
+
+	statements.push_back("");
+	statementFocus++;
+}
+
 void Kode::Input(std::string input) {
-	text.append(input);
+	statements[statementFocus].append(input);
 }
 
 void Kode::DeleteChar() {
 
-	if (text.length() != 0) {
+	if (statements[statementFocus].length() != 0) {	//if there was text in this statement
 
-		text.pop_back();
+		//delets the last letter
+		statements[statementFocus].pop_back();
 
-	} else {
+	} else { //if this statement didnt have anything
 
+		if (statements.size() > 1) { //if this isnt the last statement
+
+			//deletes this statement
+			statements.erase(statements.begin() + statementFocus);
+
+			//updates what statement to focus on
+			statementFocus--;
+
+			//stops the focus being below 0
+			statementFocus = statementFocus < 0 ? 0 : statementFocus;
+		}
 	}
 }
 
 std::vector<std::string> Kode::Split(std::string toSplit, std::string delimiter) {
-
 
 	std::vector<std::string> toReturn;
 	size_t pos = 0;
@@ -185,9 +227,6 @@ void Kode::Run() {
 
 	console.clear();
 	variables.clear();
-
-	//splits the text into statements (defined by ';')
-	std::vector<std::string> statements = Split(text, ";");
 
 	//loops through each statement
 	for (int i = 0; i < statements.size(); i++) {
@@ -399,11 +438,6 @@ Variable* Kode::GetVariable(std::string toGet) {
 //returns if a string can be tuend into an int
 bool Kode::Intable(std::string toCheck) {
 
-	////checks if all the chars were numbers
-	//for (char c : toCheck)
-	//	if (!isdigit(c))
-	//		return false;
-
 	//tries to convert the value into an int
 	bool intable = true;
 	try {
@@ -473,8 +507,8 @@ std::string Kode::HandleFunction(int statementNumber, std::vector<std::string> c
 		else if (chunks[i] == "/") {
 
 			if (toWorkWith == 0) {
-				//if (debug)
-					AddToConsoleOutput(statementNumber, "Tried to divide by zero. Division operation skipped", RED);
+
+				AddToConsoleOutput(statementNumber, "Tried to divide by zero. Division operation skipped", RED);
 				continue;
 			}
 

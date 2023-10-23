@@ -32,6 +32,7 @@ public:
 
 private:
 
+	void NewStatement();
 	void Input(std::string input);
 	void DeleteChar();
 	void MoveCursor(int toMove) { cursor += toMove; }
@@ -58,17 +59,16 @@ private:
 	int Exponent(int a, int b) { return  std::pow(a, b); }
 
 	int fontSize;
-	std::string text;
+
 	int cursor;
-
-	std::vector<ConsoleText> console;
-	int consoleHeight;
-	bool debug;
-
-
+	int statementFocus;
+	std::vector<std::string> statements;
 	std::vector<Variable*> variables;
 	std::vector<std::string> supportedSymbols;
 	std::vector<std::string> supportedOpCodes;
 
+	std::vector<ConsoleText> console;
+	int consoleHeight;
+	bool debug;
 };
 
