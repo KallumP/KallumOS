@@ -132,7 +132,7 @@ void Kode::DrawConsole(Point offset) {
 void Kode::OnKeyPress(KeyPress* e) {
 
 	if (e->GetKeyCode() == KEY_BACKSPACE) {
-		DeleteChar();
+		Delete();
 		return;
 	} else if (e->GetKeyCode() == KEY_LEFT) {
 		//MoveCursor(-1);
@@ -191,46 +191,43 @@ void Kode::SwitchStatement(int amount) {
 	statementFocus = statementFocus > statements.size() - 1 ? statements.size() - 1 : statementFocus;
 }
 
+//input handling
 void Kode::Input(std::string input) {
 	statements[statementFocus].append(input);
+}
+
+//delete handling
+void Kode::Delete() {
+
+	//if there was text in this statement
+	if (statements[statementFocus].length() != 0)
+		DeleteChar();
+
+	//if there was no text in this statement
+	else
+		DeleteStatement();
 }
 
 //deletes a char or the statement if no chars
 void Kode::DeleteChar() {
 
-	if (statements[statementFocus].length() != 0) {	//if there was text in this statement
-
-		//delets the last letter
-		statements[statementFocus].pop_back();
-
-	} else { //if this statement didnt have anything
-
-		if (statements.size() > 1) { //if this isnt the last statement
-
-			//deletes this statement
-			statements.erase(statements.begin() + statementFocus);
-
-			//updates what statement to focus on
-			statementFocus--;
-
-			//stops the focus being below 0
-			statementFocus = statementFocus < 0 ? 0 : statementFocus;
-		}
-	}
+	statements[statementFocus].pop_back();
 }
 
-std::vector<std::string> Kode::Split(std::string toSplit, std::string delimiter) {
+//deletes the current statement
+void Kode::DeleteStatement() {
 
-	std::vector<std::string> toReturn;
-	size_t pos = 0;
+	if (statements.size() > 1) { //if this isnt the last statement
 
-	while ((pos = toSplit.find(delimiter)) != std::string::npos) {
-		toReturn.push_back(toSplit.substr(0, pos));
-		toSplit.erase(0, pos + delimiter.length());
+		//deletes this statement
+		statements.erase(statements.begin() + statementFocus);
+
+		//updates what statement to focus on
+		statementFocus--;
+
+		//stops the focus being below 0
+		statementFocus = statementFocus < 0 ? 0 : statementFocus;
 	}
-	toReturn.push_back(toSplit);
-
-	return toReturn;
 }
 
 void Kode::SetupSupportedSymbols() {
@@ -246,168 +243,57 @@ void Kode::SetupSupportedOpcodes() {
 	supportedOpCodes.push_back("int");
 }
 
+//runs the program
 void Kode::Run() {
 
 	console.clear();
 	variables.clear();
 
 	//loops through each statement
-	for (int i = 0; i < statements.size(); i++) {
+	for (int i = 0; i < statements.size(); i++)
+		HandleStatement(statements[i], i);
+}
 
-		//checks if this was an empty statement
-		if (statements[i].size() == 0) {
-			if (debug)
-				AddToConsoleOutput(i, "Empty statement", RED);
-			continue;
-		}
+//handles the functionality of a statement
+void Kode::HandleStatement(std::string statement, int statementNumber) {
 
-		//splits the statement into the different chunks (defined by ' ')
-		std::vector<std::string> chunks = Split(statements[i], " ");
+	//splits the statement into the different chunks (defined by ' ')
+	std::vector<std::string> chunks = Helper::Split(statement, " ");
 
-		//gets what the first chunk was
-		std::string foundOpcode = CheckOpcode(chunks);
+	//gets what the first chunk was
+	std::string foundOpcode = CheckOpcode(chunks);
 
-		//unknown opcode
-		if (foundOpcode == "error") {
-			if (debug)
-				AddToConsoleOutput(i, "Unrecognized opcode", RED);
-			continue;
-		}
+	//empty statement
+	if (foundOpcode == "empty")
+		HandleOpEmpty(statementNumber);
 
-		//empty opcode
-		if (foundOpcode == "empty") {
-			if (debug)
-				AddToConsoleOutput(i, "Empty opcode (Maybe you have a space at the start?)", RED);
-			continue;
-		}
+	//unknown opcode
+	if (foundOpcode == "error")
+		HandleOpError(statementNumber);
 
-		//out command
-		if (foundOpcode == "out") {
+	//empty opcode
+	if (foundOpcode == "noOpcode")
+		HandleOpNoOp(statementNumber);
 
-			//there is no chunks after the opcode
-			if (chunks.size() < 2) {
-				if (debug)
-					AddToConsoleOutput(i, "Nothing to output", RED);
-				continue;
-			}
+	//out command
+	if (foundOpcode == "out")
+		HandleOpOut(statementNumber, chunks);
 
-			//checks if the operand is a function
-			if (ValidFunction(chunks, 1)) {
+	//int command
+	if (foundOpcode == "int")
+		HandleOpInt(statementNumber, chunks);
 
-				//gets the result of the function
-				std::string functionResult = HandleFunction(i, chunks, 1);
-
-				AddToConsoleOutput(i, functionResult, WHITE);
-				continue;
-			}
-
-			//loops through all the chunks and gets the whole output
-			std::string operand = "";
-			for (int j = 1; j < chunks.size(); j++)
-				operand += chunks[j] + " ";
-
-			AddToConsoleOutput(i, operand, WHITE);
-			continue;
-		}
-
-		//int command
-		if (foundOpcode == "int") {
-
-			//not enough chunks
-			if (chunks.size() < 4) {
-				if (debug)
-					AddToConsoleOutput(i, "Not enough chunks for this statement, should be atleast 4", RED);
-				continue;
-			}
-
-			//identifier is empty
-			if (chunks[1] == "") {
-				if (debug)
-					AddToConsoleOutput(i, "Cannot have empty variable identifier in declaration", RED);
-				continue;
-			}
-
-			//identifier is empty
-			if (chunks[2] != "=") {
-				if (debug)
-					AddToConsoleOutput(i, "Missing the = symbol in declaration", RED);
-				continue;
-			}
-
-			//variable already existed
-			if (VariableExists(chunks[1])) {
-				AddToConsoleOutput(i, "Variable: " + chunks[1] + " already exists", RED);
-				continue;
-			}
-
-			//checks if the operand is a function
-			if (!ValidFunction(chunks, 3)) {
-				if (debug)
-					AddToConsoleOutput(i, "Function to assign is not valid", RED);
-				continue;
-			}
-
-			//gets the result of the function
-			std::string functionResult = HandleFunction(i, chunks, 3);
-
-			//declares and assigns values to the variable
-			Variable* inter = new Variable();
-			inter->identifier = chunks[1];
-			inter->value = functionResult;
-			inter->type = "integer";
-			variables.push_back(inter);
-
-			if (debug)
-				AddToConsoleOutput(i, "Integer: " + inter->identifier + " with value: " + inter->value + " created", RED);
-			continue;
-		}
-
-		//assign command
-		if (foundOpcode == "assign") {
-
-			//not enough chunks
-			if (chunks.size() < 3) {
-				if (debug)
-					AddToConsoleOutput(i, "Need to have two operands for an int", RED);
-				continue;
-			}
-
-			//if the operand wasn't an eqauls
-			if (chunks[1] != "=") {
-				if (debug)
-					AddToConsoleOutput(i, "Error trying to assign value without an '='", RED);
-				continue;
-			}
-
-			//gets the variable to assign to
-			Variable* toAssign = GetVariable(chunks[0]);
-
-			//assigning to an integer
-			if (toAssign->type == "integer") {
-
-				//checks if the operand is a function
-				if (!ValidFunction(chunks, 2)) {
-					if (debug)
-						AddToConsoleOutput(i, "Function to assign is not valid", RED);
-					continue;
-				}
-
-				//gets the result of the function
-				std::string functionResult = HandleFunction(i, chunks, 2);
-
-				//assigns the value
-				toAssign->value = functionResult;
-
-				if (debug)
-					AddToConsoleOutput(i, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
-				continue;
-			}
-		}
-	}
+	//assign command
+	if (foundOpcode == "assign")
+		HandleOpAssign(statementNumber, chunks);
 }
 
 //returns what opcode or alias was called
 std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
+
+	//returns if the statement was empty
+	if (chunks.size() == 1 && chunks[0] == "")
+		return "empty";
 
 	//returns if a valid opcode was found
 	auto it = std::find(supportedOpCodes.begin(), supportedOpCodes.end(), chunks[0]);
@@ -418,21 +304,145 @@ std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
 	if (VariableExists(chunks[0]))
 		return "assign";
 
+	//returns if the first chunk was empty
 	if (chunks[0] == "")
-		return "empty";
+		return "noOpcode";
 
+	//unknown error
 	return "error";
 }
 
-//adds a piece of text to the console lineup
-void Kode::AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor) {
+void Kode::HandleOpEmpty(int statementNumber) {
+	if (debug)
+		AddToConsoleOutput(statementNumber, "Empty statement", RED);
+	return;
+}
+void Kode::HandleOpError(int statementNumber) {
+	if (debug)
+		AddToConsoleOutput(statementNumber, "Unrecognized opcode", RED);
+	return;
+}
+void Kode::HandleOpNoOp(int statementNumber) {
+	if (debug)
+		AddToConsoleOutput(statementNumber, "Empty opcode (Maybe you have a space at the start?)", RED);
+	return;
+}
+void Kode::HandleOpOut(int statementNumber, std::vector<std::string> chunks) {
 
-	ConsoleText ct;
-	ct.linkedToStatement = statementNumber;
-	ct.text = toAdd;
-	ct.textColor = textColor;
+	//there is no chunks after the opcode
+	if (chunks.size() < 2) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Nothing to output", RED);
+		return;
+	}
 
-	console.push_back(ct);
+	//checks if the operand is a function
+	if (ValidFunction(chunks, 1)) {
+
+		//gets the result of the function
+		std::string functionResult = HandleFunction(statementNumber, chunks, 1);
+
+		AddToConsoleOutput(statementNumber, functionResult, WHITE);
+		return;
+	}
+
+	//loops through all the chunks and gets the whole output
+	std::string operand = "";
+	for (int j = 1; j < chunks.size(); j++)
+		operand += chunks[j] + " ";
+
+	AddToConsoleOutput(statementNumber, operand, WHITE);
+	return;
+}
+void Kode::HandleOpInt(int statementNumber, std::vector<std::string> chunks) {
+
+	//not enough chunks
+	if (chunks.size() < 4) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Not enough chunks for this statement, should be atleast 4", RED);
+		return;
+	}
+
+	//identifier is empty
+	if (chunks[1] == "") {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Cannot have empty variable identifier in declaration", RED);
+		return;
+	}
+
+	//identifier is empty
+	if (chunks[2] != "=") {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Missing the = symbol in declaration", RED);
+		return;
+	}
+
+	//variable already existed
+	if (VariableExists(chunks[1])) {
+		AddToConsoleOutput(statementNumber, "Variable: " + chunks[1] + " already exists", RED);
+		return;
+	}
+
+	//checks if the operand is a function
+	if (!ValidFunction(chunks, 3)) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Function to assign is not valid", RED);
+		return;
+	}
+
+	//gets the result of the function
+	std::string functionResult = HandleFunction(statementNumber, chunks, 3);
+
+	//declares and assigns values to the variable
+	Variable* inter = new Variable();
+	inter->identifier = chunks[1];
+	inter->value = functionResult;
+	inter->type = "integer";
+	variables.push_back(inter);
+
+	if (debug)
+		AddToConsoleOutput(statementNumber, "Integer: " + inter->identifier + " with value: " + inter->value + " created", RED);
+	return;
+}
+void Kode::HandleOpAssign(int statementNumber, std::vector<std::string> chunks) {
+
+	//not enough chunks
+	if (chunks.size() < 3) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Need to have two operands for an int", RED);
+		return;
+	}
+
+	//if the operand wasn't an eqauls
+	if (chunks[1] != "=") {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Error trying to assign value without an '='", RED);
+		return;
+	}
+
+	//gets the variable to assign to
+	Variable* toAssign = GetVariable(chunks[0]);
+
+	//assigning to an integer
+	if (toAssign->type == "integer") {
+
+		//checks if the operand is a function
+		if (!ValidFunction(chunks, 2)) {
+			if (debug)
+				AddToConsoleOutput(statementNumber, "Function to assign is not valid", RED);
+			return;
+		}
+
+		//gets the result of the function
+		std::string functionResult = HandleFunction(statementNumber, chunks, 2);
+
+		//assigns the value
+		toAssign->value = functionResult;
+
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
+		return;
+	}
 }
 
 //returns if a variable exists
@@ -458,20 +468,6 @@ Variable* Kode::GetVariable(std::string toGet) {
 	return toAssign;
 }
 
-//returns if a string can be tuend into an int
-bool Kode::Intable(std::string toCheck) {
-
-	//tries to convert the value into an int
-	bool intable = true;
-	try {
-		std::stoi(toCheck);
-	} catch (const std::invalid_argument& e) {
-		intable = false;
-	}
-
-	return intable;
-}
-
 //returns if the chunks from the startIndex onwards make a valid function
 bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
 
@@ -480,7 +476,7 @@ bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
 		return false;
 
 	//checks if the first chunk is not intable or a variable
-	if (!(Intable(chunks[startIndex]) || VariableExists(chunks[startIndex])))
+	if (!(Helper::Intable(chunks[startIndex]) || VariableExists(chunks[startIndex])))
 		return false;
 
 	//loops through two chunks at a time until the end
@@ -491,12 +487,13 @@ bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
 		if (it == supportedSymbols.end())
 			return false;
 
-		if (!(Intable(chunks[i + 1]) || VariableExists(chunks[i + 1])))
+		if (!(Helper::Intable(chunks[i + 1]) || VariableExists(chunks[i + 1])))
 			return false;
 	}
 	return true;
 }
 
+// resolves the function
 std::string Kode::HandleFunction(int statementNumber, std::vector<std::string> chunks, int startIndex) {
 
 	int result = 0;
@@ -540,6 +537,17 @@ std::string Kode::HandleFunction(int statementNumber, std::vector<std::string> c
 	}
 
 	return std::to_string(result);
+}
+
+//adds a piece of text to the console lineup
+void Kode::AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor) {
+
+	ConsoleText ct;
+	ct.linkedToStatement = statementNumber;
+	ct.text = toAdd;
+	ct.textColor = textColor;
+
+	console.push_back(ct);
 }
 
 
