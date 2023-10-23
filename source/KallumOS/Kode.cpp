@@ -336,13 +336,13 @@ void Kode::HandleOpOut(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
-	//checks if the operand is a function
-	if (ValidFunction(chunks, 1)) {
+	//checks if the operand is an operation
+	if (ValidOperation(chunks, 1)) {
 
-		//gets the result of the function
-		std::string functionResult = HandleFunction(statementNumber, chunks, 1);
+		//gets the result of the operation
+		std::string operationResult = ResolveOperation(statementNumber, chunks, 1);
 
-		AddToConsoleOutput(statementNumber, functionResult, WHITE);
+		AddToConsoleOutput(statementNumber, operationResult, WHITE);
 		return;
 	}
 
@@ -383,20 +383,20 @@ void Kode::HandleOpInt(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
-	//checks if the operand is a function
-	if (!ValidFunction(chunks, 3)) {
+	//checks if the operand is an operation
+	if (!ValidOperation(chunks, 3)) {
 		if (debug)
-			AddToConsoleOutput(statementNumber, "Function to assign is not valid", RED);
+			AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
 		return;
 	}
 
-	//gets the result of the function
-	std::string functionResult = HandleFunction(statementNumber, chunks, 3);
+	//gets the result of the operation
+	std::string operationResult = ResolveOperation(statementNumber, chunks, 3);
 
 	//declares and assigns values to the variable
 	Variable* inter = new Variable();
 	inter->identifier = chunks[1];
-	inter->value = functionResult;
+	inter->value = operationResult;
 	inter->type = "integer";
 	variables.push_back(inter);
 
@@ -426,18 +426,18 @@ void Kode::HandleOpAssign(int statementNumber, std::vector<std::string> chunks) 
 	//assigning to an integer
 	if (toAssign->type == "integer") {
 
-		//checks if the operand is a function
-		if (!ValidFunction(chunks, 2)) {
+		//checks if the operand is an operation
+		if (!ValidOperation(chunks, 2)) {
 			if (debug)
-				AddToConsoleOutput(statementNumber, "Function to assign is not valid", RED);
+				AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
 			return;
 		}
 
-		//gets the result of the function
-		std::string functionResult = HandleFunction(statementNumber, chunks, 2);
+		//gets the result of the operation
+		std::string operationResult = ResolveOperation(statementNumber, chunks, 2);
 
 		//assigns the value
-		toAssign->value = functionResult;
+		toAssign->value = operationResult;
 
 		if (debug)
 			AddToConsoleOutput(statementNumber, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
@@ -468,8 +468,8 @@ Variable* Kode::GetVariable(std::string toGet) {
 	return toAssign;
 }
 
-//returns if the chunks from the startIndex onwards make a valid function
-bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
+//returns if the chunks from the startIndex onwards make a valid operation
+bool Kode::ValidOperation(std::vector<std::string> chunks, int startIndex) {
 
 	//checks if the number of chunks left are even
 	if (chunks.size() - startIndex % 2 == 0)
@@ -493,8 +493,8 @@ bool Kode::ValidFunction(std::vector<std::string> chunks, int startIndex) {
 	return true;
 }
 
-// resolves the function
-std::string Kode::HandleFunction(int statementNumber, std::vector<std::string> chunks, int startIndex) {
+// resolves an operation
+std::string Kode::ResolveOperation(int statementNumber, std::vector<std::string> chunks, int startIndex) {
 
 	int result = 0;
 

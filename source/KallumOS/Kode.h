@@ -57,8 +57,8 @@ private:
 	
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);
-	bool ValidFunction(std::vector<std::string> chunks, int startIndex);
-	std::string HandleFunction(int statementNumber, std::vector<std::string> chunks, int startIndex);
+	bool ValidOperation(std::vector<std::string> chunks, int startIndex);
+	std::string ResolveOperation(int statementNumber, std::vector<std::string> chunks, int startIndex);
 	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
 
 	int Add(int a, int b) { return a + b; }
