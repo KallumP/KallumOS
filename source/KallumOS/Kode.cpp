@@ -11,14 +11,17 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	fontSize = 20;
 
 	statements.push_back("out Hello world!");
-	statements.push_back("out Hello second line! :)sssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+	statements.push_back("out Hello second line! :)");
 
-	/*statements.push_back("int x = 20");
+	statements.push_back("int x = 20");
 	statements.push_back("int y = 30");
 	statements.push_back("int z = y - x");
 	statements.push_back("out z");
 
-	statements.push_back("z = y + x");
+	statements.push_back("z = z / 0");
+	statements.push_back("out z");
+
+	/*statements.push_back("z = y + x");
 	statements.push_back("out z");
 
 	statements.push_back("z = y * x");
@@ -64,10 +67,14 @@ void Kode::DrawTextInput(Point offset) {
 		//sets up the statement with the line number
 		std::string text = std::to_string(i) + ". " + statements[i];
 
+		Color toDraw = DARKGRAY;
+		if (i == statementFocus)
+			toDraw = BLACK;
+
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
 
-			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (GetNextLineY(lineCount)), fontSize, BLACK);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (GetNextLineY(lineCount)), fontSize, toDraw);
 			lineCount++;
 
 		} else {
@@ -79,7 +86,7 @@ void Kode::DrawTextInput(Point offset) {
 			for (int j = 0; j < linesToDraw; j++) {
 
 				std::string line = text.substr(j * charsPerLine, charsPerLine);
-				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, BLACK);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, toDraw);
 				lineCount++;
 			}
 		}
@@ -102,7 +109,7 @@ void Kode::DrawConsole(Point offset) {
 		std::string text = std::to_string(console[i].linkedToStatement) + ". " + console[i].text;
 
 		if (text.size() < charsPerLine) {
-		
+
 			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, console[i].textColor);
 			lineCount++;
 
@@ -142,6 +149,12 @@ void Kode::OnKeyPress(KeyPress* e) {
 	} else if (e->GetKeyCode() == KEY_ENTER) {
 		NewStatement();
 		return;
+	} else if (e->GetKeyCode() == KEY_UP) {
+		SwitchStatement(-1);
+		return;
+	} else if (e->GetKeyCode() == KEY_DOWN) {
+		SwitchStatement(1);
+		return;
 	}
 
 	if (e->GetKeyContent().length() != 0)
@@ -163,16 +176,26 @@ void Kode::OnMousePress(MousePress* e) {
 	}
 }
 
+//adds a new statement after the currently focused statement
 void Kode::NewStatement() {
 
-	statements.push_back("");
+	statements.insert(statements.begin() + statementFocus + 1, "");
 	statementFocus++;
+}
+
+void Kode::SwitchStatement(int amount) {
+
+	statementFocus += amount;
+
+	statementFocus = statementFocus < 0 ? 0 : statementFocus;
+	statementFocus = statementFocus > statements.size() - 1 ? statements.size() - 1 : statementFocus;
 }
 
 void Kode::Input(std::string input) {
 	statements[statementFocus].append(input);
 }
 
+//deletes a char or the statement if no chars
 void Kode::DeleteChar() {
 
 	if (statements[statementFocus].length() != 0) {	//if there was text in this statement

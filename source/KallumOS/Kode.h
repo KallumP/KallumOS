@@ -33,6 +33,7 @@ public:
 private:
 
 	void NewStatement();
+	void SwitchStatement(int amount);
 	void Input(std::string input);
 	void DeleteChar();
 	void MoveCursor(int toMove) { cursor += toMove; }
