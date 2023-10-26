@@ -13,7 +13,8 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//statements.push_back("out Hello world!");
 	//statements.push_back("out Hello second line! :)");
 
-	statements.push_back("int x = 2");
+	//int testing
+	/*statements.push_back("int x = 2");
 	statements.push_back("int y = 3");
 	statements.push_back("int z = y + x");
 	statements.push_back("out z");
@@ -34,7 +35,11 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	statements.push_back("out z");
 
 	statements.push_back("z = z / 0");
-	statements.push_back("out z");
+	statements.push_back("out z");*/
+
+	//bool testing
+	statements.push_back("bool foo = 4 == 4");
+	statements.push_back("bool bar = false");
 
 	statementFocus = statements.size() - 1;
 
@@ -234,16 +239,22 @@ void Kode::DeleteStatement() {
 }
 
 void Kode::SetupSupportedSymbols() {
-	supportedSymbols.push_back("+");
-	supportedSymbols.push_back("-");
-	supportedSymbols.push_back("*");
-	supportedSymbols.push_back("**");
-	supportedSymbols.push_back("^");
-	supportedSymbols.push_back("/");
+	supportedOperators.push_back("+");
+	supportedOperators.push_back("-");
+	supportedOperators.push_back("*");
+	supportedOperators.push_back("**");
+	supportedOperators.push_back("^");
+	supportedOperators.push_back("/");
+
+	supportedComparators.push_back("&&");
+	supportedComparators.push_back("||");
+	supportedComparators.push_back("!");
+
 }
 void Kode::SetupSupportedInstructions() {
 	supportedInstructions["out"] = Instruction::Out;
 	supportedInstructions["int"] = Instruction::Int;
+	supportedInstructions["bool"] = Instruction::Bool;
 }
 
 //runs the program
@@ -286,6 +297,9 @@ void Kode::HandleStatement(std::string statement, int statementNumber) {
 	if (foundInstruction == Instruction::Int)
 		HandleInt(statementNumber, chunks);
 
+	if (foundInstruction == Instruction::Bool)
+		HandleBool(statementNumber, chunks);
+
 	//assign command
 	if (foundInstruction == Instruction::Assign)
 		HandleAssign(statementNumber, chunks);
@@ -301,7 +315,7 @@ Instruction Kode::CheckInstruction(std::vector<std::string> chunks) {
 	//returns if a valid manual instruction was found
 	if (supportedInstructions.find(chunks[0]) != supportedInstructions.end())
 		return supportedInstructions[chunks[0]];
-	
+
 	//returns if a variable identifier was found
 	if (VariableExists(chunks[0]))
 		return Instruction::Assign;
@@ -340,10 +354,10 @@ void Kode::HandleOut(int statementNumber, std::vector<std::string> chunks) {
 	}
 
 	//checks if the operand is an operation
-	if (ValidOperation(chunks, 1)) {
+	if (ValidArithmeticOperation(chunks, 1)) {
 
 		//gets the result of the operation
-		std::string operationResult = ResolveOperation(statementNumber, chunks, 1);
+		std::string operationResult = ResolveArithmeticOperation(statementNumber, chunks, 1);
 
 		AddToConsoleOutput(statementNumber, operationResult, WHITE);
 		return;
@@ -373,7 +387,7 @@ void Kode::HandleInt(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
-	//identifier is empty
+	//identifier is missing
 	if (chunks[2] != "=") {
 		if (debug)
 			AddToConsoleOutput(statementNumber, "Missing the = symbol in declaration", RED);
@@ -382,30 +396,83 @@ void Kode::HandleInt(int statementNumber, std::vector<std::string> chunks) {
 
 	//variable already existed
 	if (VariableExists(chunks[1])) {
-		AddToConsoleOutput(statementNumber, "Variable: " + chunks[1] + " already exists", RED);
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Variable: " + chunks[1] + " already exists", RED);
 		return;
 	}
 
 	//checks if the chunks are a valid operation
-	if (!ValidOperation(chunks, 3)) {
-		if (debug)
-			AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
+	if (!ValidArithmeticOperation(chunks, 3)) {
+		AddToConsoleOutput(statementNumber, "Error: " + chunks[1] + " variable was not set", RED);
 		return;
 	}
 
 	//gets the result of the operation
-	std::string operationResult = ResolveOperation(statementNumber, chunks, 3);
+	std::string operationResult = ResolveArithmeticOperation(statementNumber, chunks, 3);
 
 	//declares and assigns values to the variable
 	Variable* inter = new Variable();
 	inter->identifier = chunks[1];
 	inter->value = operationResult;
-	inter->type = "integer";
+	inter->type = VariableType::Int;
 	variables.push_back(inter);
 
 	if (debug)
 		AddToConsoleOutput(statementNumber, "Integer: " + inter->identifier + " with value: " + inter->value + " created", RED);
 	return;
+}
+void Kode::HandleBool(int statementNumber, std::vector<std::string> chunks) {
+
+	//not enough chunks
+	if (chunks.size() < 4) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Not enough chunks for this statement, should be atleast 4", RED);
+		return;
+	}
+
+	//identifier is empty
+	if (chunks[1] == "") {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Cannot have empty variable identifier in declaration", RED);
+		return;
+	}
+
+	//identifier is missing
+	if (chunks[2] != "=") {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Missing the = symbol in declaration", RED);
+		return;
+	}
+
+	//variable already existed
+	if (VariableExists(chunks[1])) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Variable: " + chunks[1] + " already exists", RED);
+		return;
+	}
+
+	//not a valid boolean operation
+	if (!ValidBooleanOperation(statementNumber, chunks, 3)) {
+		AddToConsoleOutput(statementNumber, "Error: " + chunks[1] + " variable was not set", RED);
+		return;
+	}
+
+	//resolve the boolean operation
+	std::string resolved = chunks[3];
+
+
+
+	//declares and assigns values to the variable
+	Variable* boolean = new Variable();
+	boolean->identifier = chunks[1];
+	boolean->value = resolved;
+	boolean->type = VariableType::Bool;
+	variables.push_back(boolean);
+
+	if (debug)
+		AddToConsoleOutput(statementNumber, "Boolean: " + boolean->identifier + " with value: " + boolean->value + " created", RED);
+	return;
+
 }
 void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 
@@ -427,17 +494,17 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 	Variable* toAssign = GetVariable(chunks[0]);
 
 	//assigning to an integer
-	if (toAssign->type == "integer") {
+	if (toAssign->type == VariableType::Int) {
 
 		//checks if the operand is an operation
-		if (!ValidOperation(chunks, 2)) {
+		if (!ValidArithmeticOperation(chunks, 2)) {
 			if (debug)
 				AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
 			return;
 		}
 
 		//gets the result of the operation
-		std::string operationResult = ResolveOperation(statementNumber, chunks, 2);
+		std::string operationResult = ResolveArithmeticOperation(statementNumber, chunks, 2);
 
 		//assigns the value
 		toAssign->value = operationResult;
@@ -461,18 +528,21 @@ bool Kode::VariableExists(std::string toCheck) {
 //returns the pointer to the passed variable identifier
 Variable* Kode::GetVariable(std::string toGet) {
 
-	Variable* toAssign = nullptr;
+	Variable* v = nullptr;
 
 	//gets the variable being assigned
 	for (int i = 0; i < variables.size(); i++)
 		if (toGet == variables[i]->identifier)
-			toAssign = variables[i];
+			v = variables[i];
 
-	return toAssign;
+	return v;
 }
 
 //returns if the chunks from the startIndex onwards make a valid operation
-bool Kode::ValidOperation(std::vector<std::string> chunks, int startIndex) {
+bool Kode::ValidArithmeticOperation(std::vector<std::string> chunks, int startIndex, int endIndex) {
+
+	if (endIndex == -1)
+		endIndex = chunks.size() - 1;
 
 	//checks if the number of chunks left are even
 	if (chunks.size() - startIndex % 2 == 0)
@@ -486,8 +556,8 @@ bool Kode::ValidOperation(std::vector<std::string> chunks, int startIndex) {
 	for (int i = startIndex + 1; i < chunks.size(); i += 2) {
 
 		//checks if this wasn't supported symbol
-		auto it = std::find(supportedSymbols.begin(), supportedSymbols.end(), chunks[i]);
-		if (it == supportedSymbols.end())
+		auto it = std::find(supportedOperators.begin(), supportedOperators.end(), chunks[i]);
+		if (it == supportedOperators.end())
 			return false;
 
 		if (!(Helper::Intable(chunks[i + 1]) || VariableExists(chunks[i + 1])))
@@ -497,7 +567,7 @@ bool Kode::ValidOperation(std::vector<std::string> chunks, int startIndex) {
 }
 
 // resolves an operation
-std::string Kode::ResolveOperation(int statementNumber, std::vector<std::string> chunks, int startIndex) {
+std::string Kode::ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex) {
 
 	int result = 0;
 
@@ -542,6 +612,164 @@ std::string Kode::ResolveOperation(int statementNumber, std::vector<std::string>
 	return std::to_string(result);
 }
 
+//returns if the chunks from the startIndex onward make a valid boolean operation
+bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex) {
+
+	int numberOfCheckDelimeters = 0;
+	int delimeterIndex = 0;
+
+	//loops through the chunks and checks how many "==" there were
+	for (int i = startIndex; i < chunks.size(); i++) {
+		if (chunks[i] == "==") {
+			numberOfCheckDelimeters++;
+			delimeterIndex = i;
+		}
+	}
+
+	//checks if there were too many == found
+	if (numberOfCheckDelimeters > 1) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Too many '==' entered", RED);
+		return false;
+	}
+
+	//checks if either side of the == has the same variable type
+	if (numberOfCheckDelimeters == 1) {
+
+		//if there wasnt enough chunks (needs to be atleast 3)
+		if (chunks.size() - startIndex < 3) {
+			if (debug)
+				AddToConsoleOutput(statementNumber, "Not enough chunks", RED);
+			return false;
+		}
+
+		//if the delimeter was the first or last chunk
+		if (delimeterIndex == startIndex || delimeterIndex == chunks.size() - 1) {
+			if (debug)
+				AddToConsoleOutput(statementNumber, "The lSide or rSide was missing for the comparison", RED);
+			return false;
+		}
+
+		int checkIndex = startIndex;
+		VariableType type = VariableType::Null;
+
+		//l side check
+		while (checkIndex < delimeterIndex) {
+
+			std::string chunk = chunks[checkIndex];
+			VariableType currentType;
+
+			//saves what type of variable this chunk is
+			currentType = VariableExists(chunk) ? GetVariable(chunk)->type : PotentialVariableType(chunk);
+
+			//if there was no type already set, set it
+			if (type == VariableType::Null)
+				type = currentType;
+
+			//if there was a type already set, and it is different to this chunk, return false
+			else
+				if (type != currentType) {
+					if (debug)
+						AddToConsoleOutput(statementNumber, "Variable types were not consistant for comparison", RED);
+					return false;
+				}
+
+			checkIndex++;
+		}
+
+		//r side check
+		checkIndex = delimeterIndex + 1;
+		while (checkIndex < chunks.size()) {
+
+			std::string chunk = chunks[checkIndex];
+			VariableType currentType;
+
+			//saves what type of variable this chunk is
+			currentType = VariableExists(chunk) ? GetVariable(chunk)->type : PotentialVariableType(chunk);
+
+			//if there was no type already set, set it
+			if (type == VariableType::Null)
+				type = currentType;
+
+			//if the type is different to this chunk, return false
+			else
+				if (type != currentType) {
+					if (debug)
+						AddToConsoleOutput(statementNumber, "Variable types were not consistant for comparison", RED);
+					return false;
+				}
+
+			checkIndex++;
+		}
+
+		if (type == VariableType::Int) {
+			//check int operation validness 
+		} else if (type == VariableType::Bool) {
+			//check bool operation validness (calling this function with the end index)
+		}
+
+
+		//both sides were the same variable type
+		return true;
+	}
+
+	// if no == is found
+	//return if all operation chunks were boolean variables or comparisons
+
+	if (debug)
+		AddToConsoleOutput(statementNumber, "Pure boolean algebra not supported yet :(", RED);
+	return false;
+}
+
+std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex) {
+
+	int numberOfCheckDelimeters = 0;
+	int delimeterIndex = 0;
+
+	//loops through the chunks and checks how many "==" there were
+	for (int i = startIndex; i < chunks.size(); i++) {
+		if (chunks[i] == "==") {
+			numberOfCheckDelimeters++;
+			delimeterIndex = i;
+		}
+	}
+
+	//checks if either side of the == has the same variable type
+	if (numberOfCheckDelimeters == 1) {
+
+		int checkIndex = startIndex;
+		std::string chunk = chunks[checkIndex];
+		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : PotentialVariableType(chunk);
+		std::string lSide;
+		std::string rSide;
+
+		//l side check
+		while (checkIndex < delimeterIndex) {
+
+			chunk = chunks[checkIndex];
+			
+			//resolve this operation based on the type
+
+			checkIndex++;
+		}
+
+		//r side check
+		checkIndex = delimeterIndex + 1;
+		while (checkIndex < chunks.size()) {
+
+			chunk = chunks[checkIndex];
+
+			//resolve this operation based on the type
+			
+			checkIndex++;
+		}
+
+		//
+	}
+
+	return "false";
+}
+
 //adds a piece of text to the console lineup
 void Kode::AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor) {
 
@@ -551,6 +779,18 @@ void Kode::AddToConsoleOutput(int statementNumber, std::string toAdd, Color text
 	ct.textColor = textColor;
 
 	console.push_back(ct);
+}
+
+//returns what type of variable a string could be
+VariableType Kode::PotentialVariableType(std::string toCheck) {
+
+	if (Helper::Intable(toCheck))
+		return VariableType::Int;
+
+	if (toCheck == "true" || toCheck == "false")
+		return VariableType::Bool;
+
+	return VariableType::String;
 }
 
 

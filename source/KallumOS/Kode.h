@@ -4,12 +4,13 @@
 #include <vector>
 #include <map>
 
-enum Instruction { Empty, Error, NoInstruction, Out, Int, Assign };
+enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign };
 
+enum class VariableType { Int, Bool, String, Null };
 struct Variable {
 	std::string identifier;
 	std::string value;
-	std::string type;
+	VariableType type;
 };
 
 struct ConsoleText {
@@ -57,13 +58,19 @@ private:
 	void HandleNoInstruction(int statementNumber);
 	void HandleOut(int statementNumber, std::vector<std::string> chunks);
 	void HandleInt(int statementNumber, std::vector<std::string> chunks);
+	void HandleBool(int statementNumber, std::vector<std::string> chunks);
 	void HandleAssign(int statementNumber, std::vector<std::string> chunks);
+
+	bool ValidArithmeticOperation(std::vector<std::string> chunks, int startIndex, int endIndex = -1);
+	std::string ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex);
+	bool ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex);
+	std::string ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex);
 
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);
-	bool ValidOperation(std::vector<std::string> chunks, int startIndex);
-	std::string ResolveOperation(int statementNumber, std::vector<std::string> chunks, int startIndex);
 	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
+
+	VariableType PotentialVariableType(std::string toCheck);
 
 	int Add(int a, int b) { return a + b; }
 	int Minus(int a, int b) { return a - b; }
@@ -76,8 +83,11 @@ private:
 	int cursor;
 	int statementFocus;
 	std::vector<std::string> statements;
+
 	std::vector<Variable*> variables;
-	std::vector<std::string> supportedSymbols;
+
+	std::vector<std::string> supportedOperators;
+	std::vector<std::string> supportedComparators;
 	std::map<std::string, Instruction> supportedInstructions;
 
 	std::vector<ConsoleText> console;
