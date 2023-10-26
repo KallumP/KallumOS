@@ -2,7 +2,9 @@
 #include "Process.h"
 
 #include <vector>
+#include <map>
 
+enum Instruction { Empty, Error, NoInstruction, Out, Int, Assign };
 
 struct Variable {
 	std::string identifier;
@@ -43,18 +45,20 @@ private:
 	void MoveCursor(int toMove) { cursor += toMove; }
 
 	void SetupSupportedSymbols();
-	void SetupSupportedOpcodes();
+	void SetupSupportedInstructions();
 
 	void Run();
 	void HandleStatement(std::string statement, int statementNumber);
-	std::string CheckOpcode(std::vector<std::string> chunks);
-	void HandleOpEmpty(int statementNumber);
-	void HandleOpError(int statementNumber);
-	void HandleOpNoOp(int statementNumber);
-	void HandleOpOut(int statementNumber, std::vector<std::string> chunks);
-	void HandleOpInt(int statementNumber, std::vector<std::string> chunks);
-	void HandleOpAssign(int statementNumber, std::vector<std::string> chunks);
-	
+	Instruction CheckInstruction(std::vector<std::string> chunks);
+	Instruction ResolveManualInstruction(std::string input);
+
+	void HandleEmpty(int statementNumber);
+	void HandleError(int statementNumber);
+	void HandleNoInstruction(int statementNumber);
+	void HandleOut(int statementNumber, std::vector<std::string> chunks);
+	void HandleInt(int statementNumber, std::vector<std::string> chunks);
+	void HandleAssign(int statementNumber, std::vector<std::string> chunks);
+
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);
 	bool ValidOperation(std::vector<std::string> chunks, int startIndex);
@@ -74,7 +78,7 @@ private:
 	std::vector<std::string> statements;
 	std::vector<Variable*> variables;
 	std::vector<std::string> supportedSymbols;
-	std::vector<std::string> supportedOpCodes;
+	std::map<std::string, Instruction> supportedInstructions;
 
 	std::vector<ConsoleText> console;
 	int consoleHeight;

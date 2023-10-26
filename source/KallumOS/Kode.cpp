@@ -5,23 +5,20 @@
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
-	SetupSupportedOpcodes();
+	SetupSupportedInstructions();
 	SetupSupportedSymbols();
 
 	fontSize = 20;
 
-	statements.push_back("out Hello world!");
-	statements.push_back("out Hello second line! :)");
+	//statements.push_back("out Hello world!");
+	//statements.push_back("out Hello second line! :)");
 
-	statements.push_back("int x = 20");
-	statements.push_back("int y = 30");
-	statements.push_back("int z = y - x");
+	statements.push_back("int x = 2");
+	statements.push_back("int y = 3");
+	statements.push_back("int z = y + x");
 	statements.push_back("out z");
 
-	statements.push_back("z = z / 0");
-	statements.push_back("out z");
-
-	/*statements.push_back("z = y + x");
+	statements.push_back("z = y - x");
 	statements.push_back("out z");
 
 	statements.push_back("z = y * x");
@@ -30,8 +27,14 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	statements.push_back("z = z + z");
 	statements.push_back("out z");
 
-	statements.push_back("z = z + 10");
-	statements.push_back("out z");*/
+	statements.push_back("z = z ^ 2");
+	statements.push_back("out z");
+
+	statements.push_back("z = z / 2");
+	statements.push_back("out z");
+
+	statements.push_back("z = z / 0");
+	statements.push_back("out z");
 
 	statementFocus = statements.size() - 1;
 
@@ -238,9 +241,9 @@ void Kode::SetupSupportedSymbols() {
 	supportedSymbols.push_back("^");
 	supportedSymbols.push_back("/");
 }
-void Kode::SetupSupportedOpcodes() {
-	supportedOpCodes.push_back("out");
-	supportedOpCodes.push_back("int");
+void Kode::SetupSupportedInstructions() {
+	supportedInstructions["out"] = Instruction::Out;
+	supportedInstructions["int"] = Instruction::Int;
 }
 
 //runs the program
@@ -261,75 +264,75 @@ void Kode::HandleStatement(std::string statement, int statementNumber) {
 	std::vector<std::string> chunks = Helper::Split(statement, " ");
 
 	//gets what the first chunk was
-	std::string foundOpcode = CheckOpcode(chunks);
+	Instruction foundInstruction = CheckInstruction(chunks);
 
 	//empty statement
-	if (foundOpcode == "empty")
-		HandleOpEmpty(statementNumber);
+	if (foundInstruction == Instruction::Empty)
+		HandleEmpty(statementNumber);
 
-	//unknown opcode
-	if (foundOpcode == "error")
-		HandleOpError(statementNumber);
+	//unknown instruction
+	if (foundInstruction == Instruction::Error)
+		HandleError(statementNumber);
 
-	//empty opcode
-	if (foundOpcode == "noOpcode")
-		HandleOpNoOp(statementNumber);
+	//empty instruction
+	if (foundInstruction == Instruction::NoInstruction)
+		HandleNoInstruction(statementNumber);
 
 	//out command
-	if (foundOpcode == "out")
-		HandleOpOut(statementNumber, chunks);
+	if (foundInstruction == Instruction::Out)
+		HandleOut(statementNumber, chunks);
 
 	//int command
-	if (foundOpcode == "int")
-		HandleOpInt(statementNumber, chunks);
+	if (foundInstruction == Instruction::Int)
+		HandleInt(statementNumber, chunks);
 
 	//assign command
-	if (foundOpcode == "assign")
-		HandleOpAssign(statementNumber, chunks);
+	if (foundInstruction == Instruction::Assign)
+		HandleAssign(statementNumber, chunks);
 }
 
-//returns what opcode or alias was called
-std::string Kode::CheckOpcode(std::vector<std::string> chunks) {
+//returns what instruction or alias was called
+Instruction Kode::CheckInstruction(std::vector<std::string> chunks) {
 
 	//returns if the statement was empty
 	if (chunks.size() == 1 && chunks[0] == "")
-		return "empty";
+		return Instruction::Assign;
 
-	//returns if a valid opcode was found
-	auto it = std::find(supportedOpCodes.begin(), supportedOpCodes.end(), chunks[0]);
-	if (it != supportedOpCodes.end())
-		return chunks[0];
-
+	//returns if a valid manual instruction was found
+	if (supportedInstructions.find(chunks[0]) != supportedInstructions.end())
+		return supportedInstructions[chunks[0]];
+	
 	//returns if a variable identifier was found
 	if (VariableExists(chunks[0]))
-		return "assign";
+		return Instruction::Assign;
 
 	//returns if the first chunk was empty
 	if (chunks[0] == "")
-		return "noOpcode";
+		return Instruction::NoInstruction;
 
 	//unknown error
-	return "error";
+	return Instruction::Error;
 }
 
-void Kode::HandleOpEmpty(int statementNumber) {
+
+void Kode::HandleEmpty(int statementNumber) {
 	if (debug)
 		AddToConsoleOutput(statementNumber, "Empty statement", RED);
 	return;
 }
-void Kode::HandleOpError(int statementNumber) {
+void Kode::HandleError(int statementNumber) {
 	if (debug)
-		AddToConsoleOutput(statementNumber, "Unrecognized opcode", RED);
+		AddToConsoleOutput(statementNumber, "Unrecognized instruction", RED);
 	return;
 }
-void Kode::HandleOpNoOp(int statementNumber) {
+void Kode::HandleNoInstruction(int statementNumber) {
 	if (debug)
-		AddToConsoleOutput(statementNumber, "Empty opcode (Maybe you have a space at the start?)", RED);
+		AddToConsoleOutput(statementNumber, "No instruction (Maybe you have a space at the start?)", RED);
 	return;
 }
-void Kode::HandleOpOut(int statementNumber, std::vector<std::string> chunks) {
+void Kode::HandleOut(int statementNumber, std::vector<std::string> chunks) {
 
-	//there is no chunks after the opcode
+	//there is no chunks after the instruction
 	if (chunks.size() < 2) {
 		if (debug)
 			AddToConsoleOutput(statementNumber, "Nothing to output", RED);
@@ -354,7 +357,7 @@ void Kode::HandleOpOut(int statementNumber, std::vector<std::string> chunks) {
 	AddToConsoleOutput(statementNumber, operand, WHITE);
 	return;
 }
-void Kode::HandleOpInt(int statementNumber, std::vector<std::string> chunks) {
+void Kode::HandleInt(int statementNumber, std::vector<std::string> chunks) {
 
 	//not enough chunks
 	if (chunks.size() < 4) {
@@ -383,7 +386,7 @@ void Kode::HandleOpInt(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
-	//checks if the operand is an operation
+	//checks if the chunks are a valid operation
 	if (!ValidOperation(chunks, 3)) {
 		if (debug)
 			AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
@@ -404,16 +407,16 @@ void Kode::HandleOpInt(int statementNumber, std::vector<std::string> chunks) {
 		AddToConsoleOutput(statementNumber, "Integer: " + inter->identifier + " with value: " + inter->value + " created", RED);
 	return;
 }
-void Kode::HandleOpAssign(int statementNumber, std::vector<std::string> chunks) {
+void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 
 	//not enough chunks
 	if (chunks.size() < 3) {
 		if (debug)
-			AddToConsoleOutput(statementNumber, "Need to have two operands for an int", RED);
+			AddToConsoleOutput(statementNumber, "Need to have two chunks for an int", RED);
 		return;
 	}
 
-	//if the operand wasn't an eqauls
+	//if the second chunk wasn't an eqauls
 	if (chunks[1] != "=") {
 		if (debug)
 			AddToConsoleOutput(statementNumber, "Error trying to assign value without an '='", RED);
