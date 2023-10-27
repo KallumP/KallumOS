@@ -357,7 +357,7 @@ void Kode::HandleOut(int statementNumber, std::vector<std::string> chunks) {
 	}
 
 	//checks if the operand is an operation
-	if (ValidArithmeticOperation(chunks, 1)) {
+	if (ValidArithmeticOperation(statementNumber, chunks, 1)) {
 
 		//gets the result of the operation
 		std::string operationResult = ResolveArithmeticOperation(statementNumber, chunks, 1);
@@ -405,7 +405,7 @@ void Kode::HandleInt(int statementNumber, std::vector<std::string> chunks) {
 	}
 
 	//checks if the chunks are a valid operation
-	if (!ValidArithmeticOperation(chunks, 3)) {
+	if (!ValidArithmeticOperation(statementNumber, chunks, 3)) {
 		AddToConsoleOutput(statementNumber, "Error: " + chunks[1] + " variable was not set", RED);
 		return;
 	}
@@ -499,7 +499,7 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 	if (toAssign->type == VariableType::Int) {
 
 		//checks if the operand is an operation
-		if (!ValidArithmeticOperation(chunks, 2)) {
+		if (!ValidArithmeticOperation(statementNumber, chunks, 2)) {
 			if (debug)
 				AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
 			return;
@@ -541,13 +541,13 @@ Variable* Kode::GetVariable(std::string toGet) {
 }
 
 //returns if the chunks from the startIndex onwards make a valid operation
-bool Kode::ValidArithmeticOperation(std::vector<std::string> chunks, int startIndex, int endIndex) {
+bool Kode::ValidArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex) {
 
 	if (endIndex == -1)
 		endIndex = chunks.size() - 1;
 
 	//checks if the number of chunks left are even
-	if (endIndex - startIndex % 2 == 1)
+	if ((endIndex - startIndex) % 2 == 1)
 		return false;
 
 	//checks if the first chunk is not intable or a variable
@@ -658,67 +658,25 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 			return false;
 		}
 
-		VariableType type = VariableType::Null;
-
-		//l side check
 		int checkIndex = startIndex;
-		while (checkIndex < delimeterIndex) {
+		std::string chunk = chunks[checkIndex];
+		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : PotentialVariableType(chunk);
 
-			std::string chunk = chunks[checkIndex];
-			VariableType currentType;
-
-			//saves what type of variable this chunk is
-			currentType = VariableExists(chunk) ? GetVariable(chunk)->type : PotentialVariableType(chunk);
-
-			//if there was no type already set, set it
-			if (type == VariableType::Null)
-				type = currentType;
-
-			//if there was a type already set, and it is different to this chunk, return false
-			else
-				if (type != currentType) {
-					if (debug)
-						AddToConsoleOutput(statementNumber, "Variable types were not consistant for comparison", RED);
-					return false;
-				}
-
-			checkIndex++;
-		}
-
-		//r side check
-		checkIndex = delimeterIndex + 1;
-		while (checkIndex <= endIndex) {
-
-			std::string chunk = chunks[checkIndex];
-			VariableType currentType;
-
-			//saves what type of variable this chunk is
-			currentType = VariableExists(chunk) ? GetVariable(chunk)->type : PotentialVariableType(chunk);
-
-			//if there was no type already set, set it
-			if (type == VariableType::Null)
-				type = currentType;
-
-			//if the type is different to this chunk, return false
-			else
-				if (type != currentType) {
-					if (debug)
-						AddToConsoleOutput(statementNumber, "Variable types were not consistant for comparison", RED);
-					return false;
-				}
-
-			checkIndex++;
-		}
+		bool lSide;
+		bool rSide;
 
 		//get the first chunk's type and store it in "type"
 		if (type == VariableType::Int) {
-			//check int operation validness 
+
+			lSide = ValidArithmeticOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
+			rSide = ValidArithmeticOperation(statementNumber, chunks, delimeterIndex + 1, endIndex);
+
 		} else if (type == VariableType::Bool) {
 			//check bool operation validness (calling this function with the end index)
 		}
 
 		//both sides were the same variable type
-		return true;
+		return lSide && rSide;
 	}
 
 	// if no == is found
@@ -765,6 +723,7 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 	}
 
 
+	//resolve pure boolean algebra
 
 	return "false";
 }
@@ -791,6 +750,5 @@ VariableType Kode::PotentialVariableType(std::string toCheck) {
 
 	return VariableType::String;
 }
-
 
 //To see instructions, go to the readme at https://github.com/KallumP/KallumOS/tree/readme#readme

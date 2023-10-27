@@ -61,7 +61,7 @@ private:
 	void HandleBool(int statementNumber, std::vector<std::string> chunks);
 	void HandleAssign(int statementNumber, std::vector<std::string> chunks);
 
-	bool ValidArithmeticOperation(std::vector<std::string> chunks, int startIndex, int endIndex = -1);
+	bool ValidArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
 	std::string ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
 	bool ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
 	std::string ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
