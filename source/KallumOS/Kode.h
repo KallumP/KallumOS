@@ -62,15 +62,16 @@ private:
 	void HandleAssign(int statementNumber, std::vector<std::string> chunks);
 
 	bool ValidArithmeticOperation(std::vector<std::string> chunks, int startIndex, int endIndex = -1);
-	std::string ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex);
-	bool ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex);
-	std::string ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex);
+	std::string ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
+	bool ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
+	std::string ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
 
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);
 	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
 
 	VariableType PotentialVariableType(std::string toCheck);
+	std::string BoolToString(bool value) { return value ? "true" : "false"; }
 
 	int Add(int a, int b) { return a + b; }
 	int Minus(int a, int b) { return a - b; }

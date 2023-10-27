@@ -14,32 +14,35 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//statements.push_back("out Hello second line! :)");
 
 	//int testing
-	/*statements.push_back("int x = 2");
-	statements.push_back("int y = 3");
-	statements.push_back("int z = y + x");
-	statements.push_back("out z");
+	//statements.push_back("int x = 2");
+	//statements.push_back("int y = 3");
+	//statements.push_back("int z = y + x");
+	//statements.push_back("out z"); //should out 5
 
-	statements.push_back("z = y - x");
-	statements.push_back("out z");
+	//statements.push_back("z = y - x");
+	//statements.push_back("out z"); //should out 1
 
-	statements.push_back("z = y * x");
-	statements.push_back("out z");
+	//statements.push_back("z = y * x");
+	//statements.push_back("out z");//should out 6
 
-	statements.push_back("z = z + z");
-	statements.push_back("out z");
+	//statements.push_back("z = z + z");
+	//statements.push_back("out z"); //should out 12
 
-	statements.push_back("z = z ^ 2");
-	statements.push_back("out z");
+	//statements.push_back("z = z ^ 2");
+	//statements.push_back("out z"); //should out 144
 
-	statements.push_back("z = z / 2");
-	statements.push_back("out z");
+	//statements.push_back("z = z / 2");
+	//statements.push_back("out z"); //should out 72
 
-	statements.push_back("z = z / 0");
-	statements.push_back("out z");*/
+	//statements.push_back("z = z / 0"); //should out error
+	//statements.push_back("out z"); //should out 72
 
 	//bool testing
 	statements.push_back("bool foo = 4 == 4");
-	statements.push_back("bool bar = false");
+	//statements.push_back("out foo");
+
+	statements.push_back("bool bar = 5 == 4");
+	//statements.push_back("out bar");
 
 	statementFocus = statements.size() - 1;
 
@@ -458,8 +461,7 @@ void Kode::HandleBool(int statementNumber, std::vector<std::string> chunks) {
 	}
 
 	//resolve the boolean operation
-	std::string resolved = chunks[3];
-
+	std::string resolved = ResolveBooleanOperation(statementNumber, chunks, 3);
 
 
 	//declares and assigns values to the variable
@@ -545,7 +547,7 @@ bool Kode::ValidArithmeticOperation(std::vector<std::string> chunks, int startIn
 		endIndex = chunks.size() - 1;
 
 	//checks if the number of chunks left are even
-	if (chunks.size() - startIndex % 2 == 0)
+	if (endIndex - startIndex % 2 == 1)
 		return false;
 
 	//checks if the first chunk is not intable or a variable
@@ -553,7 +555,7 @@ bool Kode::ValidArithmeticOperation(std::vector<std::string> chunks, int startIn
 		return false;
 
 	//loops through two chunks at a time until the end
-	for (int i = startIndex + 1; i < chunks.size(); i += 2) {
+	for (int i = startIndex + 1; i <= endIndex; i += 2) {
 
 		//checks if this wasn't supported symbol
 		auto it = std::find(supportedOperators.begin(), supportedOperators.end(), chunks[i]);
@@ -567,7 +569,10 @@ bool Kode::ValidArithmeticOperation(std::vector<std::string> chunks, int startIn
 }
 
 // resolves an operation
-std::string Kode::ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex) {
+std::string Kode::ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex) {
+
+	if (endIndex == -1)
+		endIndex = chunks.size() - 1;
 
 	int result = 0;
 
@@ -578,7 +583,7 @@ std::string Kode::ResolveArithmeticOperation(int statementNumber, std::vector<st
 		result = std::stoi(chunks[startIndex]);
 
 	//loops through two chunks at a time until the end
-	for (int i = startIndex + 1; i < chunks.size(); i += 2) {
+	for (int i = startIndex + 1; i <= endIndex; i += 2) {
 
 		int toWorkWith;
 
@@ -613,13 +618,16 @@ std::string Kode::ResolveArithmeticOperation(int statementNumber, std::vector<st
 }
 
 //returns if the chunks from the startIndex onward make a valid boolean operation
-bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex) {
+bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex) {
+
+	if (endIndex == -1)
+		endIndex = chunks.size() - 1;
 
 	int numberOfCheckDelimeters = 0;
 	int delimeterIndex = 0;
 
 	//loops through the chunks and checks how many "==" there were
-	for (int i = startIndex; i < chunks.size(); i++) {
+	for (int i = startIndex; i <= endIndex; i++) {
 		if (chunks[i] == "==") {
 			numberOfCheckDelimeters++;
 			delimeterIndex = i;
@@ -637,23 +645,23 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 	if (numberOfCheckDelimeters == 1) {
 
 		//if there wasnt enough chunks (needs to be atleast 3)
-		if (chunks.size() - startIndex < 3) {
+		if (endIndex - startIndex < 2) {
 			if (debug)
 				AddToConsoleOutput(statementNumber, "Not enough chunks", RED);
 			return false;
 		}
 
 		//if the delimeter was the first or last chunk
-		if (delimeterIndex == startIndex || delimeterIndex == chunks.size() - 1) {
+		if (delimeterIndex == startIndex || delimeterIndex == endIndex) {
 			if (debug)
 				AddToConsoleOutput(statementNumber, "The lSide or rSide was missing for the comparison", RED);
 			return false;
 		}
 
-		int checkIndex = startIndex;
 		VariableType type = VariableType::Null;
 
 		//l side check
+		int checkIndex = startIndex;
 		while (checkIndex < delimeterIndex) {
 
 			std::string chunk = chunks[checkIndex];
@@ -679,7 +687,7 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 
 		//r side check
 		checkIndex = delimeterIndex + 1;
-		while (checkIndex < chunks.size()) {
+		while (checkIndex <= endIndex) {
 
 			std::string chunk = chunks[checkIndex];
 			VariableType currentType;
@@ -702,12 +710,12 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 			checkIndex++;
 		}
 
+		//get the first chunk's type and store it in "type"
 		if (type == VariableType::Int) {
 			//check int operation validness 
 		} else if (type == VariableType::Bool) {
 			//check bool operation validness (calling this function with the end index)
 		}
-
 
 		//both sides were the same variable type
 		return true;
@@ -721,7 +729,10 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 	return false;
 }
 
-std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex) {
+std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex) {
+
+	if (endIndex == -1)
+		endIndex = chunks.size() - 1;
 
 	int numberOfCheckDelimeters = 0;
 	int delimeterIndex = 0;
@@ -743,29 +754,17 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 		std::string lSide;
 		std::string rSide;
 
-		//l side check
-		while (checkIndex < delimeterIndex) {
 
-			chunk = chunks[checkIndex];
-			
-			//resolve this operation based on the type
+		if (type == VariableType::Int) {
 
-			checkIndex++;
+			lSide = ResolveArithmeticOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
+			rSide = ResolveArithmeticOperation(statementNumber, chunks, delimeterIndex + 1, endIndex);
 		}
 
-		//r side check
-		checkIndex = delimeterIndex + 1;
-		while (checkIndex < chunks.size()) {
-
-			chunk = chunks[checkIndex];
-
-			//resolve this operation based on the type
-			
-			checkIndex++;
-		}
-
-		//
+		return BoolToString(lSide == rSide);
 	}
+
+
 
 	return "false";
 }
