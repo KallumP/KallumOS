@@ -39,17 +39,17 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	//bool testing
 	statements.push_back("bool foo = 4 == 4");
-	//statements.push_back("out foo");
+	statements.push_back("out foo"); //should out true
 
 	statements.push_back("bool bar = 5 == 4");
-	//statements.push_back("out bar");
+	statements.push_back("out bar"); //should out false
 
 	statements.push_back("int x = 1");
 	statements.push_back("int y = 2");
 	statements.push_back("bool f = x == y");
 	statements.push_back("bool t = x == y - 1");
-	statements.push_back("out f");
-	statements.push_back("out t");
+	statements.push_back("out f"); //should out false
+	statements.push_back("out t"); //should out true
 
 
 	statementFocus = statements.size() - 1;
@@ -288,32 +288,36 @@ void Kode::HandleStatement(std::string statement, int statementNumber) {
 	//gets what the first chunk was
 	Instruction foundInstruction = CheckInstruction(chunks);
 
-	//empty statement
-	if (foundInstruction == Instruction::Empty)
-		HandleEmpty(statementNumber);
+	switch (foundInstruction) {
 
-	//unknown instruction
-	if (foundInstruction == Instruction::Error)
-		HandleError(statementNumber);
+		case Instruction::Empty: //empty statement
+			HandleEmpty(statementNumber);
+			break;
 
-	//empty instruction
-	if (foundInstruction == Instruction::NoInstruction)
-		HandleNoInstruction(statementNumber);
+		case Instruction::Error: //unknown instruction
+			HandleError(statementNumber);
+			break;
 
-	//out command
-	if (foundInstruction == Instruction::Out)
-		HandleOut(statementNumber, chunks);
+		case Instruction::NoInstruction: //empty instruction
+			HandleNoInstruction(statementNumber);
+			break;
 
-	//int command
-	if (foundInstruction == Instruction::Int)
-		HandleInt(statementNumber, chunks);
+		case Instruction::Out: //out command
+			HandleOut(statementNumber, chunks);
+			break;
 
-	if (foundInstruction == Instruction::Bool)
-		HandleBool(statementNumber, chunks);
+		case Instruction::Int: //int command
+			HandleInt(statementNumber, chunks);
+			break;
 
-	//assign command
-	if (foundInstruction == Instruction::Assign)
-		HandleAssign(statementNumber, chunks);
+		case Instruction::Bool: //bool command
+			HandleBool(statementNumber, chunks);
+			break;
+
+		case Instruction::Assign: //assign command
+			HandleAssign(statementNumber, chunks);
+			break;
+	}
 }
 
 //returns what instruction or alias was called
@@ -506,44 +510,46 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 
 	//gets the variable to assign to
 	Variable* toAssign = GetVariable(chunks[0]);
+	std::string operationResult;
 
-	//assigning to an integer
-	if (toAssign->type == VariableType::Int) {
+	switch (toAssign->type) {
 
-		//checks if the operand is an operation
-		if (!ValidArithmeticOperation(statementNumber, chunks, 2)) {
+		case VariableType::Int: //assigning to an integer
+
+			//checks if the operand is an operation
+			if (!ValidArithmeticOperation(statementNumber, chunks, 2)) {
+				if (debug)
+					AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
+				return;
+			}
+
+			//gets the result of the operation
+			operationResult = ResolveArithmeticOperation(statementNumber, chunks, 2);
+
+			//assigns the value
+			toAssign->value = operationResult;
+
 			if (debug)
-				AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
-			return;
-		}
+				AddToConsoleOutput(statementNumber, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
+			break;
 
-		//gets the result of the operation
-		std::string operationResult = ResolveArithmeticOperation(statementNumber, chunks, 2);
+		case VariableType::Bool: //assigning to a bool
 
-		//assigns the value
-		toAssign->value = operationResult;
+			if (!ValidBooleanOperation(statementNumber, chunks, 2)) {
+				if (debug)
+					AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
+				return;
+			}
 
-		if (debug)
-			AddToConsoleOutput(statementNumber, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
-		return;
+			//gets the result of the operation
+			operationResult = ResolveBooleanOperation(statementNumber, chunks, 2);
 
-	} else if (toAssign->type == VariableType::Bool) {
+			//assigns the value
+			toAssign->value = operationResult;
 
-		if (!ValidBooleanOperation(statementNumber, chunks, 2)) {
 			if (debug)
-				AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
-			return;
-		}
-
-		//gets the result of the operation
-		std::string operationResult = ResolveBooleanOperation(statementNumber, chunks, 2);
-
-		//assigns the value
-		toAssign->value = operationResult;
-
-		if (debug)
-			AddToConsoleOutput(statementNumber, "Boolean: " + toAssign->identifier + " given value: " + toAssign->value, RED);
-		return;
+				AddToConsoleOutput(statementNumber, "Boolean: " + toAssign->identifier + " given value: " + toAssign->value, RED);
+			break;
 	}
 }
 
@@ -641,13 +647,10 @@ std::string Kode::ResolveArithmeticOperation(int statementNumber, std::vector<st
 		else if (chunks[i] == "**" || chunks[i] == "^")
 			result = Exponent(result, toWorkWith);
 		else if (chunks[i] == "/") {
-
 			if (toWorkWith == 0) {
-
 				AddToConsoleOutput(statementNumber, "Tried to divide by zero. Division operation skipped", RED);
 				continue;
 			}
-
 			result = Divide(result, toWorkWith);
 		}
 	}
