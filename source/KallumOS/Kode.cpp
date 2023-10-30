@@ -44,9 +44,17 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	statements.push_back("bool bar = 5 == 4");
 	//statements.push_back("out bar");
 
+	statements.push_back("int x = 1");
+	statements.push_back("int y = 2");
+	statements.push_back("bool f = x == y");
+	statements.push_back("bool t = x == y - 1");
+	statements.push_back("out f");
+	statements.push_back("out t");
+
+
 	statementFocus = statements.size() - 1;
 
-	consoleHeight = 100;
+	consoleHeight = 150;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
 	AddToConsoleOutput(1, "Press F3 to on debug outputs", BLUE);
 
@@ -78,7 +86,7 @@ void Kode::DrawTextInput(Point offset) {
 		//sets up the statement with the line number
 		std::string text = std::to_string(i) + ". " + statements[i];
 
-		Color toDraw = DARKGRAY;
+		Color toDraw = GRAY;
 		if (i == statementFocus)
 			toDraw = BLACK;
 
@@ -356,14 +364,18 @@ void Kode::HandleOut(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
-	//checks if the operand is an operation
-	if (ValidArithmeticOperation(statementNumber, chunks, 1)) {
+	if (ValidArithmeticOperation(statementNumber, chunks, 1)) { //checks if the operation to output is arithmetic
 
-		//gets the result of the operation
 		std::string operationResult = ResolveArithmeticOperation(statementNumber, chunks, 1);
-
 		AddToConsoleOutput(statementNumber, operationResult, WHITE);
 		return;
+
+	} else if (ValidBooleanOperation(statementNumber, chunks, 1)) { //checks if the operation to output is boolean
+
+		std::string operationResult = ResolveBooleanOperation(statementNumber, chunks, 1);
+		AddToConsoleOutput(statementNumber, operationResult, WHITE);
+		return;
+
 	}
 
 	//loops through all the chunks and gets the whole output
@@ -514,6 +526,24 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 		if (debug)
 			AddToConsoleOutput(statementNumber, "Integer: " + toAssign->identifier + " given value: " + toAssign->value, RED);
 		return;
+
+	} else if (toAssign->type == VariableType::Bool) {
+
+		if (!ValidBooleanOperation(statementNumber, chunks, 2)) {
+			if (debug)
+				AddToConsoleOutput(statementNumber, "Operation to assign is not valid", RED);
+			return;
+		}
+
+		//gets the result of the operation
+		std::string operationResult = ResolveBooleanOperation(statementNumber, chunks, 2);
+
+		//assigns the value
+		toAssign->value = operationResult;
+
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Boolean: " + toAssign->identifier + " given value: " + toAssign->value, RED);
+		return;
 	}
 }
 
@@ -550,6 +580,10 @@ bool Kode::ValidArithmeticOperation(int statementNumber, std::vector<std::string
 	if ((endIndex - startIndex) % 2 == 1)
 		return false;
 
+	if (VariableExists(chunks[startIndex]))
+		if (GetVariable(chunks[startIndex])->type != VariableType::Int)
+			return false;
+
 	//checks if the first chunk is not intable or a variable
 	if (!(Helper::Intable(chunks[startIndex]) || VariableExists(chunks[startIndex])))
 		return false;
@@ -561,6 +595,10 @@ bool Kode::ValidArithmeticOperation(int statementNumber, std::vector<std::string
 		auto it = std::find(supportedOperators.begin(), supportedOperators.end(), chunks[i]);
 		if (it == supportedOperators.end())
 			return false;
+
+		if (VariableExists(chunks[i + 1]))
+			if (GetVariable(chunks[i + 1])->type != VariableType::Int)
+				return false;
 
 		if (!(Helper::Intable(chunks[i + 1]) || VariableExists(chunks[i + 1])))
 			return false;
