@@ -61,10 +61,10 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	statements.push_back("bool a = bar == foo");
 	statements.push_back("out a"); //should out false
-	
-	
-	statements.push_back("bool b = bar || foo == foo");
-	statements.push_back("out b"); //should out false
+
+
+	statements.push_back("bool b = bar ^^ foo == foo && foo");
+	statements.push_back("out b"); //should out true
 
 
 	statementFocus = statements.size() - 1;
@@ -272,8 +272,9 @@ void Kode::SetupSupportedSymbols() {
 	arithmeticOperators.push_back("^");
 	arithmeticOperators.push_back("/");
 
-	booleanOperators.push_back("&&");
-	booleanOperators.push_back("||");
+	booleanOperators["&&"] = BoolOperator::And;
+	booleanOperators["||"] = BoolOperator::Or;
+	booleanOperators["^^"] = BoolOperator::Or;
 
 	booleanComparators.push_back("!");
 	booleanComparators.push_back("¬");
@@ -570,30 +571,7 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 	}
 }
 
-//returns if a variable exists
-bool Kode::VariableExists(std::string toCheck) {
-
-	//returns if a variable identifier was found
-	for (int i = 0; i < variables.size(); i++)
-		if (toCheck == variables[i]->identifier)
-			return true;
-	return false;
-}
-
-//returns the pointer to the passed variable identifier
-Variable* Kode::GetVariable(std::string toGet) {
-
-	Variable* v = nullptr;
-
-	//gets the variable being assigned
-	for (int i = 0; i < variables.size(); i++)
-		if (toGet == variables[i]->identifier)
-			v = variables[i];
-
-	return v;
-}
-
-//returns if the chunks from the startIndex onwards make a valid operation
+//returns if the chunks from the startIndex onwards make a valid arithmetic operation
 bool Kode::ValidArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex) {
 
 	if (endIndex == -1)
@@ -628,7 +606,7 @@ bool Kode::ValidArithmeticOperation(int statementNumber, std::vector<std::string
 	return true;
 }
 
-// resolves an operation
+//returns the resolution of an arithmetic operation
 std::string Kode::ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex) {
 
 	if (endIndex == -1)
@@ -763,15 +741,17 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 				//if the current chunk is not boolean, this is a bad structure
 				if (ChunkType(currentChunk) != VariableType::Bool)
 					return false;
-
 			}
 
 		} else {
 
 			//if the value was not found in the boolean operator list, this is a bad structure
-			if (std::find(booleanOperators.begin(), booleanOperators.end(), currentChunk) == booleanOperators.end())
+			if (booleanOperators.find(currentChunk) == booleanOperators.end())
 				return false;
 
+			//if this was the last chunk, this is a bad structure
+			if (checkIndex == endIndex)
+				return false;
 		}
 
 		checkIndex++;//increase the check index
@@ -781,6 +761,7 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 	return true;
 }
 
+//returns the resolution of a boolean operation
 std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex) {
 
 	if (endIndex == -1)
@@ -822,14 +803,70 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 		return BoolToString(lSide == rSide);
 	}
 
-
 	//resolve pure boolean algebra
+	bool resolvedValue = false;
+	int currentIndex = startIndex;
+	BoolOperator nextOperator = BoolOperator::Null;
 
+	//loops through the chunks for this operation
+	while (currentIndex <= endIndex) {
 
-	if (debug)
-		AddToConsoleOutput(statementNumber, "Unable to do boolean resolve yet", RED);
+		bool currentValue;
 
-	return "false";
+		//gets the current chunk value
+		if (std::find(notOperators.begin(), notOperators.end(), chunks[currentIndex]) != notOperators.end())
+			currentValue = !StringToBool(ResolveChunkValue(chunks[(++currentIndex)++]));//gets the negated value of the next chunk and then increments
+		else
+			currentValue = StringToBool(ResolveChunkValue(chunks[currentIndex++]));//gets the negated value of the current chunk and then increments
+
+		//handle combining the current value with the current resolved value
+		switch (nextOperator) {
+
+			case BoolOperator::Null:
+				resolvedValue = currentValue;
+				break;
+
+			case BoolOperator::And:
+				resolvedValue = resolvedValue && currentValue;
+				break;
+
+			case BoolOperator::Or:
+				resolvedValue = resolvedValue || currentValue;
+				break;
+		}
+
+		//ends the loop if there is nothing left
+		if (currentIndex > endIndex)
+			break;
+
+		//get what the next operator should be
+		nextOperator = booleanOperators[chunks[currentIndex++]];
+	}
+
+	return BoolToString(resolvedValue);
+}
+
+//returns if a variable exists
+bool Kode::VariableExists(std::string toCheck) {
+
+	//returns if a variable identifier was found
+	for (int i = 0; i < variables.size(); i++)
+		if (toCheck == variables[i]->identifier)
+			return true;
+	return false;
+}
+
+//returns the pointer to the passed variable identifier
+Variable* Kode::GetVariable(std::string toGet) {
+
+	Variable* v = nullptr;
+
+	//gets the variable being assigned
+	for (int i = 0; i < variables.size(); i++)
+		if (toGet == variables[i]->identifier)
+			v = variables[i];
+
+	return v;
 }
 
 //adds a piece of text to the console lineup
@@ -850,7 +887,6 @@ VariableType Kode::ChunkType(std::string toCheck) {
 	if (VariableExists(toCheck))
 		return GetVariable(toCheck)->type;
 
-
 	//if it is not a variable, return the potential type
 	else {
 
@@ -862,6 +898,18 @@ VariableType Kode::ChunkType(std::string toCheck) {
 
 		return VariableType::String;
 	}
+}
+
+//returns the resolved value of a chunk
+std::string Kode::ResolveChunkValue(std::string chunk) {
+
+	//if it was a variable return its value
+	if (VariableExists(chunk))
+		return GetVariable(chunk)->value;
+
+	//if it is not a variable, return the string value
+	else
+		return chunk;
 }
 
 //To see instructions, go to the readme at https://github.com/KallumP/KallumOS/tree/readme#readme

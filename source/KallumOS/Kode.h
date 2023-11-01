@@ -5,6 +5,7 @@
 #include <map>
 
 enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign };
+enum class BoolOperator { Null, And, Or };
 
 enum class VariableType { Int, Bool, String, Null };
 struct Variable {
@@ -71,7 +72,9 @@ private:
 	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
 
 	VariableType ChunkType(std::string toCheck);
+	std::string ResolveChunkValue(std::string chunk);
 	std::string BoolToString(bool value) { return value ? "true" : "false"; }
+	bool StringToBool(std::string value) { return value == "true"; }
 
 	int Add(int a, int b) { return a + b; }
 	int Minus(int a, int b) { return a - b; }
@@ -88,7 +91,7 @@ private:
 	std::vector<Variable*> variables;
 
 	std::vector<std::string> arithmeticOperators;
-	std::vector<std::string> booleanOperators;
+	std::map<std::string, BoolOperator> booleanOperators;
 	std::vector<std::string> booleanComparators;
 	std::vector<std::string> notOperators;
 
