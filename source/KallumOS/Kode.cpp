@@ -37,19 +37,34 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//statements.push_back("z = z / 0"); //should out error
 	//statements.push_back("out z"); //should out 72
 
-	//bool testing
-	statements.push_back("bool foo = 4 == 4");
+	//arithmetic boolean comparison testing
+	//statements.push_back("bool foo = 4 == 4");
+	//statements.push_back("out foo"); //should out true
+
+	//statements.push_back("bool bar = 5 == 4");
+	//statements.push_back("out bar"); //should out false
+
+	//statements.push_back("int x = 1");
+	//statements.push_back("int y = 2");
+	//statements.push_back("bool f = x == y");
+	//statements.push_back("bool t = x == y - 1");
+	//statements.push_back("out f"); //should out false
+	//statements.push_back("out t"); //should out true
+
+
+	//pure boolean comparison testing
+	statements.push_back("bool foo = true");
 	statements.push_back("out foo"); //should out true
 
-	statements.push_back("bool bar = 5 == 4");
+	statements.push_back("bool bar = true == false");
 	statements.push_back("out bar"); //should out false
 
-	statements.push_back("int x = 1");
-	statements.push_back("int y = 2");
-	statements.push_back("bool f = x == y");
-	statements.push_back("bool t = x == y - 1");
-	statements.push_back("out f"); //should out false
-	statements.push_back("out t"); //should out true
+	statements.push_back("bool a = bar == foo");
+	statements.push_back("out a"); //should out false
+	
+	
+	statements.push_back("bool b = bar || foo == foo");
+	statements.push_back("out b"); //should out false
 
 
 	statementFocus = statements.size() - 1;
@@ -250,16 +265,18 @@ void Kode::DeleteStatement() {
 }
 
 void Kode::SetupSupportedSymbols() {
-	supportedOperators.push_back("+");
-	supportedOperators.push_back("-");
-	supportedOperators.push_back("*");
-	supportedOperators.push_back("**");
-	supportedOperators.push_back("^");
-	supportedOperators.push_back("/");
+	arithmeticOperators.push_back("+");
+	arithmeticOperators.push_back("-");
+	arithmeticOperators.push_back("*");
+	arithmeticOperators.push_back("**");
+	arithmeticOperators.push_back("^");
+	arithmeticOperators.push_back("/");
 
-	supportedComparators.push_back("&&");
-	supportedComparators.push_back("||");
-	supportedComparators.push_back("!");
+	booleanOperators.push_back("&&");
+	booleanOperators.push_back("||");
+
+	booleanComparators.push_back("!");
+	booleanComparators.push_back("¬");
 
 }
 void Kode::SetupSupportedInstructions() {
@@ -598,8 +615,7 @@ bool Kode::ValidArithmeticOperation(int statementNumber, std::vector<std::string
 	for (int i = startIndex + 1; i <= endIndex; i += 2) {
 
 		//checks if this wasn't supported symbol
-		auto it = std::find(supportedOperators.begin(), supportedOperators.end(), chunks[i]);
-		if (it == supportedOperators.end())
+		if (std::find(arithmeticOperators.begin(), arithmeticOperators.end(), chunks[i]) == arithmeticOperators.end())
 			return false;
 
 		if (VariableExists(chunks[i + 1]))
@@ -701,7 +717,7 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 
 		int checkIndex = startIndex;
 		std::string chunk = chunks[checkIndex];
-		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : PotentialVariableType(chunk);
+		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : ChunkType(chunk);
 
 		bool lSide;
 		bool rSide;
@@ -713,19 +729,56 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 			rSide = ValidArithmeticOperation(statementNumber, chunks, delimeterIndex + 1, endIndex);
 
 		} else if (type == VariableType::Bool) {
-			//check bool operation validness (calling this function with the end index)
+
+			lSide = ValidBooleanOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
+			rSide = ValidBooleanOperation(statementNumber, chunks, delimeterIndex + 1, endIndex);
+
 		}
 
 		//both sides were the same variable type
 		return lSide && rSide;
 	}
 
-	// if no == is found
-	//return if all operation chunks were boolean variables or comparisons
+	//checks for if no == were found
+	int checkIndex = startIndex;
+	bool lookingForValue = true;
 
-	if (debug)
-		AddToConsoleOutput(statementNumber, "Pure boolean algebra not supported yet :(", RED);
-	return false;
+	while (checkIndex <= endIndex) {
+
+		std::string currentChunk = chunks[checkIndex];
+
+		if (lookingForValue) {
+
+			//if the current chunk is a "not" symbol
+			if (std::find(notOperators.begin(), notOperators.end(), currentChunk) != notOperators.end()) {
+
+				//if this was the last chunk, this is a bad structure
+				if (checkIndex = endIndex)
+					return false;
+
+				lookingForValue = !lookingForValue; //pre flips this so that it reverts back when flipped at the end of the loop
+
+			} else {
+
+				//if the current chunk is not boolean, this is a bad structure
+				if (ChunkType(currentChunk) != VariableType::Bool)
+					return false;
+
+			}
+
+		} else {
+
+			//if the value was not found in the boolean operator list, this is a bad structure
+			if (std::find(booleanOperators.begin(), booleanOperators.end(), currentChunk) == booleanOperators.end())
+				return false;
+
+		}
+
+		checkIndex++;//increase the check index
+		lookingForValue = !lookingForValue;//next value should be a boolean operator
+	}
+
+	return true;
 }
 
 std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex) {
@@ -737,7 +790,7 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 	int delimeterIndex = 0;
 
 	//loops through the chunks and checks how many "==" there were
-	for (int i = startIndex; i < chunks.size(); i++) {
+	for (int i = startIndex; i <= endIndex; i++) {
 		if (chunks[i] == "==") {
 			numberOfCheckDelimeters++;
 			delimeterIndex = i;
@@ -749,7 +802,7 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 
 		int checkIndex = startIndex;
 		std::string chunk = chunks[checkIndex];
-		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : PotentialVariableType(chunk);
+		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : ChunkType(chunk);
 		std::string lSide;
 		std::string rSide;
 
@@ -758,6 +811,12 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 
 			lSide = ResolveArithmeticOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
 			rSide = ResolveArithmeticOperation(statementNumber, chunks, delimeterIndex + 1, endIndex);
+
+		} else if (type == VariableType::Bool) {
+
+			lSide = ResolveBooleanOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
+			rSide = ResolveBooleanOperation(statementNumber, chunks, delimeterIndex + 1, endIndex);
+
 		}
 
 		return BoolToString(lSide == rSide);
@@ -765,6 +824,10 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 
 
 	//resolve pure boolean algebra
+
+
+	if (debug)
+		AddToConsoleOutput(statementNumber, "Unable to do boolean resolve yet", RED);
 
 	return "false";
 }
@@ -781,15 +844,24 @@ void Kode::AddToConsoleOutput(int statementNumber, std::string toAdd, Color text
 }
 
 //returns what type of variable a string could be
-VariableType Kode::PotentialVariableType(std::string toCheck) {
+VariableType Kode::ChunkType(std::string toCheck) {
 
-	if (Helper::Intable(toCheck))
-		return VariableType::Int;
+	//if it was a variable return it's type
+	if (VariableExists(toCheck))
+		return GetVariable(toCheck)->type;
 
-	if (toCheck == "true" || toCheck == "false")
-		return VariableType::Bool;
 
-	return VariableType::String;
+	//if it is not a variable, return the potential type
+	else {
+
+		if (Helper::Intable(toCheck))
+			return VariableType::Int;
+
+		if (toCheck == "true" || toCheck == "false")
+			return VariableType::Bool;
+
+		return VariableType::String;
+	}
 }
 
 //To see instructions, go to the readme at https://github.com/KallumP/KallumOS/tree/readme#readme

@@ -70,7 +70,7 @@ private:
 	Variable* GetVariable(std::string toGet);
 	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
 
-	VariableType PotentialVariableType(std::string toCheck);
+	VariableType ChunkType(std::string toCheck);
 	std::string BoolToString(bool value) { return value ? "true" : "false"; }
 
 	int Add(int a, int b) { return a + b; }
@@ -87,8 +87,11 @@ private:
 
 	std::vector<Variable*> variables;
 
-	std::vector<std::string> supportedOperators;
-	std::vector<std::string> supportedComparators;
+	std::vector<std::string> arithmeticOperators;
+	std::vector<std::string> booleanOperators;
+	std::vector<std::string> booleanComparators;
+	std::vector<std::string> notOperators;
+
 	std::map<std::string, Instruction> supportedInstructions;
 
 	std::vector<ConsoleText> console;
