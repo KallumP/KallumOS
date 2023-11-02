@@ -57,6 +57,7 @@ void Input::GenerateKeyPressList() {
 	allKeyPressOptions.push_back(KeyPress(KEY_SEMICOLON, ";", ":"));
 	allKeyPressOptions.push_back(KeyPress(KEY_EQUAL, "=", "+"));
 	allKeyPressOptions.push_back(KeyPress(KEY_BACKSLASH, "\\", "|"));
+	allKeyPressOptions.push_back(KeyPress(KEY_GRAVE, "`", "¬"));
 
 	//number inputs
 	allKeyPressOptions.push_back(KeyPress(KEY_ONE, "1", "!"));

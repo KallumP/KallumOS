@@ -52,7 +52,7 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//statements.push_back("out t"); //should out true
 
 
-	//pure boolean comparison testing
+	////pure boolean comparison testing
 	statements.push_back("bool foo = true");
 	statements.push_back("out foo"); //should out true
 
@@ -62,9 +62,11 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	statements.push_back("bool a = bar == foo");
 	statements.push_back("out a"); //should out false
 
-
-	statements.push_back("bool b = bar ^^ foo == foo && foo");
+	statements.push_back("bool b = true == ! false");
 	statements.push_back("out b"); //should out true
+
+	statements.push_back("bool c = foo && foo == ! false ^^ bar");
+	statements.push_back("out c"); //should out true
 
 
 	statementFocus = statements.size() - 1;
@@ -276,8 +278,9 @@ void Kode::SetupSupportedSymbols() {
 	booleanOperators["||"] = BoolOperator::Or;
 	booleanOperators["^^"] = BoolOperator::Or;
 
-	booleanComparators.push_back("!");
-	booleanComparators.push_back("¬");
+	notOperators.push_back("!");
+	notOperators.push_back("¬");
+	notOperators.push_back("`");
 
 }
 void Kode::SetupSupportedInstructions() {
@@ -697,8 +700,8 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 		std::string chunk = chunks[checkIndex];
 		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : ChunkType(chunk);
 
-		bool lSide;
-		bool rSide;
+		bool lSide = false;
+		bool rSide = false;
 
 		//get the first chunk's type and store it in "type"
 		if (type == VariableType::Int) {
@@ -710,6 +713,12 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 
 			lSide = ValidBooleanOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
 			rSide = ValidBooleanOperation(statementNumber, chunks, delimeterIndex + 1, endIndex);
+
+		} else if (type == VariableType::String) {
+
+			if (debug)
+				AddToConsoleOutput(statementNumber, "String comparison not supported, maybe you spelt a variable name wrong?", RED);
+			return false;
 
 		}
 
@@ -731,7 +740,7 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 			if (std::find(notOperators.begin(), notOperators.end(), currentChunk) != notOperators.end()) {
 
 				//if this was the last chunk, this is a bad structure
-				if (checkIndex = endIndex)
+				if (checkIndex == endIndex)
 					return false;
 
 				lookingForValue = !lookingForValue; //pre flips this so that it reverts back when flipped at the end of the loop
