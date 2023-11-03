@@ -92,6 +92,34 @@ public:
 		return Point(GetMouseX(), GetMouseY());
 	}
 
+	//splits a string on each occurance of the delimter into a vector
+	static std::vector<std::string> Split(std::string toSplit, std::string delimiter) {
+
+		std::vector<std::string> toReturn;
+		size_t pos = 0;
+
+		while ((pos = toSplit.find(delimiter)) != std::string::npos) {
+			toReturn.push_back(toSplit.substr(0, pos));
+			toSplit.erase(0, pos + delimiter.length());
+		}
+		toReturn.push_back(toSplit);
+
+		return toReturn;
+	}
+
+	//returns if a string can be turned into an int
+	static bool Intable(std::string toCheck) {
+
+		//tries to convert the value into an int
+		bool intable = true;
+		try {
+			std::stoi(toCheck);
+		} catch (const std::invalid_argument& e) {
+			intable = false;
+		}
+		return intable;
+	}
+
 private:
 	static void SetSeed() {
 		std::srand(std::time(nullptr));

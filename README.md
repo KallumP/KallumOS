@@ -73,50 +73,99 @@ Features are being added in all the time, and the release logs can be found [her
 
     **Structure**
 
-    -   Your kode consists of statements. A statement is ended by a ";" A statement will appear as one line.
-    -   Each statement consists of chunks, which are separated by a space
+    -   Your kode consists of statements. A statement is ended by hitting the return key, which will start a new line.
+    -   Each statement consists of chunks, which are separated by a space. The first chunk is usually an instruction
+    -   To navigate which statement is being written to, you can use the up and down arrow keys. The currently focused statement will be in black, and all others will be in gray.
 
-    **Functions**
+    **Instructions**
 
     -   `out`
 
-        As mentioned earlier, out allows you to write to the console. It can either write a string to the console, or the contents of a variable eg: `out <variable name>;` or the result of some function eg: `out 5 + 3;`
+        As mentioned earlier, out allows you to write to the console. It can either write a string to the console, or the contents of a variable eg: `out <variable name>` or the result of some operation eg: `out 5 + 3`
 
     -   `int`
 
-        Allows the user to create an integer variable. This variable can be manipulated using simple arithmetic functions.
+        Allows the user to create an integer variable.
 
-        -   To create an int, four chunks are required.
+        -   To create an int, at least four chunks are required.
 
-            1. The "int" opcode
+            1. The "int" instruction
             2. The name of the int
             3. An equals sign
-            4. The value your int should hold. (This can be a function or a static value)
+            4. The value your int should hold. (this can be a single chunk with a static value, or an arithmetic operation)
 
-                eg: `int x = 0;`
+                eg: `int x = 0`
+                eg: `int y = 4 + 5`
 
-        -   To manipulate the int you will need to provide three chunks.
-            1. The int's identifier
+        -   To manipulate the int you will need to provide at least three chunks.
+
+            1. The int variable's identifier
             2. An equals sign
-            3. The value to assign (This can be a function or a static value)
+            3. The value to assign (this can be a single chunk with a static value, or an arithmetic operation)
 
-    -   Function
+    -   `bool`
 
-        This is something that resolves to a value. Currently, this can only take the form of a mathematical equation. A valid function will have an odd number of chunks, and follows the following form:
+        Allows the user to create a boolean variable. This variable can be manipulated using different comparators and boolean operations
 
-        1. A value (this can be a static value or a variable)
-        2. A supported symbol eg: (+, -. /, \*)
-        3. A value (this can be a static value, a variable, or another function)
+        -   To create a bool, at least four chunks are needed
 
-        The ability to provide another function means that this is recursive until the whole function has been resolved.
+            1. The "bool" instruction
+            2. The name of the bool
+            3. An equals sign
+            4. The value your bool should hold. (this can be a single chunk with a static value, or a boolean operation)
 
-        The current order of operations is the order you provide. It will ignore "bidmas" (This may change in the future)
+                eg: `bool a = true`
+                eg: `bool b = 5 <= 4 + 3`
+                eg: `bool c = true != false`
 
-        Where an error is ran into (eg: Dividing by 0) it will output an error to the console, skip that operation and continue resolving the rest of the function.
+        -   To manipulate the bool you will need to provide at least three chunks.
+
+            1. The bool variable's identifier
+            2. An equals sign
+            3. The value to assign (this can be a single chunk with a static value, or a boolean operation)
+
+    -   Operations
+
+        This is something that resolves to a value. Currently, this can be an arithmetic operation `4 * 5 - 1` or a boolean operation `true == true`.
+
+        -   A valid arithmetic operation will have an odd number of chunks, and follows the following form:
+
+            1. A value (this can be a static value or a variable)
+            2. A supported symbol: +, -. /, \*, ^, \*\*)
+            3. A value (this can be a static value, a variable, or another operation)
+
+        -   A valid boolean operation is slightly more complicated.
+            There are two main types of operation:
+
+            -   Value comparison
+                Here, a boolean comparator must be surrounded by two operations. The operations can either be arithmetic (in which case the boolean comparator will evaluate an integer comparison) or pure boolean algebra (in which case the comparator will evaluate a boolean comparison). The two surrounding operations must be of the same type. (You cannot have a boolean value on one side and an arithmetic value on the other)
+                It takes the following structure
+
+                1. lSide function
+                2. A supported comparator: ==, !=, <, <=, >, >=
+                3. rSide function (of the same type as the lSide)
+
+                `eg: 7 + 3 <= 40 - 20`
+                `eg: true || false == false`
+
+            -   Pure boolean algebra
+                This is where a set of boolean variables are evaluated using boolean operators, and no comparators are present.
+
+                The structure is as follows
+
+                1. Boolean value must be present (this can be a static boolean value or a boolean variable).
+                   This value can be preceded by a not operator: !, \`. This operator is treated like a normal chunk, so will have a space between it and the chunk being not-ed
+                2. (Optional) Boolean operator followed by another boolean value (this can be a static boolean value or a boolean variable).
+
+        The ability to provide another operation means that this is recursive until the whole operation has been resolved.
+
+        The current order of operations is the order you provide. It will ignore "bidmas" or expected order of boolean algebra from other languages (This may change in the future)
+
+        Where an error is ran into (eg: Dividing by 0) it will output an error to the console, skip that operation and continue resolving the rest of the operation.
 
 #### Development
 
-To make an app for KOS you must inheret from the `Process` class. This gives you access to a few different functions.
+To make an app for KOS you must inherit from the `Process` class. This gives you access to a few different functions.
 
 -   **Tick(float elapsedTime)**
 

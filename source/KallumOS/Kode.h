@@ -2,12 +2,17 @@
 #include "Process.h"
 
 #include <vector>
+#include <map>
 
+enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign };
+enum class BoolOperator { Null, And, Or };
+enum class BoolComparator { Equal, NotEqual, Less, LessEqual, More, MoreEqual };
 
+enum class VariableType { Int, Bool, String, Null };
 struct Variable {
 	std::string identifier;
 	std::string value;
-	std::string type;
+	VariableType type;
 };
 
 struct ConsoleText {
@@ -24,32 +29,53 @@ public:
 	Kode(Point _position, Point _size);
 
 	void Draw(Point offset);
-	void DrawTextInput(Point offset);
-	void DrawConsole(Point offset);
 
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
 
 private:
 
-	void Input(std::string input);
-	void DeleteChar();
-	void MoveCursor(int toMove) { cursor += toMove; }
-
-	std::vector<std::string> Split(std::string toSplit, std::string delimeter);
+	void DrawTextInput(Point offset);
+	void DrawConsole(Point offset);
 	int GetNextLineY(int lineCount) { return (lineCount * MeasureText("X", defaultFontSize) * 4); }
 
+	void NewStatement();
+	void SwitchStatement(int amount);
+	void Input(std::string input);
+	void Delete();
+	void DeleteChar();
+	void DeleteStatement();
+	void MoveCursor(int toMove) { cursor += toMove; }
+
 	void SetupSupportedSymbols();
-	void SetupSupportedOpcodes();
+	void SetupSupportedInstructions();
 
 	void Run();
-	std::string CheckOpcode(std::vector<std::string> chunks);
-	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
+	void HandleStatement(std::string statement, int statementNumber);
+	Instruction CheckInstruction(std::vector<std::string> chunks);
+	Instruction ResolveManualInstruction(std::string input);
+
+	void HandleEmpty(int statementNumber);
+	void HandleError(int statementNumber);
+	void HandleNoInstruction(int statementNumber);
+	void HandleOut(int statementNumber, std::vector<std::string> chunks);
+	void HandleInt(int statementNumber, std::vector<std::string> chunks);
+	void HandleBool(int statementNumber, std::vector<std::string> chunks);
+	void HandleAssign(int statementNumber, std::vector<std::string> chunks);
+
+	bool ValidArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
+	std::string ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
+	bool ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
+	std::string ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
+
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);
-	bool Intable(std::string toCheck);
-	bool ValidFunction(std::vector<std::string> chunks, int startIndex);
-	std::string HandleFunction(int statementNumber, std::vector<std::string> chunks, int startIndex);
+	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
+
+	VariableType ChunkType(std::string toCheck);
+	std::string ResolveChunkValue(std::string chunk);
+	std::string BoolToString(bool value) { return value ? "true" : "false"; }
+	bool StringToBool(std::string value) { return value == "true"; }
 
 	int Add(int a, int b) { return a + b; }
 	int Minus(int a, int b) { return a - b; }
@@ -58,17 +84,22 @@ private:
 	int Exponent(int a, int b) { return  std::pow(a, b); }
 
 	int fontSize;
-	std::string text;
+
 	int cursor;
+	int statementFocus;
+	std::vector<std::string> statements;
+
+	std::vector<Variable*> variables;
+
+	std::vector<std::string> arithmeticOperators;
+	std::map<std::string, BoolOperator> booleanOperators;
+	std::map<std::string, BoolComparator> booleanComparators;
+	std::vector<std::string> notOperators;
+
+	std::map<std::string, Instruction> supportedInstructions;
 
 	std::vector<ConsoleText> console;
 	int consoleHeight;
 	bool debug;
-
-
-	std::vector<Variable*> variables;
-	std::vector<std::string> supportedSymbols;
-	std::vector<std::string> supportedOpCodes;
-
 };
 
