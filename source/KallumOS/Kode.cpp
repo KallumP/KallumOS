@@ -10,8 +10,8 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
 
-	//statements.push_back("out Hello world!");
-	//statements.push_back("out Hello second line! :)");
+	statements.push_back("out Hello world!");
+	statements.push_back("out Hello second line! :)");
 
 
 
@@ -58,17 +58,17 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 
 	//comparator testing
-	statements.push_back("bool a = 4 == 4");
-	statements.push_back("out a"); //should out true
+	//statements.push_back("bool a = 4 == 4");
+	//statements.push_back("out a"); //should out true
 
-	statements.push_back("bool b = 5 < 4");
-	statements.push_back("out b"); //should out false
+	//statements.push_back("bool b = 5 < 4");
+	//statements.push_back("out b"); //should out false
 
-	statements.push_back("bool c = 3 > 4");
-	statements.push_back("out c"); //should out false
+	//statements.push_back("bool c = 3 > 4");
+	//statements.push_back("out c"); //should out false
 
-	statements.push_back("bool d = 3 != 4");
-	statements.push_back("out d"); //should out false
+	//statements.push_back("bool d = 3 != 4");
+	//statements.push_back("out d"); //should out false
 
 
 
@@ -290,9 +290,9 @@ void Kode::SetupSupportedSymbols() {
 	arithmeticOperators.push_back("+");
 	arithmeticOperators.push_back("-");
 	arithmeticOperators.push_back("*");
-	arithmeticOperators.push_back("**");
-	arithmeticOperators.push_back("^");
 	arithmeticOperators.push_back("/");
+	arithmeticOperators.push_back("^");
+	arithmeticOperators.push_back("**");
 
 	booleanOperators["&&"] = BoolOperator::And;
 	booleanOperators["||"] = BoolOperator::Or;
