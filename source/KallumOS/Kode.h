@@ -6,6 +6,7 @@
 
 enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign };
 enum class BoolOperator { Null, And, Or };
+enum class BoolComparator { Equal, NotEqual, Less, LessEqual, More, MoreEqual };
 
 enum class VariableType { Int, Bool, String, Null };
 struct Variable {
@@ -92,7 +93,7 @@ private:
 
 	std::vector<std::string> arithmeticOperators;
 	std::map<std::string, BoolOperator> booleanOperators;
-	std::vector<std::string> booleanComparators;
+	std::map<std::string, BoolComparator> booleanComparators;
 	std::vector<std::string> notOperators;
 
 	std::map<std::string, Instruction> supportedInstructions;

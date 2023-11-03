@@ -13,6 +13,8 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//statements.push_back("out Hello world!");
 	//statements.push_back("out Hello second line! :)");
 
+
+
 	//int testing
 	//statements.push_back("int x = 2");
 	//statements.push_back("int y = 3");
@@ -37,6 +39,8 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//statements.push_back("z = z / 0"); //should out error
 	//statements.push_back("out z"); //should out 72
 
+
+
 	//arithmetic boolean comparison testing
 	//statements.push_back("bool foo = 4 == 4");
 	//statements.push_back("out foo"); //should out true
@@ -52,21 +56,37 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//statements.push_back("out t"); //should out true
 
 
-	////pure boolean comparison testing
-	statements.push_back("bool foo = true");
-	statements.push_back("out foo"); //should out true
 
-	statements.push_back("bool bar = true == false");
-	statements.push_back("out bar"); //should out false
+	//comparator testing
+	statements.push_back("bool a = 4 == 4");
+	statements.push_back("out a"); //should out true
 
-	statements.push_back("bool a = bar == foo");
-	statements.push_back("out a"); //should out false
+	statements.push_back("bool b = 5 < 4");
+	statements.push_back("out b"); //should out false
 
-	statements.push_back("bool b = true == ! false");
-	statements.push_back("out b"); //should out true
+	statements.push_back("bool c = 3 > 4");
+	statements.push_back("out c"); //should out false
 
-	statements.push_back("bool c = foo && foo == ! false ^^ bar");
-	statements.push_back("out c"); //should out true
+	statements.push_back("bool d = 3 != 4");
+	statements.push_back("out d"); //should out false
+
+
+
+	//pure boolean comparison testing
+	//statements.push_back("bool foo = true");
+	//statements.push_back("out foo"); //should out true
+
+	//statements.push_back("bool bar = true == false");
+	//statements.push_back("out bar"); //should out false
+
+	//statements.push_back("bool a = bar == foo");
+	//statements.push_back("out a"); //should out false
+
+	//statements.push_back("bool b = true == ! false");
+	//statements.push_back("out b"); //should out true
+
+	//statements.push_back("bool c = foo && foo == ! false ^^ bar");
+	//statements.push_back("out c"); //should out true
 
 
 	statementFocus = statements.size() - 1;
@@ -281,6 +301,13 @@ void Kode::SetupSupportedSymbols() {
 	notOperators.push_back("!");
 	notOperators.push_back("¬");
 	notOperators.push_back("`");
+
+	booleanComparators["=="] = BoolComparator::Equal;
+	booleanComparators["!="] = BoolComparator::NotEqual;
+	booleanComparators["<"] = BoolComparator::Less;
+	booleanComparators["<="] = BoolComparator::LessEqual;
+	booleanComparators[">"] = BoolComparator::More;
+	booleanComparators[">="] = BoolComparator::MoreEqual;
 
 }
 void Kode::SetupSupportedInstructions() {
@@ -664,9 +691,9 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 	int numberOfCheckDelimeters = 0;
 	int delimeterIndex = 0;
 
-	//loops through the chunks and checks how many "==" there were
+	//loops through the chunks and checks how many comparators there were
 	for (int i = startIndex; i <= endIndex; i++) {
-		if (chunks[i] == "==") {
+		if (booleanComparators.find(chunks[i]) != booleanComparators.end()) {
 			numberOfCheckDelimeters++;
 			delimeterIndex = i;
 		}
@@ -778,12 +805,14 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 
 	int numberOfCheckDelimeters = 0;
 	int delimeterIndex = 0;
+	BoolComparator comparator;
 
-	//loops through the chunks and checks how many "==" there were
+	//loops through the chunks and checks how many comparators there were
 	for (int i = startIndex; i <= endIndex; i++) {
-		if (chunks[i] == "==") {
+		if (booleanComparators.find(chunks[i]) != booleanComparators.end()) {
 			numberOfCheckDelimeters++;
 			delimeterIndex = i;
+			comparator = booleanComparators[chunks[i]];
 		}
 	}
 
@@ -809,7 +838,21 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 
 		}
 
-		return BoolToString(lSide == rSide);
+		//does the evaluation of the two side values
+		switch (comparator) {
+			case BoolComparator::Equal:
+				return BoolToString(lSide == rSide);
+			case BoolComparator::NotEqual:
+				return BoolToString(lSide != rSide);
+			case BoolComparator::Less:
+				return BoolToString(lSide < rSide);
+			case BoolComparator::LessEqual:
+				return BoolToString(lSide <= rSide);
+			case BoolComparator::More:
+				return BoolToString(lSide > rSide);
+			case BoolComparator::MoreEqual:
+				return BoolToString(lSide >= rSide);
+		}
 	}
 
 	//resolve pure boolean algebra
