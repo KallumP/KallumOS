@@ -4,11 +4,21 @@
 #include <vector>
 #include <map>
 
-enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign };
+enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign, If };
 enum class BoolOperator { Null, And, Or };
 enum class BoolComparator { Equal, NotEqual, Less, LessEqual, More, MoreEqual };
 
 enum class VariableType { Int, Bool, String, Null };
+
+struct Segment {
+	Segment(int _start, int _end)
+	{
+		start = _start;
+		end = _end;
+	}
+	int start;
+	int end;
+};
 struct Variable {
 	std::string identifier;
 	std::string value;
@@ -51,6 +61,7 @@ private:
 	void SetupSupportedInstructions();
 
 	void Run();
+	void SetupBlocks();
 	void HandleStatement(std::string statement, int statementNumber);
 	Instruction CheckInstruction(std::vector<std::string> chunks);
 	Instruction ResolveManualInstruction(std::string input);
@@ -87,8 +98,9 @@ private:
 
 	int cursor;
 	int statementFocus;
-	std::vector<std::string> statements;
 
+	std::vector<Segment> segments;
+	std::vector<std::string> statements;
 	std::vector<Variable*> variables;
 
 	std::vector<std::string> arithmeticOperators;

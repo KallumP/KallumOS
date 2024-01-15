@@ -314,6 +314,8 @@ void Kode::SetupSupportedInstructions() {
 	supportedInstructions["out"] = Instruction::Out;
 	supportedInstructions["int"] = Instruction::Int;
 	supportedInstructions["bool"] = Instruction::Bool;
+	supportedInstructions["if"] = Instruction::If;
+
 }
 
 //runs the program
@@ -322,10 +324,30 @@ void Kode::Run() {
 	console.clear();
 	variables.clear();
 
-	//loops through each statement
-	for (int i = 0; i < statements.size(); i++)
-		HandleStatement(statements[i], i);
+	segments.push_back(Segment(0, statements.size() - 1));
+
+	//loops through the blocks
+	for (int i = 0; i < segments.size(); i++) {
+
+		//loops through each statement
+		for (int j = segments[i].start; j <= segments[i].end; j++)
+			HandleStatement(statements[j], j);
+	}
 }
+
+//if statement is declared using the if instruction and the endif instruction
+// 
+//when an if instruction is encountered
+//if the if statement's boolean check is invalid ignore it and the next endif (have a counter for number of un bound endifs to ignore)
+//an unbound endif is one that has no if instruction that came before it (or an invalid if instruction)
+// 
+// if the if's boolean was valid
+//it will generate a block that starts at the first line after the if instruction, and ends at the last line (including endif instruction line)
+//it also needs to restructure the outer block's end to one before the if's start
+//it also needs to create a new block that starts one after the if's end and to the end of the outer blocks previous end
+
+//if the if's boolean was false, set the statement count to the end of the if statement (to immediatley end the if statement)
+//if the if's boolean was true, do nothing (this when the loop increments, the last block is now finished, and the if block should start)
 
 //handles the functionality of a statement
 void Kode::HandleStatement(std::string statement, int statementNumber) {
