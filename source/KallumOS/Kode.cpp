@@ -1,6 +1,8 @@
 #include "kGraphics.h"
 #include "Kode.h"
 #include "Helper.h"
+#include <algorithm>
+#include <vector>
 
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
@@ -10,8 +12,9 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
 
-	statements.push_back("out Hello world!");
-	statements.push_back("out Hello second line! :)");
+	//default statements
+	//statements.push_back("out Hello world!");
+	//statements.push_back("out Hello second line! :)");
 
 
 
@@ -87,6 +90,20 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	//statements.push_back("bool c = foo && foo == ! false ^^ bar");
 	//statements.push_back("out c"); //should out true
+
+
+	//if statement testing
+	statements.push_back("bool foo = false");
+	statements.push_back("if foo");
+	statements.push_back("out inside if statement");
+	statements.push_back("endif");
+
+	statements.push_back("int bar = 3");
+	statements.push_back("if bar == 5");
+	statements.push_back("out inside second if statement");
+	statements.push_back("endif");
+
+	statements.push_back("out rest of program");
 
 
 	statementFocus = statements.size() - 1;
@@ -315,7 +332,7 @@ void Kode::SetupSupportedInstructions() {
 	supportedInstructions["int"] = Instruction::Int;
 	supportedInstructions["bool"] = Instruction::Bool;
 	supportedInstructions["if"] = Instruction::If;
-
+	supportedInstructions["endif"] = Instruction::EndIf;
 }
 
 //runs the program
@@ -324,36 +341,44 @@ void Kode::Run() {
 	console.clear();
 	variables.clear();
 
-	segments.push_back(Segment(0, statements.size() - 1));
+	jumper = Jumper();
+
+	segments.clear();
+	segments.push_back(Segment(0, statements.size() - 1, 0));
 
 	//loops through the blocks
 	for (int i = 0; i < segments.size(); i++) {
 
+		currentSegment = &segments[i];
+
 		//loops through each statement
-		for (int j = segments[i].start; j <= segments[i].end; j++)
+		for (int j = segments[i].start; j <= segments[i].end; j++) {
+
 			HandleStatement(statements[j], j);
+
+			//jumps to a statement if necessary
+			if (jumper.jump) {
+
+				i = jumper.segmentIndex;
+				j = jumper.statementIndex;
+				jumper.jump = false;
+			}
+		}
 	}
 }
 
-//if statement is declared using the if instruction and the endif instruction
-// 
-//when an if instruction is encountered
-//if the if statement's boolean check is invalid ignore it and the next endif (have a counter for number of un bound endifs to ignore)
-//an unbound endif is one that has no if instruction that came before it (or an invalid if instruction)
-// 
-// if the if's boolean was valid
-//it will generate a block that starts at the first line after the if instruction, and ends at the last line (including endif instruction line)
-//it also needs to restructure the outer block's end to one before the if's start
-//it also needs to create a new block that starts one after the if's end and to the end of the outer blocks previous end
+void Kode::SetupJump(int _segmentIndexToJumpTo, int _statementIndexToJumpTo) {
 
-//if the if's boolean was false, set the statement count to the end of the if statement (to immediatley end the if statement)
-//if the if's boolean was true, do nothing (this when the loop increments, the last block is now finished, and the if block should start)
+	jumper.segmentIndex = _segmentIndexToJumpTo;
+	jumper.statementIndex = _statementIndexToJumpTo;
+	jumper.jump = true;
+}
 
 //handles the functionality of a statement
 void Kode::HandleStatement(std::string statement, int statementNumber) {
 
 	//splits the statement into the different chunks (defined by ' ')
-	std::vector<std::string> chunks = Helper::Split(statement, " ");
+	std::vector<std::string> chunks = StatementToChunk(statement);
 
 	//gets what the first chunk was
 	Instruction foundInstruction = CheckInstruction(chunks);
@@ -387,6 +412,10 @@ void Kode::HandleStatement(std::string statement, int statementNumber) {
 		case Instruction::Assign: //assign command
 			HandleAssign(statementNumber, chunks);
 			break;
+
+		case Instruction::If: //if statment instruction
+			HandleIf(statementNumber, chunks);
+			break;
 	}
 }
 
@@ -395,7 +424,7 @@ Instruction Kode::CheckInstruction(std::vector<std::string> chunks) {
 
 	//returns if the statement was empty
 	if (chunks.size() == 1 && chunks[0] == "")
-		return Instruction::Assign;
+		return Instruction::Empty;
 
 	//returns if a valid manual instruction was found
 	if (supportedInstructions.find(chunks[0]) != supportedInstructions.end())
@@ -567,7 +596,7 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 	//not enough chunks
 	if (chunks.size() < 3) {
 		if (debug)
-			AddToConsoleOutput(statementNumber, "Need to have two chunks for an int", RED);
+			AddToConsoleOutput(statementNumber, "Need to have two chunks for an assign, need to have three", RED);
 		return;
 	}
 
@@ -621,6 +650,77 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 				AddToConsoleOutput(statementNumber, "Boolean: " + toAssign->identifier + " given value: " + toAssign->value, RED);
 			break;
 	}
+}
+void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
+
+	//not enough chunks (needs the if and atleast a single boolean value)
+	if (chunks.size() < 2) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Need to have two chunks for an if, needs to have 2", RED);
+		return;
+	}
+
+	//handles if the if condition was bad
+	if (!ValidBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1)) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Invalid boolean condition for if statement", RED);
+		return;
+	}
+
+	//find corresponding endif instruction
+	int endIfIndex = -1;
+	for (int i = statementNumber; i < currentSegment->end; i++) {
+
+		std::vector<std::string> toCheck = StatementToChunk(statements[i]);
+		Instruction instruction = CheckInstruction(toCheck);
+
+		if (instruction == Instruction::EndIf) {
+			endIfIndex = i;
+			break;
+		}
+
+		//need to adjust for nested ifs
+		//if an if instruction is encountered, increment a counter
+		//when an endif instruciton is encoutnered, decrement the counter
+		//when the counter is <0 after finding an endif, this is the correct endif
+	}
+
+	if (endIfIndex == -1) {
+
+		AddToConsoleOutput(statementNumber, "No endif instruction found to complete this if statement", RED);
+		return;
+	}
+
+	int outerSegmentIndex = currentSegment->index;
+	int oldOuterEndIndex = currentSegment->end;
+	int ifStartIndex = statementNumber + 1;
+
+	//restructure outer segment
+	currentSegment->end = statementNumber;
+	
+
+	//create if segment
+	Segment ifSeg = Segment(ifStartIndex, endIfIndex, outerSegmentIndex + 1);
+	segments.push_back(ifSeg);
+
+	//create exit segment
+	Segment exitSegment = Segment(endIfIndex + 1, oldOuterEndIndex, outerSegmentIndex + 2);
+	segments.push_back(exitSegment);
+
+	//if condition was false
+	bool conditionResolve = StringToBool(ResolveBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1));
+	if (!conditionResolve)
+
+		//sets up a jump to the end of the if statement
+		SetupJump(ifSeg.index, ifSeg.end);
+
+	if (debug) {
+		std::string message = "If statement [" + std::to_string(ifStartIndex) + " - " + std::to_string(endIfIndex) + "] " + BoolToString(conditionResolve);
+		AddToConsoleOutput(statementNumber, message, BLUE);
+		return;
+	}
+
+	//dont need to do anything for if the condition was true, because the previous segment will end and the if segment will start automatically
 }
 
 //returns if the chunks from the startIndex onwards make a valid arithmetic operation
