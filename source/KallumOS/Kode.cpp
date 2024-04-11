@@ -16,90 +16,16 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//statements.push_back("out Hello world!");
 	//statements.push_back("out Hello second line! :)");
 
+	//kode test statements are found at "kodeTests.txt"
 
-
-	//int testing
-	//statements.push_back("int x = 2");
-	//statements.push_back("int y = 3");
-	//statements.push_back("int z = y + x");
-	//statements.push_back("out z"); //should out 5
-
-	//statements.push_back("z = y - x");
-	//statements.push_back("out z"); //should out 1
-
-	//statements.push_back("z = y * x");
-	//statements.push_back("out z");//should out 6
-
-	//statements.push_back("z = z + z");
-	//statements.push_back("out z"); //should out 12
-
-	//statements.push_back("z = z ^ 2");
-	//statements.push_back("out z"); //should out 144
-
-	//statements.push_back("z = z / 2");
-	//statements.push_back("out z"); //should out 72
-
-	//statements.push_back("z = z / 0"); //should out error
-	//statements.push_back("out z"); //should out 72
-
-
-
-	//arithmetic boolean comparison testing
-	//statements.push_back("bool foo = 4 == 4");
-	//statements.push_back("out foo"); //should out true
-
-	//statements.push_back("bool bar = 5 == 4");
-	//statements.push_back("out bar"); //should out false
-
-	//statements.push_back("int x = 1");
-	//statements.push_back("int y = 2");
-	//statements.push_back("bool f = x == y");
-	//statements.push_back("bool t = x == y - 1");
-	//statements.push_back("out f"); //should out false
-	//statements.push_back("out t"); //should out true
-
-
-
-	//comparator testing
-	//statements.push_back("bool a = 4 == 4");
-	//statements.push_back("out a"); //should out true
-
-	//statements.push_back("bool b = 5 < 4");
-	//statements.push_back("out b"); //should out false
-
-	//statements.push_back("bool c = 3 > 4");
-	//statements.push_back("out c"); //should out false
-
-	//statements.push_back("bool d = 3 != 4");
-	//statements.push_back("out d"); //should out false
-
-
-
-	//pure boolean comparison testing
-	//statements.push_back("bool foo = true");
-	//statements.push_back("out foo"); //should out true
-
-	//statements.push_back("bool bar = true == false");
-	//statements.push_back("out bar"); //should out false
-
-	//statements.push_back("bool a = bar == foo");
-	//statements.push_back("out a"); //should out false
-
-	//statements.push_back("bool b = true == ! false");
-	//statements.push_back("out b"); //should out true
-
-	//statements.push_back("bool c = foo && foo == ! false ^^ bar");
-	//statements.push_back("out c"); //should out true
-
-
-	//if statement testing
 	statements.push_back("bool foo = false");
 	statements.push_back("if foo");
 	statements.push_back("out inside if statement");
 	statements.push_back("endif");
 
 	statements.push_back("int bar = 3");
-	statements.push_back("if bar == 5");
+	statements.push_back("int car = 2");
+	statements.push_back("if bar > car");
 	statements.push_back("out inside second if statement");
 	statements.push_back("endif");
 
@@ -669,24 +595,30 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 
 	//find corresponding endif instruction
 	int endIfIndex = -1;
-	for (int i = statementNumber; i < currentSegment->end; i++) {
+	int foundIfs = 1;
+	for (int i = statementNumber + 1; i < currentSegment->end; i++) {
 
 		std::vector<std::string> toCheck = StatementToChunk(statements[i]);
 		Instruction instruction = CheckInstruction(toCheck);
 
-		if (instruction == Instruction::EndIf) {
-			endIfIndex = i;
-			break;
-		}
+		if (instruction == Instruction::If) {
 
-		//need to adjust for nested ifs
-		//if an if instruction is encountered, increment a counter
-		//when an endif instruciton is encoutnered, decrement the counter
-		//when the counter is <0 after finding an endif, this is the correct endif
+			foundIfs++; //keeps track of this if instruction
+		
+		} else if (instruction == Instruction::EndIf) {
+
+			foundIfs--; //notes that an endif instruction was found
+
+			if (foundIfs == 0) { // this endif doesn't belong to an inner if block
+
+				endIfIndex = i;
+				break;
+			}
+		}
 	}
 
+	// no corresponding endif found
 	if (endIfIndex == -1) {
-
 		AddToConsoleOutput(statementNumber, "No endif instruction found to complete this if statement", RED);
 		return;
 	}
@@ -697,7 +629,6 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 
 	//restructure outer segment
 	currentSegment->end = statementNumber;
-	
 
 	//create if segment
 	Segment ifSeg = Segment(ifStartIndex, endIfIndex, outerSegmentIndex + 1);
@@ -714,13 +645,35 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		//sets up a jump to the end of the if statement
 		SetupJump(ifSeg.index, ifSeg.end);
 
+
+	//if condition was true no action is needed, because the previous segment will end and the if segment will start automatically
+	//consider putting a jump once the jumper is changed to jump to the start of the next segment
+
 	if (debug) {
 		std::string message = "If statement [" + std::to_string(ifStartIndex) + " - " + std::to_string(endIfIndex) + "] " + BoolToString(conditionResolve);
 		AddToConsoleOutput(statementNumber, message, BLUE);
 		return;
 	}
 
-	//dont need to do anything for if the condition was true, because the previous segment will end and the if segment will start automatically
+	//todo
+
+	//nested if statement
+	//problem is, when inserting segments, they get added to the end
+	//this means that the order of segments will be wrong when there are nested segments
+
+	//this can be fixed by inserting the segment into the right place of the list
+	//and using a function to get the index of a segment
+	
+	//possibly move towards a list based segment storage to stop pointers becoming stale when inserting into the vector
+
+
+	//todo 
+	//if a jump is needed, jump before handling the next statement, not after handling the current statement 
+	//jump should happen at the start of the inner for loop of run
+	//this lets the jumper jump to the start of the next segment, rather than the end of the current segment
+
+	//the segments should be stored in a linked list
+	//the outer run loop should be a list traversal until the end of the list is reached
 }
 
 //returns if the chunks from the startIndex onwards make a valid arithmetic operation
@@ -1085,5 +1038,15 @@ std::string Kode::ResolveChunkValue(std::string chunk) {
 	else
 		return chunk;
 }
+
+//returns the index of a segment
+int Kode::GetSegmentIndex(Segment* toGet) {
+
+	for (int i = 0; i < segments.size(); i++)
+		if (toGet == &segments[i])
+			return i;
+	return 0;
+}
+
 
 //To see instructions, go to the readme at https://github.com/KallumP/KallumOS/tree/readme#readme

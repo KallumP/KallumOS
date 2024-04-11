@@ -90,6 +90,7 @@ private:
 
 	//helpers
 	Instruction CheckInstruction(std::vector<std::string> chunks);
+	int GetSegmentIndex(Segment* toGet);
 
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);

@@ -1,0 +1,101 @@
+//int testing
+	//statements.push_back("int x = 2");
+	//statements.push_back("int y = 3");
+	//statements.push_back("int z = y + x");
+	//statements.push_back("out z"); //should out 5
+
+	//statements.push_back("z = y - x");
+	//statements.push_back("out z"); //should out 1
+
+	//statements.push_back("z = y * x");
+	//statements.push_back("out z");//should out 6
+
+	//statements.push_back("z = z + z");
+	//statements.push_back("out z"); //should out 12
+
+	//statements.push_back("z = z ^ 2");
+	//statements.push_back("out z"); //should out 144
+
+	//statements.push_back("z = z / 2");
+	//statements.push_back("out z"); //should out 72
+
+	//statements.push_back("z = z / 0"); //should out error
+	//statements.push_back("out z"); //should out 72
+
+
+
+	//arithmetic boolean comparison testing
+	//statements.push_back("bool foo = 4 == 4");
+	//statements.push_back("out foo"); //should out true
+
+	//statements.push_back("bool bar = 5 == 4");
+	//statements.push_back("out bar"); //should out false
+
+	//statements.push_back("int x = 1");
+	//statements.push_back("int y = 2");
+	//statements.push_back("bool f = x == y");
+	//statements.push_back("bool t = x == y - 1");
+	//statements.push_back("out f"); //should out false
+	//statements.push_back("out t"); //should out true
+
+
+
+	//comparator testing
+	//statements.push_back("bool a = 4 == 4");
+	//statements.push_back("out a"); //should out true
+
+	//statements.push_back("bool b = 5 < 4");
+	//statements.push_back("out b"); //should out false
+
+	//statements.push_back("bool c = 3 > 4");
+	//statements.push_back("out c"); //should out false
+
+	//statements.push_back("bool d = 3 != 4");
+	//statements.push_back("out d"); //should out false
+
+
+
+	//pure boolean comparison testing
+	//statements.push_back("bool foo = true");
+	//statements.push_back("out foo"); //should out true
+
+	//statements.push_back("bool bar = true == false");
+	//statements.push_back("out bar"); //should out false
+
+	//statements.push_back("bool a = bar == foo");
+	//statements.push_back("out a"); //should out false
+
+	//statements.push_back("bool b = true == ! false");
+	//statements.push_back("out b"); //should out true
+
+	//statements.push_back("bool c = foo && foo == ! false ^^ bar");
+	//statements.push_back("out c"); //should out true
+
+	//if testing
+	//statements.push_back("bool foo = false");
+	//statements.push_back("if foo");
+	//statements.push_back("out inside if statement");
+	//statements.push_back("endif");
+
+	//statements.push_back("int bar = 3");
+	//statements.push_back("int car = 2");
+	//statements.push_back("if bar > car");
+	//statements.push_back("out inside second if statement");
+	//statements.push_back("endif");
+
+	//statements.push_back("out rest of program");
+
+
+	// nested if testing
+	//statements.push_back("bool foo = false");
+	//statements.push_back("int bar = 3");
+	//statements.push_back("int car = 2");
+	//statements.push_back("if foo");
+	//statements.push_back("out outer if");
+	//statements.push_back("if bar > car");
+	//statements.push_back("out inner if");
+	//statements.push_back("endif");
+	//statements.push_back("endif");
+
+	//statements.push_back("out rest of program");
+
