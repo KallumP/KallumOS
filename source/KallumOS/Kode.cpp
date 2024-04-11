@@ -13,24 +13,10 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	fontSize = 20;
 
 	//default statements
-	//statements.push_back("out Hello world!");
-	//statements.push_back("out Hello second line! :)");
+	statements.push_back("out Hello world!");
+	statements.push_back("out Hello second line! 0:)");
 
 	//kode test statements are found at "kodeTests.txt"
-
-	statements.push_back("bool foo = false");
-	statements.push_back("if foo");
-	statements.push_back("out inside if statement");
-	statements.push_back("endif");
-
-	statements.push_back("int bar = 3");
-	statements.push_back("int car = 2");
-	statements.push_back("if bar > car");
-	statements.push_back("out inside second if statement");
-	statements.push_back("endif");
-
-	statements.push_back("out rest of program");
-
 
 	statementFocus = statements.size() - 1;
 
@@ -269,39 +255,39 @@ void Kode::Run() {
 
 	jumper = Jumper();
 
-	segments.clear();
-	segments.push_back(Segment(0, statements.size() - 1, 0));
+	currentSegment = new Segment(0, statements.size() - 1, nullptr); //the whole program as one segment
 
-	//loops through the blocks
-	for (int i = 0; i < segments.size(); i++) {
+	//keeps going until all segments have been executed
+	while (currentSegment != nullptr) {
 
-		currentSegment = &segments[i];
+		//loops through each statement in this segment
+		for (int i = currentSegment->start; i <= currentSegment->end; i++) {
 
-		//loops through each statement
-		for (int j = segments[i].start; j <= segments[i].end; j++) {
-
-			HandleStatement(statements[j], j);
+			HandleStatement(statements[i], i);
 
 			//jumps to a statement if necessary
 			if (jumper.jump) {
 
-				i = jumper.segmentIndex;
-				j = jumper.statementIndex;
+				currentSegment = jumper.segment;
+				i = jumper.statementIndex;
 				jumper.jump = false;
 			}
 		}
+
+		//moves onto the next segment
+		currentSegment = currentSegment->next; 
 	}
 }
 
-void Kode::SetupJump(int _segmentIndexToJumpTo, int _statementIndexToJumpTo) {
+void Kode::SetupJump(Segment* _segmentToJumpTo, int _statementIndexToJumpTo) {
 
-	jumper.segmentIndex = _segmentIndexToJumpTo;
+	jumper.segment = _segmentToJumpTo;
 	jumper.statementIndex = _statementIndexToJumpTo;
 	jumper.jump = true;
 }
 
 //handles the functionality of a statement
-void Kode::HandleStatement(std::string statement, int statementNumber) {
+void Kode::HandleStatement(std::string statement, int statementIndex) {
 
 	//splits the statement into the different chunks (defined by ' ')
 	std::vector<std::string> chunks = StatementToChunk(statement);
@@ -312,35 +298,35 @@ void Kode::HandleStatement(std::string statement, int statementNumber) {
 	switch (foundInstruction) {
 
 		case Instruction::Empty: //empty statement
-			HandleEmpty(statementNumber);
+			HandleEmpty(statementIndex);
 			break;
 
 		case Instruction::Error: //unknown instruction
-			HandleError(statementNumber);
+			HandleError(statementIndex);
 			break;
 
 		case Instruction::NoInstruction: //empty instruction
-			HandleNoInstruction(statementNumber);
+			HandleNoInstruction(statementIndex);
 			break;
 
 		case Instruction::Out: //out command
-			HandleOut(statementNumber, chunks);
+			HandleOut(statementIndex, chunks);
 			break;
 
 		case Instruction::Int: //int command
-			HandleInt(statementNumber, chunks);
+			HandleInt(statementIndex, chunks);
 			break;
 
 		case Instruction::Bool: //bool command
-			HandleBool(statementNumber, chunks);
+			HandleBool(statementIndex, chunks);
 			break;
 
 		case Instruction::Assign: //assign command
-			HandleAssign(statementNumber, chunks);
+			HandleAssign(statementIndex, chunks);
 			break;
 
 		case Instruction::If: //if statment instruction
-			HandleIf(statementNumber, chunks);
+			HandleIf(statementIndex, chunks);
 			break;
 	}
 }
@@ -623,27 +609,25 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
-	int outerSegmentIndex = currentSegment->index;
-	int oldOuterEndIndex = currentSegment->end;
 	int ifStartIndex = statementNumber + 1;
+
+	//create exit segment
+	Segment* exitSegment = new Segment(endIfIndex + 1, currentSegment->end, currentSegment->next);
+
+	//create if segment
+	Segment* ifSeg = new Segment(ifStartIndex, endIfIndex, exitSegment);
 
 	//restructure outer segment
 	currentSegment->end = statementNumber;
+	currentSegment->next = ifSeg;
 
-	//create if segment
-	Segment ifSeg = Segment(ifStartIndex, endIfIndex, outerSegmentIndex + 1);
-	segments.push_back(ifSeg);
-
-	//create exit segment
-	Segment exitSegment = Segment(endIfIndex + 1, oldOuterEndIndex, outerSegmentIndex + 2);
-	segments.push_back(exitSegment);
 
 	//if condition was false
 	bool conditionResolve = StringToBool(ResolveBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1));
 	if (!conditionResolve)
 
 		//sets up a jump to the end of the if statement
-		SetupJump(ifSeg.index, ifSeg.end);
+		SetupJump(ifSeg, ifSeg->end);
 
 
 	//if condition was true no action is needed, because the previous segment will end and the if segment will start automatically
@@ -1038,15 +1022,5 @@ std::string Kode::ResolveChunkValue(std::string chunk) {
 	else
 		return chunk;
 }
-
-//returns the index of a segment
-int Kode::GetSegmentIndex(Segment* toGet) {
-
-	for (int i = 0; i < segments.size(); i++)
-		if (toGet == &segments[i])
-			return i;
-	return 0;
-}
-
 
 //To see instructions, go to the readme at https://github.com/KallumP/KallumOS/tree/readme#readme

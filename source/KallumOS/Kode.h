@@ -11,16 +11,16 @@ enum class BoolComparator { Equal, NotEqual, Less, LessEqual, More, MoreEqual };
 enum class VariableType { Int, Bool, String, Null };
 
 struct Segment {
-	Segment(int _start, int _end, int _index)
+	Segment(int _start, int _end, Segment* _next)
 	{
 		start = _start;
 		end = _end;
-		index = _index;
+		next = _next;
 	}
 
 	int start;
 	int end;
-	int index;
+	Segment* next;
 };
 struct Variable {
 	std::string identifier;
@@ -36,7 +36,7 @@ struct ConsoleText {
 };
 
 struct Jumper {
-	int segmentIndex;
+	Segment* segment;
 	int statementIndex;
 	bool jump = false;
 };
@@ -101,7 +101,7 @@ private:
 	std::string ResolveChunkValue(std::string chunk);
 	std::string BoolToString(bool value) { return value ? "true" : "false"; }
 	bool StringToBool(std::string value) { return value == "true"; }
-	void SetupJump(int _segmentIndexToJumpTo, int _statementIndexToJumpTo);
+	void SetupJump(Segment* _segmentToJumpTo, int _statementIndexToJumpTo);
 
 	int Add(int a, int b) { return a + b; }
 	int Minus(int a, int b) { return a - b; }
@@ -114,7 +114,6 @@ private:
 	int cursor;
 	int statementFocus;
 
-	std::vector<Segment> segments;
 	std::vector<std::string> statements;
 	std::vector<Variable*> variables;
 	Segment* currentSegment;
