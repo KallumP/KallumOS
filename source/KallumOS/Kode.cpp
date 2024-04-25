@@ -5,12 +5,9 @@
 #include <vector>
 
 Kode::Kode() : Process("Kode") {
-	currentSegment = nullptr;
-	cursor = 0;
-	statementFocus = 0;
-	fontSize = 20;
-	consoleHeight = 150;
-	debug = false;
+
+	SetupSupportedInstructions();
+	SetupSupportedSymbols();
 }
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
@@ -18,16 +15,14 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	SetupSupportedInstructions();
 	SetupSupportedSymbols();
 
-	fontSize = 20;
-
 	//default statements
 	statements.push_back("out Hello world!");
 	statements.push_back("out Hello second line! 0:)");
-
-	//kode test statements are found at "kodeTests.txt"
-
 	statementFocus = statements.size() - 1;
 
+	//kode test statements are found at "kodeTests.txt"
+	
+	defaultFontSize = 20;
 	consoleHeight = 150;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
 	AddToConsoleOutput(1, "Press F3 to on debug outputs", BLUE);
@@ -51,7 +46,7 @@ void Kode::DrawTextInput(Point offset) {
 	int padding = 10;
 
 	//how many of the biggest char can fit in the box
-	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
 
 	//loops through each statement
 	int lineCount = 0;
@@ -67,7 +62,7 @@ void Kode::DrawTextInput(Point offset) {
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
 
-			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (GetNextLineY(lineCount)), fontSize, toDraw);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (Helper::GetNextLineY(lineCount, defaultFontSize)), defaultFontSize, toDraw);
 			lineCount++;
 
 		} else {
@@ -79,7 +74,7 @@ void Kode::DrawTextInput(Point offset) {
 			for (int j = 0; j < linesToDraw; j++) {
 
 				std::string line = text.substr(j * charsPerLine, charsPerLine);
-				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, toDraw);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, defaultFontSize), defaultFontSize, toDraw);
 				lineCount++;
 			}
 		}
@@ -93,7 +88,7 @@ void Kode::DrawConsole(Point offset) {
 	kGraphics::FillRect(offset.GetX(), offset.GetY(), size.GetX(), consoleHeight, BLACK);
 
 	//how many of the biggest char can fit in the box
-	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
 
 	int lineCount = 0;
 	for (int i = 0; i < console.size(); i++) {
@@ -103,7 +98,7 @@ void Kode::DrawConsole(Point offset) {
 
 		if (text.size() < charsPerLine) {
 
-			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, console[i].textColor);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, defaultFontSize), defaultFontSize, console[i].textColor);
 			lineCount++;
 
 		} else {
@@ -115,7 +110,7 @@ void Kode::DrawConsole(Point offset) {
 			for (int j = 0; j < linesToDraw; j++) {
 
 				std::string line = text.substr(j * charsPerLine, charsPerLine);
-				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, console[i].textColor);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, defaultFontSize), defaultFontSize, console[i].textColor);
 				lineCount++;
 			}
 		}

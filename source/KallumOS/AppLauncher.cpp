@@ -187,4 +187,12 @@ void AppLauncher::SetupProcessInfos() {
 	};
 	ProcessInfo tic = ProcessInfo("Tic Tak", launchCode);
 	processInfos.push_back(tic);
+
+	launchCode = [this]() {
+		KodeTests* app = new KodeTests(Point(700, 60), Point(400, 200));
+		LaunchApp(app);
+	};
+	ProcessInfo kodeTests = ProcessInfo("Kode tests", launchCode);
+	processInfos.push_back(kodeTests);
+
 }
