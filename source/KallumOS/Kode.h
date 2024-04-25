@@ -52,6 +52,10 @@ public:
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
 
+	void Run();
+	void SetStatements(std::vector<std::string> _statements) { statements = _statements; }
+	std::vector<ConsoleText> GetConsole() { return console; }
+
 private:
 
 	void DrawTextInput(Point offset);
@@ -69,7 +73,6 @@ private:
 	void SetupSupportedSymbols();
 	void SetupSupportedInstructions();
 
-	void Run();
 	void HandleStatement(std::string statement, int statementNumber);
 
 	//instruction handling

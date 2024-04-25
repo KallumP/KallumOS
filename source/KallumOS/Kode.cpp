@@ -4,6 +4,14 @@
 #include <algorithm>
 #include <vector>
 
+Kode::Kode() : Process("Kode") {
+	currentSegment = nullptr;
+	cursor = 0;
+	statementFocus = 0;
+	fontSize = 20;
+	consoleHeight = 150;
+	debug = false;
+}
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
@@ -273,6 +281,8 @@ void Kode::Run() {
 				jumper.jump = false;
 			}
 		}
+
+		//TODO: unallocate all segments as they get used up
 
 		//moves onto the next segment
 		currentSegment = currentSegment->next; 

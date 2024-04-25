@@ -113,7 +113,7 @@ public:
 		//tries to convert the value into an int
 		bool intable = true;
 		try {
-			std::stoi(toCheck);
+			intable = std::stoi(toCheck);
 		} catch (const std::invalid_argument& e) {
 			intable = false;
 		}
