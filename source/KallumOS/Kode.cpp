@@ -1,6 +1,8 @@
 #include "kGraphics.h"
 #include "Kode.h"
 #include "Helper.h"
+#include <algorithm>
+#include <vector>
 
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
@@ -10,84 +12,11 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	fontSize = 20;
 
+	//default statements
 	statements.push_back("out Hello world!");
-	statements.push_back("out Hello second line! :)");
+	statements.push_back("out Hello second line! 0:)");
 
-
-
-	//int testing
-	//statements.push_back("int x = 2");
-	//statements.push_back("int y = 3");
-	//statements.push_back("int z = y + x");
-	//statements.push_back("out z"); //should out 5
-
-	//statements.push_back("z = y - x");
-	//statements.push_back("out z"); //should out 1
-
-	//statements.push_back("z = y * x");
-	//statements.push_back("out z");//should out 6
-
-	//statements.push_back("z = z + z");
-	//statements.push_back("out z"); //should out 12
-
-	//statements.push_back("z = z ^ 2");
-	//statements.push_back("out z"); //should out 144
-
-	//statements.push_back("z = z / 2");
-	//statements.push_back("out z"); //should out 72
-
-	//statements.push_back("z = z / 0"); //should out error
-	//statements.push_back("out z"); //should out 72
-
-
-
-	//arithmetic boolean comparison testing
-	//statements.push_back("bool foo = 4 == 4");
-	//statements.push_back("out foo"); //should out true
-
-	//statements.push_back("bool bar = 5 == 4");
-	//statements.push_back("out bar"); //should out false
-
-	//statements.push_back("int x = 1");
-	//statements.push_back("int y = 2");
-	//statements.push_back("bool f = x == y");
-	//statements.push_back("bool t = x == y - 1");
-	//statements.push_back("out f"); //should out false
-	//statements.push_back("out t"); //should out true
-
-
-
-	//comparator testing
-	//statements.push_back("bool a = 4 == 4");
-	//statements.push_back("out a"); //should out true
-
-	//statements.push_back("bool b = 5 < 4");
-	//statements.push_back("out b"); //should out false
-
-	//statements.push_back("bool c = 3 > 4");
-	//statements.push_back("out c"); //should out false
-
-	//statements.push_back("bool d = 3 != 4");
-	//statements.push_back("out d"); //should out false
-
-
-
-	//pure boolean comparison testing
-	//statements.push_back("bool foo = true");
-	//statements.push_back("out foo"); //should out true
-
-	//statements.push_back("bool bar = true == false");
-	//statements.push_back("out bar"); //should out false
-
-	//statements.push_back("bool a = bar == foo");
-	//statements.push_back("out a"); //should out false
-
-	//statements.push_back("bool b = true == ! false");
-	//statements.push_back("out b"); //should out true
-
-	//statements.push_back("bool c = foo && foo == ! false ^^ bar");
-	//statements.push_back("out c"); //should out true
-
+	//kode test statements are found at "kodeTests.txt"
 
 	statementFocus = statements.size() - 1;
 
@@ -314,6 +243,8 @@ void Kode::SetupSupportedInstructions() {
 	supportedInstructions["out"] = Instruction::Out;
 	supportedInstructions["int"] = Instruction::Int;
 	supportedInstructions["bool"] = Instruction::Bool;
+	supportedInstructions["if"] = Instruction::If;
+	supportedInstructions["endif"] = Instruction::EndIf;
 }
 
 //runs the program
@@ -322,16 +253,44 @@ void Kode::Run() {
 	console.clear();
 	variables.clear();
 
-	//loops through each statement
-	for (int i = 0; i < statements.size(); i++)
-		HandleStatement(statements[i], i);
+	jumper = Jumper();
+
+	currentSegment = new Segment(0, statements.size() - 1, nullptr); //the whole program as one segment
+
+	//keeps going until all segments have been executed
+	while (currentSegment != nullptr) {
+
+		//loops through each statement in this segment
+		for (int i = currentSegment->start; i <= currentSegment->end; i++) {
+
+			HandleStatement(statements[i], i);
+
+			//jumps to a statement if necessary
+			if (jumper.jump) {
+
+				currentSegment = jumper.segment;
+				i = jumper.statementIndex;
+				jumper.jump = false;
+			}
+		}
+
+		//moves onto the next segment
+		currentSegment = currentSegment->next; 
+	}
+}
+
+void Kode::SetupJump(Segment* _segmentToJumpTo, int _statementIndexToJumpTo) {
+
+	jumper.segment = _segmentToJumpTo;
+	jumper.statementIndex = _statementIndexToJumpTo;
+	jumper.jump = true;
 }
 
 //handles the functionality of a statement
-void Kode::HandleStatement(std::string statement, int statementNumber) {
+void Kode::HandleStatement(std::string statement, int statementIndex) {
 
 	//splits the statement into the different chunks (defined by ' ')
-	std::vector<std::string> chunks = Helper::Split(statement, " ");
+	std::vector<std::string> chunks = StatementToChunk(statement);
 
 	//gets what the first chunk was
 	Instruction foundInstruction = CheckInstruction(chunks);
@@ -339,31 +298,35 @@ void Kode::HandleStatement(std::string statement, int statementNumber) {
 	switch (foundInstruction) {
 
 		case Instruction::Empty: //empty statement
-			HandleEmpty(statementNumber);
+			HandleEmpty(statementIndex);
 			break;
 
 		case Instruction::Error: //unknown instruction
-			HandleError(statementNumber);
+			HandleError(statementIndex);
 			break;
 
 		case Instruction::NoInstruction: //empty instruction
-			HandleNoInstruction(statementNumber);
+			HandleNoInstruction(statementIndex);
 			break;
 
 		case Instruction::Out: //out command
-			HandleOut(statementNumber, chunks);
+			HandleOut(statementIndex, chunks);
 			break;
 
 		case Instruction::Int: //int command
-			HandleInt(statementNumber, chunks);
+			HandleInt(statementIndex, chunks);
 			break;
 
 		case Instruction::Bool: //bool command
-			HandleBool(statementNumber, chunks);
+			HandleBool(statementIndex, chunks);
 			break;
 
 		case Instruction::Assign: //assign command
-			HandleAssign(statementNumber, chunks);
+			HandleAssign(statementIndex, chunks);
+			break;
+
+		case Instruction::If: //if statment instruction
+			HandleIf(statementIndex, chunks);
 			break;
 	}
 }
@@ -373,7 +336,7 @@ Instruction Kode::CheckInstruction(std::vector<std::string> chunks) {
 
 	//returns if the statement was empty
 	if (chunks.size() == 1 && chunks[0] == "")
-		return Instruction::Assign;
+		return Instruction::Empty;
 
 	//returns if a valid manual instruction was found
 	if (supportedInstructions.find(chunks[0]) != supportedInstructions.end())
@@ -545,7 +508,7 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 	//not enough chunks
 	if (chunks.size() < 3) {
 		if (debug)
-			AddToConsoleOutput(statementNumber, "Need to have two chunks for an int", RED);
+			AddToConsoleOutput(statementNumber, "Need to have two chunks for an assign, need to have three", RED);
 		return;
 	}
 
@@ -599,6 +562,102 @@ void Kode::HandleAssign(int statementNumber, std::vector<std::string> chunks) {
 				AddToConsoleOutput(statementNumber, "Boolean: " + toAssign->identifier + " given value: " + toAssign->value, RED);
 			break;
 	}
+}
+void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
+
+	//not enough chunks (needs the if and atleast a single boolean value)
+	if (chunks.size() < 2) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Need to have two chunks for an if, needs to have 2", RED);
+		return;
+	}
+
+	//handles if the if condition was bad
+	if (!ValidBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1)) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Invalid boolean condition for if statement", RED);
+		return;
+	}
+
+	//find corresponding endif instruction
+	int endIfIndex = -1;
+	int foundIfs = 1;
+	for (int i = statementNumber + 1; i < currentSegment->end; i++) {
+
+		std::vector<std::string> toCheck = StatementToChunk(statements[i]);
+		Instruction instruction = CheckInstruction(toCheck);
+
+		if (instruction == Instruction::If) {
+
+			foundIfs++; //keeps track of this if instruction
+		
+		} else if (instruction == Instruction::EndIf) {
+
+			foundIfs--; //notes that an endif instruction was found
+
+			if (foundIfs == 0) { // this endif doesn't belong to an inner if block
+
+				endIfIndex = i;
+				break;
+			}
+		}
+	}
+
+	// no corresponding endif found
+	if (endIfIndex == -1) {
+		AddToConsoleOutput(statementNumber, "No endif instruction found to complete this if statement", RED);
+		return;
+	}
+
+	int ifStartIndex = statementNumber + 1;
+
+	//create exit segment
+	Segment* exitSegment = new Segment(endIfIndex + 1, currentSegment->end, currentSegment->next);
+
+	//create if segment
+	Segment* ifSeg = new Segment(ifStartIndex, endIfIndex, exitSegment);
+
+	//restructure outer segment
+	currentSegment->end = statementNumber;
+	currentSegment->next = ifSeg;
+
+
+	//if condition was false
+	bool conditionResolve = StringToBool(ResolveBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1));
+	if (!conditionResolve)
+
+		//sets up a jump to the end of the if statement
+		SetupJump(ifSeg, ifSeg->end);
+
+
+	//if condition was true no action is needed, because the previous segment will end and the if segment will start automatically
+	//consider putting a jump once the jumper is changed to jump to the start of the next segment
+
+	if (debug) {
+		std::string message = "If statement [" + std::to_string(ifStartIndex) + " - " + std::to_string(endIfIndex) + "] " + BoolToString(conditionResolve);
+		AddToConsoleOutput(statementNumber, message, BLUE);
+		return;
+	}
+
+	//todo
+
+	//nested if statement
+	//problem is, when inserting segments, they get added to the end
+	//this means that the order of segments will be wrong when there are nested segments
+
+	//this can be fixed by inserting the segment into the right place of the list
+	//and using a function to get the index of a segment
+	
+	//possibly move towards a list based segment storage to stop pointers becoming stale when inserting into the vector
+
+
+	//todo 
+	//if a jump is needed, jump before handling the next statement, not after handling the current statement 
+	//jump should happen at the start of the inner for loop of run
+	//this lets the jumper jump to the start of the next segment, rather than the end of the current segment
+
+	//the segments should be stored in a linked list
+	//the outer run loop should be a list traversal until the end of the list is reached
 }
 
 //returns if the chunks from the startIndex onwards make a valid arithmetic operation

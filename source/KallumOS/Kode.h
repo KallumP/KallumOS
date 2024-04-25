@@ -4,11 +4,24 @@
 #include <vector>
 #include <map>
 
-enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign };
+enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign, If, EndIf };
 enum class BoolOperator { Null, And, Or };
 enum class BoolComparator { Equal, NotEqual, Less, LessEqual, More, MoreEqual };
 
 enum class VariableType { Int, Bool, String, Null };
+
+struct Segment {
+	Segment(int _start, int _end, Segment* _next)
+	{
+		start = _start;
+		end = _end;
+		next = _next;
+	}
+
+	int start;
+	int end;
+	Segment* next;
+};
 struct Variable {
 	std::string identifier;
 	std::string value;
@@ -20,6 +33,12 @@ struct ConsoleText {
 	std::string text;
 	Color textColor;
 	int linkedToStatement;
+};
+
+struct Jumper {
+	Segment* segment;
+	int statementIndex;
+	bool jump = false;
 };
 
 class Kode : public Process {
@@ -52,9 +71,8 @@ private:
 
 	void Run();
 	void HandleStatement(std::string statement, int statementNumber);
-	Instruction CheckInstruction(std::vector<std::string> chunks);
-	Instruction ResolveManualInstruction(std::string input);
 
+	//instruction handling
 	void HandleEmpty(int statementNumber);
 	void HandleError(int statementNumber);
 	void HandleNoInstruction(int statementNumber);
@@ -62,20 +80,28 @@ private:
 	void HandleInt(int statementNumber, std::vector<std::string> chunks);
 	void HandleBool(int statementNumber, std::vector<std::string> chunks);
 	void HandleAssign(int statementNumber, std::vector<std::string> chunks);
+	void HandleIf(int statementNumber, std::vector<std::string> chunks);
 
+	//variable edits
 	bool ValidArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
 	std::string ResolveArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
 	bool ValidBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
 	std::string ResolveBooleanOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
 
+	//helpers
+	Instruction CheckInstruction(std::vector<std::string> chunks);
+	int GetSegmentIndex(Segment* toGet);
+
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);
 	void AddToConsoleOutput(int statementNumber, std::string toAdd, Color textColor);
 
+	std::vector<std::string> StatementToChunk(std::string statement) { return Helper::Split(statement, " "); };
 	VariableType ChunkType(std::string toCheck);
 	std::string ResolveChunkValue(std::string chunk);
 	std::string BoolToString(bool value) { return value ? "true" : "false"; }
 	bool StringToBool(std::string value) { return value == "true"; }
+	void SetupJump(Segment* _segmentToJumpTo, int _statementIndexToJumpTo);
 
 	int Add(int a, int b) { return a + b; }
 	int Minus(int a, int b) { return a - b; }
@@ -87,9 +113,13 @@ private:
 
 	int cursor;
 	int statementFocus;
-	std::vector<std::string> statements;
 
+	std::vector<std::string> statements;
 	std::vector<Variable*> variables;
+	Segment* currentSegment;
+
+
+	Jumper jumper;
 
 	std::vector<std::string> arithmeticOperators;
 	std::map<std::string, BoolOperator> booleanOperators;
