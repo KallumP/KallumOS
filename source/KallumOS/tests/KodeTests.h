@@ -48,6 +48,11 @@ public:
 	void RunTests();
 	TestResult IntAdd();
 	TestResult IntSub();
+	TestResult IntMult();
+	TestResult IntDiv();
+	TestResult IntDiv0();
+	TestResult IntCombinedTesting();
+
 
 	TestResult KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> outputValues);
 

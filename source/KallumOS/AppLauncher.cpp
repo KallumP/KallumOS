@@ -139,6 +139,12 @@ void AppLauncher::SetupProcessInfos() {
 	ProcessInfo test = ProcessInfo("Test", launchCode);
 	processInfos.push_back(test);*/
 
+	launchCode = [this]() {
+		KodeTests* app = new KodeTests(Point(250, 60), Point(900, 500));
+		LaunchApp(app);
+	};
+	ProcessInfo kodeTests = ProcessInfo("Kode tests", launchCode);
+	processInfos.push_back(kodeTests);
 
 	launchCode = [this]() {
 		DiffMatrixApp* app = new DiffMatrixApp(Point(525, 60), Point(700, 500));
@@ -187,12 +193,5 @@ void AppLauncher::SetupProcessInfos() {
 	};
 	ProcessInfo tic = ProcessInfo("Tic Tak", launchCode);
 	processInfos.push_back(tic);
-
-	launchCode = [this]() {
-		KodeTests* app = new KodeTests(Point(700, 60), Point(400, 200));
-		LaunchApp(app);
-	};
-	ProcessInfo kodeTests = ProcessInfo("Kode tests", launchCode);
-	processInfos.push_back(kodeTests);
 
 }
