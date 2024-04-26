@@ -25,6 +25,17 @@ public:
 	std::string message;
 };
 
+struct ExpectedOutput {
+	ExpectedOutput(int _statementLink, std::string _value)
+	{
+		statementLink = _statementLink;
+		value = _value;
+	}
+
+	int statementLink;
+	std::string value;
+};
+
 class KodeTests : public Process {
 
 public:
@@ -37,6 +48,8 @@ public:
 	void RunTests();
 	TestResult IntAdd();
 	TestResult IntSub();
+
+	TestResult KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> outputValues);
 
 	std::vector<TestResult> testOutputs;
 	std::string PassString = "Pass";

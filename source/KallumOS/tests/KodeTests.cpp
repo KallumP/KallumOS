@@ -67,63 +67,63 @@ void KodeTests::RunTests() {
 TestResult KodeTests::IntAdd() {
 	std::string name = "IntAdd";
 
-	Kode k;
 	std::vector<std::string> statements;
 	statements.push_back("int x = 2");
 	statements.push_back("int y = 3");
 	statements.push_back("int z = y + x");
 	statements.push_back("out z"); //should out 5
-	k.SetStatements(statements);
-	k.Run();
 
-	std::vector<ConsoleText> generatedConsole = k.GetConsole();
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(3, "5"));
 
-	//right number of outputs
-	if (generatedConsole.size() != 1)
-		return TestResult(name, "Number of outputs", Asserter::ValuesNotEqualMessage(std::to_string(1), std::to_string(k.GetConsole().size())));
-
-	//statement link
-	if (generatedConsole[0].linkedToStatement != 3)
-		return TestResult(name, "Statement link", Asserter::ValuesNotEqualMessage(std::to_string(3), std::to_string(k.GetConsole()[0].linkedToStatement)));
-
-	//output value
-	std::string actual = k.GetConsole()[0].text;
-	std::string expected = "5";
-	if (actual != expected)
-		return TestResult(name, "Final output", Asserter::ValuesNotEqualMessage(expected, actual));
-
-	//no error
-	return TestResult(name, "", PassString);
+	return KodeTestRun(name, statements, expectedOutputs);
 }
 
 TestResult KodeTests::IntSub() {
 	std::string name = "IntSub";
 
-	Kode k = Kode();
 	std::vector<std::string> statements;
 	statements.push_back("int x = 2");
 	statements.push_back("int y = 3");
 	statements.push_back("int z = y - x");
 	statements.push_back("out z"); //should out 1
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(3, "1"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+
+TestResult KodeTests::KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> expectedOutputs) {
+
+	Kode k = Kode();
 	k.SetStatements(statements);
 	k.Run();
 
 	std::vector<ConsoleText> generatedConsole = k.GetConsole();
 
 	//right number of outputs
-	if (generatedConsole.size() != 1)
-		return TestResult(name, "Number of outputs", Asserter::ValuesNotEqualMessage(std::to_string(1), std::to_string(k.GetConsole().size())));
+	int expectedOutputCount = expectedOutputs.size();
+	int actualOutputCount = generatedConsole.size();
+	if (expectedOutputCount != actualOutputCount)
+		return TestResult(name, "Number of outputs", Asserter::ValuesNotEqualMessage("" + expectedOutputCount, "" + actualOutputCount));
 
-	//statement link
-	if (generatedConsole[0].linkedToStatement != 3)
-		return TestResult(name, "Statement link", Asserter::ValuesNotEqualMessage(std::to_string(3), std::to_string(k.GetConsole()[0].linkedToStatement)));
+	//goes through the different expected outputs
+	for (int i = 0; i < expectedOutputs.size(); i++) {
 
-	//output value
-	std::string actual = k.GetConsole()[0].text;
-	std::string expected = "1";
-	if (actual != expected)
-		return TestResult(name, "Final output", Asserter::ValuesNotEqualMessage(expected, actual));
+		//statement link
+		int expectedStatementLink = expectedOutputs[i].statementLink;
+		int actualStatementLink = generatedConsole[0].linkedToStatement;
+		if (expectedStatementLink != actualStatementLink)
+			return TestResult(name, "Statement link" + i, Asserter::ValuesNotEqualMessage("" + expectedStatementLink, "" + actualStatementLink));
 
-	//no error
+		//output value
+		std::string expectedValue = expectedOutputs[i].value;
+		std::string actualValue = k.GetConsole()[0].text;
+		if (actualValue != expectedValue)
+			return TestResult(name, "Output value" + i, Asserter::ValuesNotEqualMessage(expectedValue, actualValue));
+	}
+
+	//no error :)
 	return TestResult(name, "", PassString);
 }
