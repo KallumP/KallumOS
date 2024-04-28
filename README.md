@@ -71,13 +71,17 @@ As you can see, the `out` command allows one to write something to the console.
 
 If your output does not look like what you expected, press the "F3" button. This turns on debug mode, and you can see what each line of kode was actually doing.
 
-### Structure
+#### Structure
 
--   Your kode consists of statements. A statement is ended by hitting the return key, which will start a new line.
--   Each statement consists of chunks, which are separated by a space. The first chunk is usually an instruction
--   To navigate which statement is being written to, you can use the up and down arrow keys. The currently focused statement will be in black, and all others will be in gray.
+-   **Segment**: Your kode consists of segments. A segment is an ordered set of statements. By default (with no if or while segments) all your kode will be in one big segment
+-   **Statement**: An operation is defined within a statement. This is analogous to a line of kode. A statement is ended by hitting the return key, which will start a new line.
+-   **Chunks**: Each statement consists of chunks, which are separated by a space. 
+    Chunks can be instructions, values, variables, operators
+    The first chunk of a statement is usually an instruction
 
-### Instructions
+To navigate which statement is being written to, you can use the up and down arrow keys. The currently focused statement will be in black, and all others will be in gray.
+
+#### Instructions
 
 `out` As mentioned earlier, out allows you to write to the console. It can either write a string to the console, or the contents of a variable or the result of some operation 
     `eg: out <variable name>` 
@@ -87,7 +91,7 @@ If your output does not look like what you expected, press the "F3" button. This
 
 -   To create an int, at least four chunks are required.
 
-    1. The "int" instruction
+    1. The `int` instruction
     2. The name of the int
     3. An equals sign
     4. The value your int should hold. (this can be a single chunk with a static value, or an arithmetic operation)
@@ -105,10 +109,10 @@ If your output does not look like what you expected, press the "F3" button. This
 
 -   To create a bool, at least four chunks are needed
 
-    1. The "bool" instruction
-    2. The name of the bool
-    3. An equals sign
-    4. The value your bool should hold. (this can be a single chunk with a static value, or a boolean operation)
+    1. The `bool` instruction
+    1. The name of the bool
+    1. An equals sign
+    1. The value your bool should hold. (this can be a single chunk with a static value, or a boolean operation)
 
         eg: `bool a = true`
         eg: `bool b = 5 <= 4 + 3`
@@ -117,49 +121,78 @@ If your output does not look like what you expected, press the "F3" button. This
 -   To manipulate the bool you will need to provide at least three chunks.
 
     1. The bool variable's identifier
-    2. An equals sign
-    3. The value to assign (this can be a single chunk with a static value, or a boolean operation)
+    1. An equals sign
+    1. The value to assign (this can be a single chunk with a static value, or a boolean operation)
 
-### Operations
+`if` allows you to run or skip a segment. The amount of statements to skip can be defined by the placement of the 'endif' instruction which will also be described here
+-   The if can be defined as follows
+
+    1. The `if` instruction
+    1. A boolean value (this can be a single chunk with a static value, or a boolean operation)
+    1. On new lines, the set of statements to be within this if segment
+    1. After the final line, the `endif` instruction
+
+-   If an `if` is written without a corresponding 'endif' the if statement will be ignored, and your segment will be run regardless of the boolean condition
+
+-   Nested if segments are supported. If one of the `endif` statements if forgotten, then the outer if will latch onto the one `endif`, and the inner if statement will be ignored
+
+
+#### Operations
 
 This is something that resolves to a value. Currently, this can be an arithmetic operation `4 * 5 - 1` or a boolean operation `true == true`.
 
-#### Arithmetic
+##### Arithmetic
 A valid arithmetic operation will have an odd number of chunks, and follows the following form:
 
 1. A value (this can be a static value or a variable)
-2. A supported symbol: +, -. /, \*, ^, \*\*)
-3. A value (this can be a static value, a variable, or another operation)
+1. A supported symbol: 
+    - `+` addition
+    - `-` subtraction
+    - `/` division
+    - `*` multiplication
+    - `^` to the power of
+    - `**` to the power of
+1. A value (this can be a static value, a variable, or another operation)
 
-#### Boolean 
+##### Boolean 
 A valid boolean operation is slightly more complicated.
 There are two main types of operation:
 
--   **Value comparison**: Here, a boolean comparator must be surrounded by two operations. The operations can either be arithmetic (in which case the boolean comparator will evaluate an integer comparison) or pure boolean algebra (in which case the comparator will evaluate a boolean comparison). The two surrounding operations must be of the same type. (You cannot have a boolean value on one side and an arithmetic value on the other)
-    It takes the following structure
+**Value comparison**: Here, a boolean comparator must be surrounded by two operations. The operations can either be arithmetic (in which case the boolean comparator will evaluate an integer comparison) or pure boolean algebra (in which case the comparator will evaluate a boolean comparison). The two surrounding operations must be of the same type. (You cannot have a boolean value on one side and an arithmetic value on the other)
 
-    1. lSide function
-    1. A supported comparator: ==, !=, <, <=, >, >=
-    1. rSide function (of the same type as the lSide)
+It takes the following structure
 
-    `eg: bool foo = 7 + 3 <= 40 - 20`
+1. lSide function
+1. A supported comparator: ==, !=, <, <=, >, >=
+1. rSide function (of the same type as the lSide)
 
--   **Pure boolean algebra**: This is where a set of boolean variables are evaluated using boolean operators, and no comparators are present.
+`eg: bool foo = 7 + 3 <= 40 - 20`
 
-    The structure is as follows
+**Pure boolean algebra**: This is where a set of boolean variables are evaluated using boolean operators, and no comparators are present.
 
-    1. Boolean value must be present (this can be a static boolean value or a boolean variable).
-        These values can be preceded by one of the operators: "!", "\`" or "¬". This operator is treated like a normal chunk, so will have a space between it and the chunk being not-ed
-    2. (Optional) Boolean comparator: "&&", "||", "^^" followed by another boolean value (this can be a static boolean value or a boolean variable). <Disclaimer, || can't be typed out yet XD so you gotta use ^^>
+The structure is as follows
 
-    `eg: bool foo = false`
-    `eg: bool bar = true || false == false`
+1.  Boolean value must be present (this can be a static boolean value or a boolean variable).
+    These values can be preceded by one of the "not operators": 
+    - `!`
+    - `` ` ``
+    - `¬`
+
+    This operator is treated like a normal chunk, so will have a space between it and the chunk being not-ed
+
+1. (Optional) Boolean comparator:  followed by another boolean value (this can be a static boolean value or a boolean variable).
+    - `&&` and
+    - `||` or (|| can't be typed out yet in the current version XD)
+    - `^^` or
+
+`eg: bool foo = false`
+`eg: bool bar = true || false == false`
 
 The ability to provide another operation means that this is recursive until the whole operation has been resolved.
 
 The current order of operations is the order you provide. It will ignore "bidmas" or expected order of boolean algebra from other languages (This may change in the future)
 
-Where an error is ran into (eg: Dividing by 0) it will output an error to the console, skip that operation and continue resolving the rest of the operation.
+Where an error is run into (eg: Dividing by 0) it will output an error to the console, skip that operation and continue resolving the rest of the operation.
 
 ## Development
 

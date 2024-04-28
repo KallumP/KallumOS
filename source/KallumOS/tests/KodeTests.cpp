@@ -69,11 +69,12 @@ void KodeTests::RunTests() {
 	testOutputs.push_back(IntDiv0());
 	testOutputs.push_back(IntCombinedTesting());
 
-
 	testOutputs.push_back(BoolEquals());
 	testOutputs.push_back(BoolNotEquals());
 	testOutputs.push_back(BoolMore());
+	testOutputs.push_back(BoolMoreEqual());
 	testOutputs.push_back(BoolLess());
+	testOutputs.push_back(BoolLessEqual());
 	testOutputs.push_back(BoolIntMix());
 
 	testOutputs.push_back(PureBoolAssign());
@@ -274,6 +275,24 @@ TestResult KodeTests::BoolMore() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
+TestResult KodeTests::BoolMoreEqual() {
+	std::string name = "Bool More than or equal to";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool a = 5 >= 4");
+	statements.push_back("out a"); //should out true
+	statements.push_back("bool b = 5 >= 5");
+	statements.push_back("out b"); //should out true
+	statements.push_back("bool c = 5 >= 6");
+	statements.push_back("out c"); //should out false
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "true"));
+	expectedOutputs.push_back(ExpectedOutput(5, "false"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
 TestResult KodeTests::BoolLess() {
 	std::string name = "Bool Less than";
 
@@ -289,6 +308,24 @@ TestResult KodeTests::BoolLess() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
+TestResult KodeTests::BoolLessEqual() {
+	std::string name = "Bool Less than or equal to";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool a = 5 <= 4");
+	statements.push_back("out a"); //should out false
+	statements.push_back("bool b = 5 <= 5");
+	statements.push_back("out b"); //should out true
+	statements.push_back("bool b = 5 <= 6");
+	statements.push_back("out b"); //should out true
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "false"));
+	expectedOutputs.push_back(ExpectedOutput(3, "true"));
+	expectedOutputs.push_back(ExpectedOutput(5, "true"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
 TestResult KodeTests::BoolIntMix() {
 	std::string name = "Bool and Int mix";
 
@@ -299,10 +336,18 @@ TestResult KodeTests::BoolIntMix() {
 	statements.push_back("bool t = x == y - 1");
 	statements.push_back("out f"); //should out false
 	statements.push_back("out t"); //should out true
+	statements.push_back("bool a = x <= y - 1");
+	statements.push_back("bool b = x >= y");
+	statements.push_back("out a"); //should out true
+	statements.push_back("out b"); //should out false
+
+
 
 	std::vector<ExpectedOutput> expectedOutputs;
 	expectedOutputs.push_back(ExpectedOutput(4, "false"));
 	expectedOutputs.push_back(ExpectedOutput(5, "true"));
+	expectedOutputs.push_back(ExpectedOutput(8, "true"));
+	expectedOutputs.push_back(ExpectedOutput(9, "false"));
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }

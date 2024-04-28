@@ -221,8 +221,8 @@ void Kode::SetupSupportedSymbols() {
 	arithmeticOperators.push_back("-");
 	arithmeticOperators.push_back("*");
 	arithmeticOperators.push_back("/");
-	arithmeticOperators.push_back("^");
-	arithmeticOperators.push_back("**");
+	arithmeticOperators.push_back("^"); //power
+	arithmeticOperators.push_back("**"); //power
 
 	booleanOperators["&&"] = BoolOperator::And;
 	booleanOperators["||"] = BoolOperator::Or;
@@ -633,7 +633,7 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		SetupJump(ifSeg, ifSeg->end);
 
 
-	//if condition was true no action is needed, because the previous segment will end and the if segment will start automatically
+	//if the condition was true no action is needed, because the previous segment will end and the if segment will start automatically
 	//consider putting a jump once the jumper is changed to jump to the start of the next segment
 
 	if (debug) {
@@ -642,25 +642,10 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
-	//todo
-
-	//nested if statement
-	//problem is, when inserting segments, they get added to the end
-	//this means that the order of segments will be wrong when there are nested segments
-
-	//this can be fixed by inserting the segment into the right place of the list
-	//and using a function to get the index of a segment
-	
-	//possibly move towards a list based segment storage to stop pointers becoming stale when inserting into the vector
-
-
 	//todo 
 	//if a jump is needed, jump before handling the next statement, not after handling the current statement 
-	//jump should happen at the start of the inner for loop of run
+	//jump should happen at the start of the inner for loop of run (both at the start of a segment, and at the start of each statement)
 	//this lets the jumper jump to the start of the next segment, rather than the end of the current segment
-
-	//the segments should be stored in a linked list
-	//the outer run loop should be a list traversal until the end of the list is reached
 }
 
 //returns if the chunks from the startIndex onwards make a valid arithmetic operation

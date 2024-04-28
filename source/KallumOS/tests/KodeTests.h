@@ -58,7 +58,9 @@ public:
 	TestResult BoolEquals();
 	TestResult BoolNotEquals();
 	TestResult BoolMore();
+	TestResult BoolMoreEqual();
 	TestResult BoolLess();
+	TestResult BoolLessEqual();
 	TestResult BoolIntMix();
 
 	TestResult PureBoolAssign();
