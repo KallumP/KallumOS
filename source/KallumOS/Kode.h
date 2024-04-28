@@ -130,5 +130,6 @@ private:
 	std::vector<ConsoleText> console;
 	int consoleHeight;
 	bool debug;
+	int fontSize;
 };
 

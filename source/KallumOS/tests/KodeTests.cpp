@@ -4,7 +4,7 @@
 
 KodeTests::KodeTests(Point _position, Point _size) : Process("Kode tests", _position, _size) {
 
-	defaultFontSize = 20;
+	fontSize = 20;
 	RunTests();
 }
 
@@ -23,7 +23,7 @@ void KodeTests::DrawTestOutputs(Point offset) {
 	int padding = 10;
 
 	//how many of the biggest char can fit in the box
-	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
 
 	//loops through each statement
 	int lineCount = 0;
@@ -34,13 +34,15 @@ void KodeTests::DrawTestOutputs(Point offset) {
 			testOutputs[i].message == PassString ?
 			testOutputs[i].testName + " - " + PassString :
 			testOutputs[i].testName + " - " + testOutputs[i].testStep + " - " + testOutputs[i].message;
+		text = std::to_string(i) + ": " + text;
+
 
 		Color toDraw = testOutputs[i].message == PassString ? GREEN : RED;
 
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
 
-			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (Helper::GetNextLineY(lineCount, defaultFontSize)), defaultFontSize, toDraw);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (Helper::GetNextLineY(lineCount, fontSize)), fontSize, toDraw);
 			lineCount++;
 
 		} else {
@@ -52,7 +54,7 @@ void KodeTests::DrawTestOutputs(Point offset) {
 			for (int j = 0; j < linesToDraw; j++) {
 
 				std::string line = text.substr(j * charsPerLine, charsPerLine);
-				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, defaultFontSize), defaultFontSize, toDraw);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, fontSize), fontSize, toDraw);
 				lineCount++;
 			}
 		}
@@ -66,10 +68,58 @@ void KodeTests::RunTests() {
 	testOutputs.push_back(IntDiv());
 	testOutputs.push_back(IntDiv0());
 	testOutputs.push_back(IntCombinedTesting());
+
+
+	testOutputs.push_back(BoolEquals());
+	testOutputs.push_back(BoolNotEquals());
+	testOutputs.push_back(BoolMore());
+	testOutputs.push_back(BoolLess());
+	testOutputs.push_back(BoolIntMix());
+
+	testOutputs.push_back(PureBoolAssign());
+	testOutputs.push_back(PureBoolEquals());
+	testOutputs.push_back(PureBoolNot());
+	testOutputs.push_back(PureBoolAnd());
+	testOutputs.push_back(PureBoolOr());
+	testOutputs.push_back(PureBoolCombined());
+}
+
+TestResult KodeTests::KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> expectedOutputs) {
+
+	Kode k = Kode();
+	k.SetStatements(statements);
+	k.Run();
+
+	std::vector<ConsoleText> generatedConsole = k.GetConsole();
+
+	//right number of outputs
+	int expectedOutputCount = expectedOutputs.size();
+	int actualOutputCount = generatedConsole.size();
+	if (expectedOutputCount != actualOutputCount)
+		return TestResult(name, "Number of outputs", Asserter::ValuesNotEqualMessage(std::to_string(expectedOutputCount), std::to_string(actualOutputCount)));
+
+	//goes through the different expected outputs
+	for (int i = 0; i < expectedOutputs.size(); i++) {
+
+		//value linked to correct statement
+		int expectedStatementLink = expectedOutputs[i].statementLink;
+		int actualStatementLink = generatedConsole[i].linkedToStatement;
+		if (expectedStatementLink != actualStatementLink)
+			return TestResult(name, "Statement link: " + std::to_string(i), Asserter::ValuesNotEqualMessage(std::to_string(expectedStatementLink), std::to_string(actualStatementLink)));
+
+		//output value
+		std::string expectedValue = expectedOutputs[i].value;
+		std::string actualValue = k.GetConsole()[i].text;
+		if (actualValue != expectedValue)
+			return TestResult(name, "Output value: " + std::to_string(i), Asserter::ValuesNotEqualMessage(expectedValue, actualValue));
+	}
+
+	//no error :)
+	return TestResult(name, "", PassString);
 }
 
 TestResult KodeTests::IntAdd() {
-	std::string name = "IntAdd";
+	std::string name = "Int Add";
 
 	std::vector<std::string> statements;
 	statements.push_back("int x = 2");
@@ -82,9 +132,8 @@ TestResult KodeTests::IntAdd() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-
 TestResult KodeTests::IntSub() {
-	std::string name = "IntSub";
+	std::string name = "Int Subtract";
 
 	std::vector<std::string> statements;
 	statements.push_back("int x = 2");
@@ -97,9 +146,8 @@ TestResult KodeTests::IntSub() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-
 TestResult KodeTests::IntMult() {
-	std::string name = "IntMult";
+	std::string name = "Int Multiply";
 
 	std::vector<std::string> statements;
 	statements.push_back("int x = 2");
@@ -112,9 +160,8 @@ TestResult KodeTests::IntMult() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-
 TestResult KodeTests::IntDiv() {
-	std::string name = "IntDiv";
+	std::string name = "Int Divide";
 
 	std::vector<std::string> statements;
 	statements.push_back("int x = 2");
@@ -127,9 +174,8 @@ TestResult KodeTests::IntDiv() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-
 TestResult KodeTests::IntDiv0() {
-	std::string name = "IntDiv0";
+	std::string name = "Int Divide by 0";
 
 	std::vector<std::string> statements;
 	statements.push_back("int z = 6");
@@ -143,7 +189,6 @@ TestResult KodeTests::IntDiv0() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-
 TestResult KodeTests::IntCombinedTesting() {
 	std::string name = "Int Full";
 
@@ -184,36 +229,200 @@ TestResult KodeTests::IntCombinedTesting() {
 	return KodeTestRun(name, statements, expectedOutputs);
 }
 
-TestResult KodeTests::KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> expectedOutputs) {
+TestResult KodeTests::BoolEquals() {
+	std::string name = "Bool Equals";
 
-	Kode k = Kode();
-	k.SetStatements(statements);
-	k.Run();
+	std::vector<std::string> statements;
+	statements.push_back("bool t = 4 == 4");
+	statements.push_back("out t"); //should out true
+	statements.push_back("bool f = 5 == 4");
+	statements.push_back("out f"); //should out false
 
-	std::vector<ConsoleText> generatedConsole = k.GetConsole();
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
 
-	//right number of outputs
-	int expectedOutputCount = expectedOutputs.size();
-	int actualOutputCount = generatedConsole.size();
-	if (expectedOutputCount != actualOutputCount)
-		return TestResult(name, "Number of outputs", Asserter::ValuesNotEqualMessage(std::to_string(expectedOutputCount), std::to_string(actualOutputCount)));
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::BoolNotEquals() {
+	std::string name = "Bool Not equals";
 
-	//goes through the different expected outputs
-	for (int i = 0; i < expectedOutputs.size(); i++) {
+	std::vector<std::string> statements;
+	statements.push_back("bool t = 3 != 4");
+	statements.push_back("out t"); //should out true
+	statements.push_back("bool f = 3 != 3");
+	statements.push_back("out f"); //should out false
 
-		//value linked to correct statement
-		int expectedStatementLink = expectedOutputs[i].statementLink;
-		int actualStatementLink = generatedConsole[i].linkedToStatement;
-		if (expectedStatementLink != actualStatementLink)
-			return TestResult(name, "Statement link: " + std::to_string(i), Asserter::ValuesNotEqualMessage(std::to_string(expectedStatementLink), std::to_string(actualStatementLink)));
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
 
-		//output value
-		std::string expectedValue = expectedOutputs[i].value;
-		std::string actualValue = k.GetConsole()[i].text;
-		if (actualValue != expectedValue)
-			return TestResult(name, "Output value: " + std::to_string(i), Asserter::ValuesNotEqualMessage(expectedValue, actualValue));
-	}
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::BoolMore() {
+	std::string name = "Bool More than";
 
-	//no error :)
-	return TestResult(name, "", PassString);
+	std::vector<std::string> statements;
+	statements.push_back("bool t = 5 > 4");
+	statements.push_back("out t"); //should out true
+	statements.push_back("bool f = 5 > 6");
+	statements.push_back("out f"); //should out false
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::BoolLess() {
+	std::string name = "Bool Less than";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool t = 5 < 6");
+	statements.push_back("out t"); //should out true
+	statements.push_back("bool f = 5 < 4");
+	statements.push_back("out f"); //should out false
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::BoolIntMix() {
+	std::string name = "Bool and Int mix";
+
+	std::vector<std::string> statements;
+	statements.push_back("int x = 1");
+	statements.push_back("int y = 2");
+	statements.push_back("bool f = x == y");
+	statements.push_back("bool t = x == y - 1");
+	statements.push_back("out f"); //should out false
+	statements.push_back("out t"); //should out true
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(4, "false"));
+	expectedOutputs.push_back(ExpectedOutput(5, "true"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+
+TestResult KodeTests::PureBoolAssign() {
+	std::string name = "Pure Bool Assign";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool t = true");
+	statements.push_back("out t"); //should out true
+	statements.push_back("bool f = false");
+	statements.push_back("out f"); //should out false
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::PureBoolEquals() {
+	std::string name = "Pure Bool Equals";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool t = true == true");
+	statements.push_back("out t"); //should out true
+	statements.push_back("bool f = true == false");
+	statements.push_back("out f"); //should out false
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+
+TestResult KodeTests::PureBoolNot() {
+	std::string name = "Pure Bool Not";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool t = true == true");
+	statements.push_back("out t"); //should out true
+	statements.push_back("bool f = true == false");
+	statements.push_back("out f"); //should out false
+	statements.push_back("bool a = false == false");
+	statements.push_back("out a"); //should out true
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
+	expectedOutputs.push_back(ExpectedOutput(5, "true"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::PureBoolAnd() {
+	std::string name = "Pure Bool And";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool a = true && true");
+	statements.push_back("out a"); //should out true
+	statements.push_back("bool b = true && false");
+	statements.push_back("out b"); //should out false
+	statements.push_back("bool c = false && true");
+	statements.push_back("out c"); //should out false
+	statements.push_back("bool d = false && false");
+	statements.push_back("out d"); //should out false
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
+	expectedOutputs.push_back(ExpectedOutput(5, "false"));
+	expectedOutputs.push_back(ExpectedOutput(7, "false"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::PureBoolOr() {
+	std::string name = "Pure Bool Or";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool a = true ^^ true");
+	statements.push_back("out a"); //should out true
+	statements.push_back("bool b = true ^^ false");
+	statements.push_back("out b"); //should out true
+	statements.push_back("bool c = false ^^ true");
+	statements.push_back("out c"); //should out true
+	statements.push_back("bool d = false ^^ false");
+	statements.push_back("out d"); //should out false
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "true"));
+	expectedOutputs.push_back(ExpectedOutput(5, "true"));
+	expectedOutputs.push_back(ExpectedOutput(7, "false"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::PureBoolCombined() {
+	std::string name = "Pure Bool Combined";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool foo = true");
+	statements.push_back("out foo"); //should out true
+
+	statements.push_back("bool bar = true == false");
+	statements.push_back("out bar"); //should out false
+
+	statements.push_back("bool a = bar == foo");
+	statements.push_back("out a"); //should out false
+
+	statements.push_back("bool b = true == ! false");
+	statements.push_back("out b"); //should out true
+
+	statements.push_back("bool c = foo && foo == ! false ^^ bar");
+	statements.push_back("out c"); //should out true
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(1, "true"));
+	expectedOutputs.push_back(ExpectedOutput(3, "false"));
+	expectedOutputs.push_back(ExpectedOutput(5, "false"));
+	expectedOutputs.push_back(ExpectedOutput(7, "true"));
+	expectedOutputs.push_back(ExpectedOutput(9, "true"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
 }

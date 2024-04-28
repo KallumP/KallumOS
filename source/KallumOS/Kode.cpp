@@ -18,11 +18,9 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//default statements
 	statements.push_back("out Hello world!");
 	statements.push_back("out Hello second line! 0:)");
-	statementFocus = statements.size() - 1;
-
 	//kode test statements are found at "kodeTests.txt"
 	
-	defaultFontSize = 20;
+	fontSize = 20;
 	consoleHeight = 150;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
 	AddToConsoleOutput(1, "Press F3 to on debug outputs", BLUE);
@@ -46,7 +44,7 @@ void Kode::DrawTextInput(Point offset) {
 	int padding = 10;
 
 	//how many of the biggest char can fit in the box
-	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
 
 	//loops through each statement
 	int lineCount = 0;
@@ -62,7 +60,7 @@ void Kode::DrawTextInput(Point offset) {
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
 
-			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (Helper::GetNextLineY(lineCount, defaultFontSize)), defaultFontSize, toDraw);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (Helper::GetNextLineY(lineCount, fontSize)), fontSize, toDraw);
 			lineCount++;
 
 		} else {
@@ -74,7 +72,7 @@ void Kode::DrawTextInput(Point offset) {
 			for (int j = 0; j < linesToDraw; j++) {
 
 				std::string line = text.substr(j * charsPerLine, charsPerLine);
-				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, defaultFontSize), defaultFontSize, toDraw);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, fontSize), fontSize, toDraw);
 				lineCount++;
 			}
 		}
@@ -88,7 +86,7 @@ void Kode::DrawConsole(Point offset) {
 	kGraphics::FillRect(offset.GetX(), offset.GetY(), size.GetX(), consoleHeight, BLACK);
 
 	//how many of the biggest char can fit in the box
-	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", defaultFontSize);
+	int charsPerLine = (size.GetX() - padding * 2) / MeasureText("X", fontSize);
 
 	int lineCount = 0;
 	for (int i = 0; i < console.size(); i++) {
@@ -98,7 +96,7 @@ void Kode::DrawConsole(Point offset) {
 
 		if (text.size() < charsPerLine) {
 
-			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, defaultFontSize), defaultFontSize, console[i].textColor);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, fontSize), fontSize, console[i].textColor);
 			lineCount++;
 
 		} else {
@@ -110,7 +108,7 @@ void Kode::DrawConsole(Point offset) {
 			for (int j = 0; j < linesToDraw; j++) {
 
 				std::string line = text.substr(j * charsPerLine, charsPerLine);
-				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, defaultFontSize), defaultFontSize, console[i].textColor);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, fontSize), fontSize, console[i].textColor);
 				lineCount++;
 			}
 		}
@@ -752,26 +750,26 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 	if (endIndex == -1)
 		endIndex = chunks.size() - 1;
 
-	int numberOfCheckDelimeters = 0;
+	int numberOfComparatorDelimeters = 0;
 	int delimeterIndex = 0;
 
 	//loops through the chunks and checks how many comparators there were
 	for (int i = startIndex; i <= endIndex; i++) {
 		if (booleanComparators.find(chunks[i]) != booleanComparators.end()) {
-			numberOfCheckDelimeters++;
+			numberOfComparatorDelimeters++;
 			delimeterIndex = i;
 		}
 	}
 
 	//checks if there were too many == found
-	if (numberOfCheckDelimeters > 1) {
+	if (numberOfComparatorDelimeters > 1) {
 		if (debug)
 			AddToConsoleOutput(statementNumber, "Too many '==' entered", RED);
 		return false;
 	}
 
-	//checks if either side of the == has the same variable type
-	if (numberOfCheckDelimeters == 1) {
+	//checks if either side of the == has the same variable type (This is a boolean comparison)
+	if (numberOfComparatorDelimeters == 1) {
 
 		//if there wasnt enough chunks (needs to be atleast 3)
 		if (endIndex - startIndex < 2) {
@@ -787,6 +785,7 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 			return false;
 		}
 
+		//get the first chunk's type and store it in "type"
 		int checkIndex = startIndex;
 		std::string chunk = chunks[checkIndex];
 		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : ChunkType(chunk);
@@ -794,7 +793,7 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 		bool lSide = false;
 		bool rSide = false;
 
-		//get the first chunk's type and store it in "type"
+		//checks if both sides of the comparator were of the same type 
 		if (type == VariableType::Int) {
 
 			lSide = ValidArithmeticOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
@@ -817,10 +816,11 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 		return lSide && rSide;
 	}
 
-	//checks for if no == were found
+	//no == were found (This is a boolean arithmetic)
 	int checkIndex = startIndex;
-	bool lookingForValue = true;
+	bool lookingForValue = true; //stores if the next chunk should be a value rather than an operator
 
+	//loops through each chunk to be resolved
 	while (checkIndex <= endIndex) {
 
 		std::string currentChunk = chunks[checkIndex];
@@ -830,34 +830,50 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 			//if the current chunk is a "not" symbol
 			if (std::find(notOperators.begin(), notOperators.end(), currentChunk) != notOperators.end()) {
 
-				//if this was the last chunk, this is a bad structure
-				if (checkIndex == endIndex)
+				//if this was the last chunk, this is a bad structure (cannot have a not at the end)
+				if (checkIndex == endIndex) {
+					if (debug)
+						AddToConsoleOutput(statementNumber, "Cannot put a 'not' comparator at the end of a statement", RED);
 					return false;
+				}
 
 				lookingForValue = !lookingForValue; //pre flips this so that it reverts back when flipped at the end of the loop
 
 			} else {
 
 				//if the current chunk is not boolean, this is a bad structure
-				if (ChunkType(currentChunk) != VariableType::Bool)
+				if (ChunkType(currentChunk) != VariableType::Bool) {
+					if (debug)
+						AddToConsoleOutput(statementNumber, "All value type chunks must be of boolean type", RED);
 					return false;
+				}
 			}
 
 		} else {
 
 			//if the value was not found in the boolean operator list, this is a bad structure
-			if (booleanOperators.find(currentChunk) == booleanOperators.end())
+			if (booleanOperators.find(currentChunk) == booleanOperators.end()) {
+				if (debug)
+					AddToConsoleOutput(statementNumber, "Unsupported operator detected", RED);
 				return false;
+			}
 
 			//if this was the last chunk, this is a bad structure
-			if (checkIndex == endIndex)
+			if (checkIndex == endIndex) {
+				if (debug)
+					AddToConsoleOutput(statementNumber, "Cannot put an operator at the end of a statement", RED);
 				return false;
+			}
 		}
 
 		checkIndex++;//increase the check index
 		lookingForValue = !lookingForValue;//next value should be a boolean operator
+
+		//why am i doing a flip for "lookingForValue"
+		//why not set it to false after checking for operators, and true after checking for values
 	}
 
+	//good comparator statement structure
 	return true;
 }
 
@@ -930,10 +946,10 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 		bool currentValue;
 
 		//gets the current chunk value
-		if (std::find(notOperators.begin(), notOperators.end(), chunks[currentIndex]) != notOperators.end())
+		if (std::find(notOperators.begin(), notOperators.end(), chunks[currentIndex]) != notOperators.end()) // if the current chunk was a not symbol
 			currentValue = !StringToBool(ResolveChunkValue(chunks[(++currentIndex)++]));//gets the negated value of the next chunk and then increments
 		else
-			currentValue = StringToBool(ResolveChunkValue(chunks[currentIndex++]));//gets the negated value of the current chunk and then increments
+			currentValue = StringToBool(ResolveChunkValue(chunks[currentIndex++]));//gets the value of the current chunk and then increments
 
 		//handle combining the current value with the current resolved value
 		switch (nextOperator) {

@@ -46,6 +46,8 @@ public:
 	void DrawTestOutputs(Point offset);
 
 	void RunTests();
+	TestResult KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> outputValues);
+
 	TestResult IntAdd();
 	TestResult IntSub();
 	TestResult IntMult();
@@ -53,10 +55,22 @@ public:
 	TestResult IntDiv0();
 	TestResult IntCombinedTesting();
 
+	TestResult BoolEquals();
+	TestResult BoolNotEquals();
+	TestResult BoolMore();
+	TestResult BoolLess();
+	TestResult BoolIntMix();
 
-	TestResult KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> outputValues);
+	TestResult PureBoolAssign();
+	TestResult PureBoolEquals();
+	TestResult PureBoolNot();
+	TestResult PureBoolAnd();
+	TestResult PureBoolOr();
+	TestResult PureBoolCombined();
+
 
 	std::vector<TestResult> testOutputs;
 	std::string PassString = "Pass";
+	int fontSize;
 };
 
