@@ -567,11 +567,8 @@ TestResult KodeTests::NestedIf_BothTrue() {
 	std::string name = "Nested If: Both true";
 
 	std::vector<std::string> statements;
-	statements.push_back("bool foo = true");
-	statements.push_back("int bar = 3");
-	statements.push_back("int car = 2");
-	statements.push_back("if foo");
-	statements.push_back("if bar > car");
+	statements.push_back("if true");
+	statements.push_back("if true");
 	statements.push_back("out inner if");
 	statements.push_back("endif");
 	statements.push_back("out outer if");
@@ -579,9 +576,9 @@ TestResult KodeTests::NestedIf_BothTrue() {
 	statements.push_back("out rest of program");
 
 	std::vector<ExpectedOutput> expectedOutputs;
-	expectedOutputs.push_back(ExpectedOutput(5, "inner if"));
-	expectedOutputs.push_back(ExpectedOutput(7, "outer if"));
-	expectedOutputs.push_back(ExpectedOutput(9, "rest of program"));
+	expectedOutputs.push_back(ExpectedOutput(2, "inner if"));
+	expectedOutputs.push_back(ExpectedOutput(4, "outer if"));
+	expectedOutputs.push_back(ExpectedOutput(6, "rest of program"));
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
@@ -589,11 +586,8 @@ TestResult KodeTests::NestedIf_OuterTrueInnerFalse() {
 	std::string name = "Nested If: Outer true, inner false";
 
 	std::vector<std::string> statements;
-	statements.push_back("bool foo = true");
-	statements.push_back("int bar = 3");
-	statements.push_back("int car = 2");
-	statements.push_back("if foo");
-	statements.push_back("if bar < car");
+	statements.push_back("if true");
+	statements.push_back("if false");
 	statements.push_back("out inner if");
 	statements.push_back("endif");
 	statements.push_back("out outer if");
@@ -601,8 +595,8 @@ TestResult KodeTests::NestedIf_OuterTrueInnerFalse() {
 	statements.push_back("out rest of program");
 
 	std::vector<ExpectedOutput> expectedOutputs;
-	expectedOutputs.push_back(ExpectedOutput(7, "outer if"));
-	expectedOutputs.push_back(ExpectedOutput(9, "rest of program"));
+	expectedOutputs.push_back(ExpectedOutput(4, "outer if"));
+	expectedOutputs.push_back(ExpectedOutput(6, "rest of program"));
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
@@ -610,11 +604,8 @@ TestResult KodeTests::NestedIf_OuterFalseInnerTrue() {
 	std::string name = "Nested If: Outer false, inner true";
 
 	std::vector<std::string> statements;
-	statements.push_back("bool foo = false");
-	statements.push_back("int bar = 3");
-	statements.push_back("int car = 2");
-	statements.push_back("if foo");
-	statements.push_back("if bar > car");
+	statements.push_back("if false");
+	statements.push_back("if true");
 	statements.push_back("out inner if");
 	statements.push_back("endif");
 	statements.push_back("out outer if");
@@ -622,7 +613,7 @@ TestResult KodeTests::NestedIf_OuterFalseInnerTrue() {
 	statements.push_back("out rest of program");
 
 	std::vector<ExpectedOutput> expectedOutputs;
-	expectedOutputs.push_back(ExpectedOutput(9, "rest of program"));
+	expectedOutputs.push_back(ExpectedOutput(6, "rest of program"));
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
@@ -630,11 +621,8 @@ TestResult KodeTests::NestedIf_BothFalse() {
 	std::string name = "Nested If: Both false";
 
 	std::vector<std::string> statements;
-	statements.push_back("bool foo = false");
-	statements.push_back("int bar = 3");
-	statements.push_back("int car = 2");
-	statements.push_back("if foo");
-	statements.push_back("if bar < car");
+	statements.push_back("if false");
+	statements.push_back("if false");
 	statements.push_back("out inner if");
 	statements.push_back("endif");
 	statements.push_back("out outer if");
@@ -642,7 +630,7 @@ TestResult KodeTests::NestedIf_BothFalse() {
 	statements.push_back("out rest of program");
 
 	std::vector<ExpectedOutput> expectedOutputs;
-	expectedOutputs.push_back(ExpectedOutput(9, "rest of program"));
+	expectedOutputs.push_back(ExpectedOutput(6, "rest of program"));
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
@@ -670,8 +658,8 @@ TestResult KodeTests::NestedIf_OneEnd() {
 	std::string name = "Nested If: One end";
 
 	std::vector<std::string> statements;
-	statements.push_back("if true");
-	statements.push_back("if true");
+	statements.push_back("if false");
+	statements.push_back("if false");
 	statements.push_back("out inner if");
 	statements.push_back("endif");
 	statements.push_back("out outer if");
@@ -679,11 +667,8 @@ TestResult KodeTests::NestedIf_OneEnd() {
 
 	std::vector<ExpectedOutput> expectedOutputs;
 	expectedOutputs.push_back(ExpectedOutput(0, "No endif instruction found to complete this if statement"));
-	expectedOutputs.push_back(ExpectedOutput(2, "inner if"));
 	expectedOutputs.push_back(ExpectedOutput(4, "outer if"));
 	expectedOutputs.push_back(ExpectedOutput(5, "rest of program"));
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-
-//change the tests that are not testing the boolean resolve of an if statement to just use "true" or "false" in the condition
