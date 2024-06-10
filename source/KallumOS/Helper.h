@@ -120,6 +120,11 @@ public:
 		return intable;
 	}
 
+	//returns the y value that a text line should be drawn at
+	static int GetNextLineY(int lineCount, int fontSize) { 
+		return (lineCount * MeasureText("X", fontSize) * 2); 
+	}
+
 private:
 	static void SetSeed() {
 		std::srand(std::time(nullptr));

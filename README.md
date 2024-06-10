@@ -6,164 +6,195 @@ This program is essentially just that, a program. However when using it, one sho
 
 Features are being added in all the time, and the release logs can be found [here](releaseNotes.md).
 
-#### OS usage
+## OS usage
 
--   Creating an account:
+### Creating an account:
 
-    1. To start using KOS, click "Create Account" at the bottom of the login screen after opening the app.
-    2. Enter your desired username, and password in the respective boxes
-    3. Click "Create"
-       If all your credentials were correct, the background screen will go green, if there is a problem, the screen will go red.
-       (Yes this will be updated in due time to use text based prompts. Bear with me :smirk:)
-    4. Click "Back to Login"
+1. To start using KOS, click "Create Account" at the bottom of the login screen after opening the app.
+2. Enter your desired username, and password in the respective boxes
+3. Click "Create"
+    If all your credentials were correct, the background screen will go green, if there is a problem, the screen will go red.
+    (Yes this will be updated in due time to use text based prompts. Bear with me :smirk:)
+4. Click "Back to Login"
 
--   Logging in:
+### Logging in:
 
-    1. Enter your user name and password into the respective boxes (I hope you haven't forgotten them already!)
-    2. Click "Login"
+1. Enter your user name and password into the respective boxes (I hope you haven't forgotten them already!)
+2. Click "Login"
 
-    Again, if there is a problem with your entries, the screen will go red
+Again, if there is a problem with your entries, the screen will go red
 
--   Opening apps
+### Opening apps
 
-    -   Once you are logged in, you should be presented with the "App launcher" app. This app allows you to look through the different apps that are available to you. (Try not to be overwhelmed by the ridiculous catelogue of apps and games that you can try)
-    -   If you do not see the app launcher, or you want to open another instance of the app launcher, press the "a" key without any KOS process focused in the task bar
-    -   Click on the up and down arrows at the top of the app launcher to scroll through the list
-    -   From the app launcher you can open any app you want by clicking within the app's red box
-    -   An app that is opened should show up in the task bar at the top of your screen
+-   Once you are logged in, you should be presented with the "App launcher" app. This app allows you to look through the different apps that are available to you. (Try not to be overwhelmed by the ridiculous catelogue of apps and games that you can try)
+-   If you do not see the app launcher, or you want to open another instance of the app launcher, press the "a" key without any KOS process focused in the task bar
+-   Click on the up and down arrows at the top of the app launcher to scroll through the list
+-   From the app launcher you can open any app you want by clicking within the app's red box
+-   An app that is opened should show up in the task bar at the top of your screen
 
--   Manipulating apps
+### Manipulating apps
 
-    -   Each app's process should have a bar that has the app's name displayed on the left side, and some buttons on the right side
-    -   To minimize an app, click the blue button to the right
-    -   To un minimuze an app, click on its "icon" in the task bar (yes, I know the icons currently do not have any pictures. Bear with me please :unamused:)
-    -   To close an app, click on the red button to the right
-    -   To move an app's box, click and hold anywhere that isn't a button on the app's bar, then move your mouse
-    -   If you are a pro (you probably are if you're using KOS), you can also close apps by opening the "Task Manager". This is also usefull if you cannot find your app in the task bar
+-   Each app's process should have a bar that has the app's name displayed on the left side, and some buttons on the right side
+-   To minimize an app, click the blue button to the right
+-   To un minimuze an app, click on its "icon" in the task bar (yes, I know the icons currently do not have any pictures. Bear with me please :unamused:)
+-   To close an app, click on the red button to the right
+-   To move an app's box, click and hold anywhere that isn't a button on the app's bar, then move your mouse
+-   If you are a pro (you probably are if you're using KOS), you can also close apps by opening the "Task Manager". This is also usefull if you cannot find your app in the task bar
 
--   File manager
+### File manager
 
-    Some apps have file managers (such as the Text Editor). The file manager will allow you to either choose a file, or save to a new file.
+Some apps have file managers (such as the Text Editor). The file manager will allow you to either choose a file, or save to a new file.
 
-    -   Open file:
+-   Open file:
 
-        When opening a file, you will be shown the different directories and files available in your KOS hard-drive.
+    When opening a file, you will be shown the different directories and files available in your KOS hard-drive.
 
-        1. You can enter into a directory by clicking on directories listed under the "Directories" section
-        2. Select a file you want by clicking on a file that is listed under the "Files" section. Your selected file will turn blue
-        3. Click the "Select" button
+    1. You can enter into a directory by clicking on directories listed under the "Directories" section
+    2. Select a file you want by clicking on a file that is listed under the "Files" section. Your selected file will turn blue
+    3. Click the "Select" button
 
-    -   Save a file:
+-   Save a file:
 
-        When saving a file you will be able to save the app's content to a new file of your choosing
+    When saving a file you will be able to save the app's content to a new file of your choosing
 
-        1. You can enter into a directory by clicking on directories listed under the "Directories" section
+    1. You can enter into a directory by clicking on directories listed under the "Directories" section
 
-        2. Type your file name into the text box at the top next to the "Save" button
+    2. Type your file name into the text box at the top next to the "Save" button
 
--   Kode
+### Kode
 
-    You can program in KOS. From here can you make your own operating system? :grin:
+You can program in KOS. From here can you make your own operating system? :grin:
 
-    When opening the app, you will have two lines of kode already written. To start, press the "F5" key and you will see the output in the console at the bottom.
+When opening the app, you will have two lines of kode already written. To start, press the "F5" key and you will see the output in the console at the bottom.
 
-    As you can see, the `out` command allows one to write something to the console.
+As you can see, the `out` command allows one to write something to the console.
 
-    If your output does not look like what you expected, press the "F3" button. This turns on debug mode, and you can see what each line of kode was actually doing.
+If your output does not look like what you expected, press the "F3" button. This turns on debug mode, and you can see what each line of kode was actually doing.
 
-    **Structure**
+#### Structure
 
-    -   Your kode consists of statements. A statement is ended by hitting the return key, which will start a new line.
-    -   Each statement consists of chunks, which are separated by a space. The first chunk is usually an instruction
-    -   To navigate which statement is being written to, you can use the up and down arrow keys. The currently focused statement will be in black, and all others will be in gray.
+-   **Segment**: Your kode consists of segments. A segment is an ordered set of statements. By default (with no if or while segments) all your kode will be in one big segment
+-   **Statement**: An operation is defined within a statement. This is analogous to a line of kode. A statement is ended by hitting the return key, which will start a new line.
+-   **Chunks**: Each statement consists of chunks, which are separated by a space. 
+    Chunks can be instructions, values, variables, operators
+    The first chunk of a statement is usually an instruction
 
-    **Instructions**
+To navigate which statement is being written to, you can use the up and down arrow keys. The currently focused statement will be in black, and all others will be in gray.
 
-    -   `out`
+#### Instructions
 
-        As mentioned earlier, out allows you to write to the console. It can either write a string to the console, or the contents of a variable eg: `out <variable name>` or the result of some operation eg: `out 5 + 3`
+`out` As mentioned earlier, out allows you to write to the console. It can either write a string to the console, or the contents of a variable or the result of some operation 
+    `eg: out <variable name>` 
+    `eg: out 5 + 3`
 
-    -   `int`
+`int` Allows the user to create an integer variable.
 
-        Allows the user to create an integer variable.
+-   To create an int, at least four chunks are required.
 
-        -   To create an int, at least four chunks are required.
+    1. The `int` instruction
+    2. The name of the int
+    3. An equals sign
+    4. The value your int should hold. (this can be a single chunk with a static value, or an arithmetic operation)
 
-            1. The "int" instruction
-            2. The name of the int
-            3. An equals sign
-            4. The value your int should hold. (this can be a single chunk with a static value, or an arithmetic operation)
+        eg: `int x = 0`
+        eg: `int y = 4 + 5`
 
-                eg: `int x = 0`
-                eg: `int y = 4 + 5`
+-   To manipulate the int you will need to provide at least three chunks.
 
-        -   To manipulate the int you will need to provide at least three chunks.
+    1. The int variable's identifier
+    2. An equals sign
+    3. The value to assign (this can be a single chunk with a static value, or an arithmetic operation)
 
-            1. The int variable's identifier
-            2. An equals sign
-            3. The value to assign (this can be a single chunk with a static value, or an arithmetic operation)
+`bool` Allows the user to create a boolean variable. This variable can be manipulated using different comparators and boolean operations
 
-    -   `bool`
+-   To create a bool, at least four chunks are needed
 
-        Allows the user to create a boolean variable. This variable can be manipulated using different comparators and boolean operations
+    1. The `bool` instruction
+    1. The name of the bool
+    1. An equals sign
+    1. The value your bool should hold. (this can be a single chunk with a static value, or a boolean operation)
 
-        -   To create a bool, at least four chunks are needed
+        eg: `bool a = true`
+        eg: `bool b = 5 <= 4 + 3`
+        eg: `bool c = true != false`
 
-            1. The "bool" instruction
-            2. The name of the bool
-            3. An equals sign
-            4. The value your bool should hold. (this can be a single chunk with a static value, or a boolean operation)
+-   To manipulate the bool you will need to provide at least three chunks.
 
-                eg: `bool a = true`
-                eg: `bool b = 5 <= 4 + 3`
-                eg: `bool c = true != false`
+    1. The bool variable's identifier
+    1. An equals sign
+    1. The value to assign (this can be a single chunk with a static value, or a boolean operation)
 
-        -   To manipulate the bool you will need to provide at least three chunks.
+`if` allows you to run or skip a segment. The amount of statements to skip can be defined by the placement of the 'endif' instruction which will also be described here
+-   The if can be defined as follows
 
-            1. The bool variable's identifier
-            2. An equals sign
-            3. The value to assign (this can be a single chunk with a static value, or a boolean operation)
+    1. The `if` instruction
+    1. A boolean value (this can be a single chunk with a static value, or a boolean operation)
+    1. On new lines, the set of statements to be within this if segment
+    1. After the final line, the `endif` instruction
 
-    -   Operations
+-   If an `if` is written without a corresponding 'endif' the if statement will be ignored, and your segment will be run regardless of the boolean condition
 
-        This is something that resolves to a value. Currently, this can be an arithmetic operation `4 * 5 - 1` or a boolean operation `true == true`.
+-   Nested if segments are supported. If one of the `endif` statements if forgotten, then the outer if will latch onto the one `endif`, and the inner if statement will be ignored
 
-        -   A valid arithmetic operation will have an odd number of chunks, and follows the following form:
 
-            1. A value (this can be a static value or a variable)
-            2. A supported symbol: +, -. /, \*, ^, \*\*)
-            3. A value (this can be a static value, a variable, or another operation)
+#### Operations
 
-        -   A valid boolean operation is slightly more complicated.
-            There are two main types of operation:
+This is something that resolves to a value. Currently, this can be an arithmetic operation `4 * 5 - 1` or a boolean operation `true == true`.
 
-            -   Value comparison
-                Here, a boolean comparator must be surrounded by two operations. The operations can either be arithmetic (in which case the boolean comparator will evaluate an integer comparison) or pure boolean algebra (in which case the comparator will evaluate a boolean comparison). The two surrounding operations must be of the same type. (You cannot have a boolean value on one side and an arithmetic value on the other)
-                It takes the following structure
+##### Arithmetic
+A valid arithmetic operation will have an odd number of chunks, and follows the following form:
 
-                1. lSide function
-                2. A supported comparator: ==, !=, <, <=, >, >=
-                3. rSide function (of the same type as the lSide)
+1. A value (this can be a static value or a variable)
+1. A supported symbol: 
+    - `+` addition
+    - `-` subtraction
+    - `/` division
+    - `*` multiplication
+    - `^` to the power of
+    - `**` to the power of
+1. A value (this can be a static value, a variable, or another operation)
 
-                `eg: 7 + 3 <= 40 - 20`
-                `eg: true || false == false`
+##### Boolean 
+A valid boolean operation is slightly more complicated.
+There are two main types of operation:
 
-            -   Pure boolean algebra
-                This is where a set of boolean variables are evaluated using boolean operators, and no comparators are present.
+**Value comparison**: Here, a boolean comparator must be surrounded by two operations. The operations can either be arithmetic (in which case the boolean comparator will evaluate an integer comparison) or pure boolean algebra (in which case the comparator will evaluate a boolean comparison). The two surrounding operations must be of the same type. (You cannot have a boolean value on one side and an arithmetic value on the other)
 
-                The structure is as follows
+It takes the following structure
 
-                1. Boolean value must be present (this can be a static boolean value or a boolean variable).
-                   This value can be preceded by a not operator: !, \`. This operator is treated like a normal chunk, so will have a space between it and the chunk being not-ed
-                2. (Optional) Boolean operator followed by another boolean value (this can be a static boolean value or a boolean variable).
+1. lSide function
+1. A supported comparator: ==, !=, <, <=, >, >=
+1. rSide function (of the same type as the lSide)
 
-        The ability to provide another operation means that this is recursive until the whole operation has been resolved.
+`eg: bool foo = 7 + 3 <= 40 - 20`
 
-        The current order of operations is the order you provide. It will ignore "bidmas" or expected order of boolean algebra from other languages (This may change in the future)
+**Pure boolean algebra**: This is where a set of boolean variables are evaluated using boolean operators, and no comparators are present.
 
-        Where an error is ran into (eg: Dividing by 0) it will output an error to the console, skip that operation and continue resolving the rest of the operation.
+The structure is as follows
 
-#### Development
+1.  Boolean value must be present (this can be a static boolean value or a boolean variable).
+    These values can be preceded by one of the "not operators": 
+    - `!`
+    - `` ` ``
+    - `¬`
+
+    This operator is treated like a normal chunk, so will have a space between it and the chunk being not-ed
+
+1. (Optional) Boolean comparator:  followed by another boolean value (this can be a static boolean value or a boolean variable).
+    - `&&` and
+    - `||` or (|| can't be typed out yet in the current version XD)
+    - `^^` or
+
+`eg: bool foo = false`
+`eg: bool bar = true || false == false`
+
+The ability to provide another operation means that this is recursive until the whole operation has been resolved.
+
+The current order of operations is the order you provide. It will ignore "bidmas" or expected order of boolean algebra from other languages (This may change in the future)
+
+Where an error is run into (eg: Dividing by 0) it will output an error to the console, skip that operation and continue resolving the rest of the operation.
+
+## Development
 
 To make an app for KOS you must inherit from the `Process` class. This gives you access to a few different functions.
 

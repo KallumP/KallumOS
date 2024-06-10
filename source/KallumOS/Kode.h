@@ -52,11 +52,14 @@ public:
 	void OnKeyPress(KeyPress* e);
 	void OnMousePress(MousePress* e);
 
+	void Run();
+	void SetStatements(std::vector<std::string> _statements) { statements = _statements; }
+	std::vector<ConsoleText> GetConsole() { return console; }
+
 private:
 
 	void DrawTextInput(Point offset);
 	void DrawConsole(Point offset);
-	int GetNextLineY(int lineCount) { return (lineCount * MeasureText("X", defaultFontSize) * 4); }
 
 	void NewStatement();
 	void SwitchStatement(int amount);
@@ -69,7 +72,6 @@ private:
 	void SetupSupportedSymbols();
 	void SetupSupportedInstructions();
 
-	void Run();
 	void HandleStatement(std::string statement, int statementNumber);
 
 	//instruction handling
@@ -90,7 +92,6 @@ private:
 
 	//helpers
 	Instruction CheckInstruction(std::vector<std::string> chunks);
-	int GetSegmentIndex(Segment* toGet);
 
 	bool VariableExists(std::string toCheck);
 	Variable* GetVariable(std::string toGet);
@@ -108,8 +109,6 @@ private:
 	int Multiply(int a, int b) { return a * b; }
 	int Divide(int a, int b) { return a / b; }
 	int Exponent(int a, int b) { return  std::pow(a, b); }
-
-	int fontSize;
 
 	int cursor;
 	int statementFocus;
@@ -131,5 +130,6 @@ private:
 	std::vector<ConsoleText> console;
 	int consoleHeight;
 	bool debug;
+	int fontSize;
 };
 

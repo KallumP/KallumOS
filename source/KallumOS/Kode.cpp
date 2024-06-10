@@ -4,22 +4,23 @@
 #include <algorithm>
 #include <vector>
 
+Kode::Kode() : Process("Kode") {
+
+	SetupSupportedInstructions();
+	SetupSupportedSymbols();
+}
 
 Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 
 	SetupSupportedInstructions();
 	SetupSupportedSymbols();
 
-	fontSize = 20;
-
 	//default statements
 	statements.push_back("out Hello world!");
 	statements.push_back("out Hello second line! 0:)");
-
 	//kode test statements are found at "kodeTests.txt"
 
-	statementFocus = statements.size() - 1;
-
+	fontSize = 20;
 	consoleHeight = 150;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
 	AddToConsoleOutput(1, "Press F3 to on debug outputs", BLUE);
@@ -59,7 +60,7 @@ void Kode::DrawTextInput(Point offset) {
 		//if there wasn't enough characters to fill a line
 		if (text.size() < charsPerLine) {
 
-			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (GetNextLineY(lineCount)), fontSize, toDraw);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + (Helper::GetNextLineY(lineCount, fontSize)), fontSize, toDraw);
 			lineCount++;
 
 		} else {
@@ -71,7 +72,7 @@ void Kode::DrawTextInput(Point offset) {
 			for (int j = 0; j < linesToDraw; j++) {
 
 				std::string line = text.substr(j * charsPerLine, charsPerLine);
-				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, toDraw);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, fontSize), fontSize, toDraw);
 				lineCount++;
 			}
 		}
@@ -95,7 +96,7 @@ void Kode::DrawConsole(Point offset) {
 
 		if (text.size() < charsPerLine) {
 
-			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, console[i].textColor);
+			kGraphics::DrawString(text, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, fontSize), fontSize, console[i].textColor);
 			lineCount++;
 
 		} else {
@@ -107,7 +108,7 @@ void Kode::DrawConsole(Point offset) {
 			for (int j = 0; j < linesToDraw; j++) {
 
 				std::string line = text.substr(j * charsPerLine, charsPerLine);
-				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + GetNextLineY(lineCount), fontSize, console[i].textColor);
+				kGraphics::DrawString(line, padding + offset.GetX(), offset.GetY() + padding + Helper::GetNextLineY(lineCount, fontSize), fontSize, console[i].textColor);
 				lineCount++;
 			}
 		}
@@ -220,8 +221,8 @@ void Kode::SetupSupportedSymbols() {
 	arithmeticOperators.push_back("-");
 	arithmeticOperators.push_back("*");
 	arithmeticOperators.push_back("/");
-	arithmeticOperators.push_back("^");
-	arithmeticOperators.push_back("**");
+	arithmeticOperators.push_back("^"); //power
+	arithmeticOperators.push_back("**"); //power
 
 	booleanOperators["&&"] = BoolOperator::And;
 	booleanOperators["||"] = BoolOperator::Or;
@@ -274,8 +275,10 @@ void Kode::Run() {
 			}
 		}
 
+		//TODO: unallocate all segments as they get used up
+
 		//moves onto the next segment
-		currentSegment = currentSegment->next; 
+		currentSegment = currentSegment->next;
 	}
 }
 
@@ -394,11 +397,11 @@ void Kode::HandleOut(int statementNumber, std::vector<std::string> chunks) {
 	}
 
 	//loops through all the chunks and gets the whole output
-	std::string operand = "";
-	for (int j = 1; j < chunks.size(); j++)
-		operand += chunks[j] + " ";
+	std::string toOutput = "";
+	for (int i = 1; i < chunks.size(); i++)
+		toOutput += toOutput == "" ? chunks[i] : " " + chunks[i];
 
-	AddToConsoleOutput(statementNumber, operand, WHITE);
+	AddToConsoleOutput(statementNumber, toOutput, WHITE);
 	return;
 }
 void Kode::HandleInt(int statementNumber, std::vector<std::string> chunks) {
@@ -590,7 +593,7 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		if (instruction == Instruction::If) {
 
 			foundIfs++; //keeps track of this if instruction
-		
+
 		} else if (instruction == Instruction::EndIf) {
 
 			foundIfs--; //notes that an endif instruction was found
@@ -630,7 +633,7 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		SetupJump(ifSeg, ifSeg->end);
 
 
-	//if condition was true no action is needed, because the previous segment will end and the if segment will start automatically
+	//if the condition was true no action is needed, because the previous segment will end and the if segment will start automatically
 	//consider putting a jump once the jumper is changed to jump to the start of the next segment
 
 	if (debug) {
@@ -639,25 +642,10 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
-	//todo
-
-	//nested if statement
-	//problem is, when inserting segments, they get added to the end
-	//this means that the order of segments will be wrong when there are nested segments
-
-	//this can be fixed by inserting the segment into the right place of the list
-	//and using a function to get the index of a segment
-	
-	//possibly move towards a list based segment storage to stop pointers becoming stale when inserting into the vector
-
-
 	//todo 
 	//if a jump is needed, jump before handling the next statement, not after handling the current statement 
-	//jump should happen at the start of the inner for loop of run
+	//jump should happen at the start of the inner for loop of run (both at the start of a segment, and at the start of each statement)
 	//this lets the jumper jump to the start of the next segment, rather than the end of the current segment
-
-	//the segments should be stored in a linked list
-	//the outer run loop should be a list traversal until the end of the list is reached
 }
 
 //returns if the chunks from the startIndex onwards make a valid arithmetic operation
@@ -747,26 +735,26 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 	if (endIndex == -1)
 		endIndex = chunks.size() - 1;
 
-	int numberOfCheckDelimeters = 0;
+	int numberOfComparatorDelimeters = 0;
 	int delimeterIndex = 0;
 
 	//loops through the chunks and checks how many comparators there were
 	for (int i = startIndex; i <= endIndex; i++) {
 		if (booleanComparators.find(chunks[i]) != booleanComparators.end()) {
-			numberOfCheckDelimeters++;
+			numberOfComparatorDelimeters++;
 			delimeterIndex = i;
 		}
 	}
 
 	//checks if there were too many == found
-	if (numberOfCheckDelimeters > 1) {
+	if (numberOfComparatorDelimeters > 1) {
 		if (debug)
 			AddToConsoleOutput(statementNumber, "Too many '==' entered", RED);
 		return false;
 	}
 
-	//checks if either side of the == has the same variable type
-	if (numberOfCheckDelimeters == 1) {
+	//checks if either side of the == has the same variable type (This is a boolean comparison)
+	if (numberOfComparatorDelimeters == 1) {
 
 		//if there wasnt enough chunks (needs to be atleast 3)
 		if (endIndex - startIndex < 2) {
@@ -782,6 +770,7 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 			return false;
 		}
 
+		//get the first chunk's type and store it in "type"
 		int checkIndex = startIndex;
 		std::string chunk = chunks[checkIndex];
 		VariableType type = VariableExists(chunk) ? GetVariable(chunk)->type : ChunkType(chunk);
@@ -789,7 +778,7 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 		bool lSide = false;
 		bool rSide = false;
 
-		//get the first chunk's type and store it in "type"
+		//checks if both sides of the comparator were of the same type 
 		if (type == VariableType::Int) {
 
 			lSide = ValidArithmeticOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
@@ -812,10 +801,11 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 		return lSide && rSide;
 	}
 
-	//checks for if no == were found
+	//no == were found (This is a boolean arithmetic)
 	int checkIndex = startIndex;
-	bool lookingForValue = true;
+	bool lookingForValue = true; //stores if the next chunk should be a value rather than an operator
 
+	//loops through each chunk to be resolved
 	while (checkIndex <= endIndex) {
 
 		std::string currentChunk = chunks[checkIndex];
@@ -825,34 +815,50 @@ bool Kode::ValidBooleanOperation(int statementNumber, std::vector<std::string> c
 			//if the current chunk is a "not" symbol
 			if (std::find(notOperators.begin(), notOperators.end(), currentChunk) != notOperators.end()) {
 
-				//if this was the last chunk, this is a bad structure
-				if (checkIndex == endIndex)
+				//if this was the last chunk, this is a bad structure (cannot have a not at the end)
+				if (checkIndex == endIndex) {
+					if (debug)
+						AddToConsoleOutput(statementNumber, "Cannot put a 'not' comparator at the end of a statement", RED);
 					return false;
+				}
 
 				lookingForValue = !lookingForValue; //pre flips this so that it reverts back when flipped at the end of the loop
 
 			} else {
 
 				//if the current chunk is not boolean, this is a bad structure
-				if (ChunkType(currentChunk) != VariableType::Bool)
+				if (ChunkType(currentChunk) != VariableType::Bool) {
+					if (debug)
+						AddToConsoleOutput(statementNumber, "All value type chunks must be of boolean type", RED);
 					return false;
+				}
 			}
 
 		} else {
 
 			//if the value was not found in the boolean operator list, this is a bad structure
-			if (booleanOperators.find(currentChunk) == booleanOperators.end())
+			if (booleanOperators.find(currentChunk) == booleanOperators.end()) {
+				if (debug)
+					AddToConsoleOutput(statementNumber, "Unsupported operator detected", RED);
 				return false;
+			}
 
 			//if this was the last chunk, this is a bad structure
-			if (checkIndex == endIndex)
+			if (checkIndex == endIndex) {
+				if (debug)
+					AddToConsoleOutput(statementNumber, "Cannot put an operator at the end of a statement", RED);
 				return false;
+			}
 		}
 
 		checkIndex++;//increase the check index
 		lookingForValue = !lookingForValue;//next value should be a boolean operator
+
+		//why am i doing a flip for "lookingForValue"
+		//why not set it to false after checking for operators, and true after checking for values
 	}
 
+	//good comparator statement structure
 	return true;
 }
 
@@ -925,10 +931,10 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 		bool currentValue;
 
 		//gets the current chunk value
-		if (std::find(notOperators.begin(), notOperators.end(), chunks[currentIndex]) != notOperators.end())
+		if (std::find(notOperators.begin(), notOperators.end(), chunks[currentIndex]) != notOperators.end()) // if the current chunk was a not symbol
 			currentValue = !StringToBool(ResolveChunkValue(chunks[(++currentIndex)++]));//gets the negated value of the next chunk and then increments
 		else
-			currentValue = StringToBool(ResolveChunkValue(chunks[currentIndex++]));//gets the negated value of the current chunk and then increments
+			currentValue = StringToBool(ResolveChunkValue(chunks[currentIndex++]));//gets the value of the current chunk and then increments
 
 		//handle combining the current value with the current resolved value
 		switch (nextOperator) {

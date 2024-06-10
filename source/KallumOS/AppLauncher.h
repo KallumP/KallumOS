@@ -6,6 +6,7 @@
 #include "Tetris.h"
 #include "Kode.h"
 #include "DiffMatrixApp.h"
+#include "tests/KodeTests.h"
 
 #include "Button.h"
 
