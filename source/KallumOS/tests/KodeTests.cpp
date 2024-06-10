@@ -4,7 +4,7 @@
 
 KodeTests::KodeTests(Point _position, Point _size) : Process("Kode tests", _position, _size) {
 
-	fontSize = 20;
+	fontSize = 10;
 	RunTests();
 }
 
@@ -62,27 +62,38 @@ void KodeTests::DrawTestOutputs(Point offset) {
 }
 
 void KodeTests::RunTests() {
-	testOutputs.push_back(IntAdd());
-	testOutputs.push_back(IntSub());
-	testOutputs.push_back(IntMult());
-	testOutputs.push_back(IntDiv());
-	testOutputs.push_back(IntDiv0());
-	testOutputs.push_back(IntCombinedTesting());
+	testOutputs.push_back(Int_Add());
+	testOutputs.push_back(Int_Sub());
+	testOutputs.push_back(Int_Mult());
+	testOutputs.push_back(Int_Div());
+	testOutputs.push_back(Int_Div0());
+	testOutputs.push_back(Int_CombinedTesting());
 
-	testOutputs.push_back(BoolEquals());
-	testOutputs.push_back(BoolNotEquals());
-	testOutputs.push_back(BoolMore());
-	testOutputs.push_back(BoolMoreEqual());
-	testOutputs.push_back(BoolLess());
-	testOutputs.push_back(BoolLessEqual());
-	testOutputs.push_back(BoolIntMix());
+	testOutputs.push_back(Bool_Equals());
+	testOutputs.push_back(Bool_NotEquals());
+	testOutputs.push_back(Bool_More());
+	testOutputs.push_back(Bool_MoreEqual());
+	testOutputs.push_back(Bool_Less());
+	testOutputs.push_back(Bool_LessEqual());
+	testOutputs.push_back(Bool_IntMix());
 
-	testOutputs.push_back(PureBoolAssign());
-	testOutputs.push_back(PureBoolEquals());
-	testOutputs.push_back(PureBoolNot());
-	testOutputs.push_back(PureBoolAnd());
-	testOutputs.push_back(PureBoolOr());
-	testOutputs.push_back(PureBoolCombined());
+	testOutputs.push_back(PureBool_Assign());
+	testOutputs.push_back(PureBool_Equals());
+	testOutputs.push_back(PureBool_Not());
+	testOutputs.push_back(PureBool_And());
+	testOutputs.push_back(PureBool_Or());
+	testOutputs.push_back(PureBool_Combined());
+
+	testOutputs.push_back(If_FalseCondition());
+	testOutputs.push_back(If_TrueCondition());
+	testOutputs.push_back(If_NoEnd());
+	testOutputs.push_back(If_NoIf());
+	testOutputs.push_back(NestedIf_BothTrue());
+	testOutputs.push_back(NestedIf_OuterTrueInnerFalse());
+	testOutputs.push_back(NestedIf_OuterFalseInnerTrue());
+	testOutputs.push_back(NestedIf_BothFalse());
+	testOutputs.push_back(NestedIf_NoEnds());
+	testOutputs.push_back(NestedIf_OneEnd());
 }
 
 TestResult KodeTests::KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> expectedOutputs) {
@@ -97,29 +108,29 @@ TestResult KodeTests::KodeTestRun(std::string name, std::vector<std::string> sta
 	int expectedOutputCount = expectedOutputs.size();
 	int actualOutputCount = generatedConsole.size();
 	if (expectedOutputCount != actualOutputCount)
-		return TestResult(name, "Number of outputs", Asserter::ValuesNotEqualMessage(std::to_string(expectedOutputCount), std::to_string(actualOutputCount)));
+		return TestResult(name, "Number of outputs", ValuesNotEqualMessage(std::to_string(expectedOutputCount), std::to_string(actualOutputCount)));
 
 	//goes through the different expected outputs
 	for (int i = 0; i < expectedOutputs.size(); i++) {
 
 		//value linked to correct statement
-		int expectedStatementLink = expectedOutputs[i].statementLink;
-		int actualStatementLink = generatedConsole[i].linkedToStatement;
-		if (expectedStatementLink != actualStatementLink)
-			return TestResult(name, "Statement link: " + std::to_string(i), Asserter::ValuesNotEqualMessage(std::to_string(expectedStatementLink), std::to_string(actualStatementLink)));
+		int expectedLink = expectedOutputs[i].statementLink;
+		int actualLink = generatedConsole[i].linkedToStatement;
+		if (expectedLink != actualLink)
+			return TestResult(name, "Statement link: " + std::to_string(i + 1), ValuesNotEqualMessage(std::to_string(expectedLink), std::to_string(actualLink)));
 
 		//output value
 		std::string expectedValue = expectedOutputs[i].value;
 		std::string actualValue = k.GetConsole()[i].text;
 		if (actualValue != expectedValue)
-			return TestResult(name, "Output value: " + std::to_string(i), Asserter::ValuesNotEqualMessage(expectedValue, actualValue));
+			return TestResult(name, "Output value: " + std::to_string(i + 1), ValuesNotEqualMessage(expectedValue, actualValue));
 	}
 
 	//no error :)
 	return TestResult(name, "", PassString);
 }
 
-TestResult KodeTests::IntAdd() {
+TestResult KodeTests::Int_Add() {
 	std::string name = "Int Add";
 
 	std::vector<std::string> statements;
@@ -133,7 +144,7 @@ TestResult KodeTests::IntAdd() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::IntSub() {
+TestResult KodeTests::Int_Sub() {
 	std::string name = "Int Subtract";
 
 	std::vector<std::string> statements;
@@ -147,7 +158,7 @@ TestResult KodeTests::IntSub() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::IntMult() {
+TestResult KodeTests::Int_Mult() {
 	std::string name = "Int Multiply";
 
 	std::vector<std::string> statements;
@@ -161,7 +172,7 @@ TestResult KodeTests::IntMult() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::IntDiv() {
+TestResult KodeTests::Int_Div() {
 	std::string name = "Int Divide";
 
 	std::vector<std::string> statements;
@@ -175,7 +186,7 @@ TestResult KodeTests::IntDiv() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::IntDiv0() {
+TestResult KodeTests::Int_Div0() {
 	std::string name = "Int Divide by 0";
 
 	std::vector<std::string> statements;
@@ -190,7 +201,7 @@ TestResult KodeTests::IntDiv0() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::IntCombinedTesting() {
+TestResult KodeTests::Int_CombinedTesting() {
 	std::string name = "Int Full";
 
 	std::vector<std::string> statements;
@@ -230,7 +241,11 @@ TestResult KodeTests::IntCombinedTesting() {
 	return KodeTestRun(name, statements, expectedOutputs);
 }
 
-TestResult KodeTests::BoolEquals() {
+//add tests for
+//invalid equation
+//invalid string to int
+
+TestResult KodeTests::Bool_Equals() {
 	std::string name = "Bool Equals";
 
 	std::vector<std::string> statements;
@@ -245,7 +260,7 @@ TestResult KodeTests::BoolEquals() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::BoolNotEquals() {
+TestResult KodeTests::Bool_NotEquals() {
 	std::string name = "Bool Not equals";
 
 	std::vector<std::string> statements;
@@ -260,7 +275,7 @@ TestResult KodeTests::BoolNotEquals() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::BoolMore() {
+TestResult KodeTests::Bool_More() {
 	std::string name = "Bool More than";
 
 	std::vector<std::string> statements;
@@ -275,7 +290,7 @@ TestResult KodeTests::BoolMore() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::BoolMoreEqual() {
+TestResult KodeTests::Bool_MoreEqual() {
 	std::string name = "Bool More than or equal to";
 
 	std::vector<std::string> statements;
@@ -293,7 +308,7 @@ TestResult KodeTests::BoolMoreEqual() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::BoolLess() {
+TestResult KodeTests::Bool_Less() {
 	std::string name = "Bool Less than";
 
 	std::vector<std::string> statements;
@@ -308,7 +323,7 @@ TestResult KodeTests::BoolLess() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::BoolLessEqual() {
+TestResult KodeTests::Bool_LessEqual() {
 	std::string name = "Bool Less than or equal to";
 
 	std::vector<std::string> statements;
@@ -326,7 +341,7 @@ TestResult KodeTests::BoolLessEqual() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::BoolIntMix() {
+TestResult KodeTests::Bool_IntMix() {
 	std::string name = "Bool and Int mix";
 
 	std::vector<std::string> statements;
@@ -352,7 +367,7 @@ TestResult KodeTests::BoolIntMix() {
 	return KodeTestRun(name, statements, expectedOutputs);
 }
 
-TestResult KodeTests::PureBoolAssign() {
+TestResult KodeTests::PureBool_Assign() {
 	std::string name = "Pure Bool Assign";
 
 	std::vector<std::string> statements;
@@ -367,7 +382,7 @@ TestResult KodeTests::PureBoolAssign() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::PureBoolEquals() {
+TestResult KodeTests::PureBool_Equals() {
 	std::string name = "Pure Bool Equals";
 
 	std::vector<std::string> statements;
@@ -382,8 +397,7 @@ TestResult KodeTests::PureBoolEquals() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-
-TestResult KodeTests::PureBoolNot() {
+TestResult KodeTests::PureBool_Not() {
 	std::string name = "Pure Bool Not";
 
 	std::vector<std::string> statements;
@@ -401,7 +415,7 @@ TestResult KodeTests::PureBoolNot() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::PureBoolAnd() {
+TestResult KodeTests::PureBool_And() {
 	std::string name = "Pure Bool And";
 
 	std::vector<std::string> statements;
@@ -422,7 +436,7 @@ TestResult KodeTests::PureBoolAnd() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::PureBoolOr() {
+TestResult KodeTests::PureBool_Or() {
 	std::string name = "Pure Bool Or";
 
 	std::vector<std::string> statements;
@@ -443,7 +457,7 @@ TestResult KodeTests::PureBoolOr() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
-TestResult KodeTests::PureBoolCombined() {
+TestResult KodeTests::PureBool_Combined() {
 	std::string name = "Pure Bool Combined";
 
 	std::vector<std::string> statements;
@@ -471,3 +485,205 @@ TestResult KodeTests::PureBoolCombined() {
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }
+
+//add tests for
+//invalid equation
+//invalid string to boolean
+//invalid arithmetic 
+
+TestResult KodeTests::If_FalseCondition() {
+	std::string name = "If False condition";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool foo = false");
+	statements.push_back("if foo");
+	statements.push_back("out inside if statement"); //should not run
+	statements.push_back("endif");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(4, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::If_TrueCondition() {
+	std::string name = "If True condition";
+
+	std::vector<std::string> statements;
+	statements.push_back("int bar = 3");
+	statements.push_back("int car = 2");
+	statements.push_back("if bar > car");
+	statements.push_back("out inside if statement"); //should run
+	statements.push_back("endif");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(3, "inside if statement"));
+	expectedOutputs.push_back(ExpectedOutput(5, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::If_NoEnd() {
+	std::string name = "If No end";
+
+	std::vector<std::string> statements;
+	statements.push_back("int bar = 3");
+	statements.push_back("int car = 2");
+	statements.push_back("if bar == car");
+	statements.push_back("out inside if statement"); //should run
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(2, "No endif instruction found to complete this if statement"));
+	expectedOutputs.push_back(ExpectedOutput(3, "inside if statement"));
+	expectedOutputs.push_back(ExpectedOutput(4, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::If_NoIf() {
+	std::string name = "If No if";
+
+	std::vector<std::string> statements;
+	statements.push_back("int bar = 3");
+	statements.push_back("int car = 2");
+	statements.push_back("out inside if statement"); //should run
+	statements.push_back("endif");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(2, "inside if statement"));
+	expectedOutputs.push_back(ExpectedOutput(4, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+
+//add tests for 
+//resolve boolean variables
+//resolve boolean pure boolean
+//resolve arithmetic boolean
+//invalid resolve boolean
+
+TestResult KodeTests::NestedIf_BothTrue() {
+	std::string name = "Nested If: Both true";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool foo = true");
+	statements.push_back("int bar = 3");
+	statements.push_back("int car = 2");
+	statements.push_back("if foo");
+	statements.push_back("if bar > car");
+	statements.push_back("out inner if");
+	statements.push_back("endif");
+	statements.push_back("out outer if");
+	statements.push_back("endif");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(5, "inner if"));
+	expectedOutputs.push_back(ExpectedOutput(7, "outer if"));
+	expectedOutputs.push_back(ExpectedOutput(9, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::NestedIf_OuterTrueInnerFalse() {
+	std::string name = "Nested If: Outer true, inner false";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool foo = true");
+	statements.push_back("int bar = 3");
+	statements.push_back("int car = 2");
+	statements.push_back("if foo");
+	statements.push_back("if bar < car");
+	statements.push_back("out inner if");
+	statements.push_back("endif");
+	statements.push_back("out outer if");
+	statements.push_back("endif");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(7, "outer if"));
+	expectedOutputs.push_back(ExpectedOutput(9, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::NestedIf_OuterFalseInnerTrue() {
+	std::string name = "Nested If: Outer false, inner true";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool foo = false");
+	statements.push_back("int bar = 3");
+	statements.push_back("int car = 2");
+	statements.push_back("if foo");
+	statements.push_back("if bar > car");
+	statements.push_back("out inner if");
+	statements.push_back("endif");
+	statements.push_back("out outer if");
+	statements.push_back("endif");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(9, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::NestedIf_BothFalse() {
+	std::string name = "Nested If: Both false";
+
+	std::vector<std::string> statements;
+	statements.push_back("bool foo = false");
+	statements.push_back("int bar = 3");
+	statements.push_back("int car = 2");
+	statements.push_back("if foo");
+	statements.push_back("if bar < car");
+	statements.push_back("out inner if");
+	statements.push_back("endif");
+	statements.push_back("out outer if");
+	statements.push_back("endif");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(9, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::NestedIf_NoEnds() {
+	std::string name = "Nested If: No ends";
+
+	std::vector<std::string> statements;
+	statements.push_back("if false");
+	statements.push_back("if false");
+	statements.push_back("out inner if");
+	statements.push_back("out outer if");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(0, "No endif instruction found to complete this if statement"));
+	expectedOutputs.push_back(ExpectedOutput(1, "No endif instruction found to complete this if statement"));
+	expectedOutputs.push_back(ExpectedOutput(2, "inner if"));
+	expectedOutputs.push_back(ExpectedOutput(3, "outer if"));
+	expectedOutputs.push_back(ExpectedOutput(4, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+TestResult KodeTests::NestedIf_OneEnd() {
+
+	std::string name = "Nested If: One end";
+
+	std::vector<std::string> statements;
+	statements.push_back("if true");
+	statements.push_back("if true");
+	statements.push_back("out inner if");
+	statements.push_back("endif");
+	statements.push_back("out outer if");
+	statements.push_back("out rest of program");
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(0, "No endif instruction found to complete this if statement"));
+	expectedOutputs.push_back(ExpectedOutput(2, "inner if"));
+	expectedOutputs.push_back(ExpectedOutput(4, "outer if"));
+	expectedOutputs.push_back(ExpectedOutput(5, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+
+//change the tests that are not testing the boolean resolve of an if statement to just use "true" or "false" in the condition

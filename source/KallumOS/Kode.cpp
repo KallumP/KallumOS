@@ -19,7 +19,7 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	statements.push_back("out Hello world!");
 	statements.push_back("out Hello second line! 0:)");
 	//kode test statements are found at "kodeTests.txt"
-	
+
 	fontSize = 20;
 	consoleHeight = 150;
 	AddToConsoleOutput(0, "Press F5 to compile your text", BLUE);
@@ -278,7 +278,7 @@ void Kode::Run() {
 		//TODO: unallocate all segments as they get used up
 
 		//moves onto the next segment
-		currentSegment = currentSegment->next; 
+		currentSegment = currentSegment->next;
 	}
 }
 
@@ -397,11 +397,11 @@ void Kode::HandleOut(int statementNumber, std::vector<std::string> chunks) {
 	}
 
 	//loops through all the chunks and gets the whole output
-	std::string operand = "";
-	for (int j = 1; j < chunks.size(); j++)
-		operand += chunks[j] + " ";
+	std::string toOutput = "";
+	for (int i = 1; i < chunks.size(); i++)
+		toOutput += toOutput == "" ? chunks[i] : " " + chunks[i];
 
-	AddToConsoleOutput(statementNumber, operand, WHITE);
+	AddToConsoleOutput(statementNumber, toOutput, WHITE);
 	return;
 }
 void Kode::HandleInt(int statementNumber, std::vector<std::string> chunks) {
@@ -593,7 +593,7 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		if (instruction == Instruction::If) {
 
 			foundIfs++; //keeps track of this if instruction
-		
+
 		} else if (instruction == Instruction::EndIf) {
 
 			foundIfs--; //notes that an endif instruction was found
