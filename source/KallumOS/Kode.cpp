@@ -16,9 +16,13 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	SetupSupportedSymbols();
 
 	//default statements
-	statements.push_back("out Hello world!");
-	statements.push_back("out Hello second line! 0:)");
-	//kode test statements are found at "kodeTests.txt"
+	//statements.push_back("out Hello world!");
+	//statements.push_back("out Hello second line! 0:)");
+	statements.push_back("int bar = 3");
+	statements.push_back("int car = 2");
+	statements.push_back("out inside if statement"); //should run
+	statements.push_back("endif");
+	statements.push_back("out rest of program");
 
 	fontSize = 20;
 	consoleHeight = 150;
@@ -256,34 +260,37 @@ void Kode::Run() {
 
 	jumper = Jumper();
 
-	currentSegment = new Segment(0, statements.size() - 1, nullptr); //the whole program as one segment
+	currentSegment = new Segment(0, statements.size() - 1, nullptr, SegmentType::Main); //the whole program as one segment
 
 	//keeps going until all segments have been executed
+	int indexToUse = currentSegment->start;
 	while (currentSegment != nullptr) {
 
 		//loops through each statement in this segment
-		for (int i = currentSegment->start; i <= currentSegment->end; i++) {
+		while (indexToUse <= currentSegment->end) {
 
-			HandleStatement(statements[i], i);
+			//if a jump was detected, break out of handling this segmenet
+			if (jumper.jump)
+				break;
 
-			//jumps to a statement if necessary
-			if (jumper.jump) {
-
-				currentSegment = jumper.segment;
-				i = jumper.statementIndex;
-				jumper.jump = false;
-			}
+			HandleStatement(statements[indexToUse], indexToUse);
+			indexToUse++;
 		}
 
-		//TODO: unallocate all segments as they get used up
+		if (jumper.jump) {//if jump, set the jump segment and jump index number
+			indexToUse = jumper.statementIndex;
+			currentSegment = jumper.segment;
+			jumper.jump = false;
 
-		//moves onto the next segment
-		currentSegment = currentSegment->next;
+		} else {//else, go to next segment and the start index
+			indexToUse = currentSegment->start;
+			currentSegment = currentSegment->next;
+		}
 	}
+	//todo: store a list to all memory allocated and then delete them after the run
 }
 
 void Kode::SetupJump(Segment* _segmentToJumpTo, int _statementIndexToJumpTo) {
-
 	jumper.segment = _segmentToJumpTo;
 	jumper.statementIndex = _statementIndexToJumpTo;
 	jumper.jump = true;
@@ -330,6 +337,9 @@ void Kode::HandleStatement(std::string statement, int statementIndex) {
 
 		case Instruction::If: //if statment instruction
 			HandleIf(statementIndex, chunks);
+			break;
+		case Instruction::EndIf:
+			HandleEndIf(statementIndex, chunks);
 			break;
 	}
 }
@@ -583,7 +593,7 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 	}
 
 	//find corresponding endif instruction
-	int endIfIndex = -1;
+	int endIfIndex = -1; //the index of the "endif" instruction
 	int foundIfs = 1;
 	for (int i = statementNumber + 1; i < currentSegment->end; i++) {
 
@@ -613,39 +623,25 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 	}
 
 	int ifStartIndex = statementNumber + 1;
+	Segment* ifSeg = new Segment(ifStartIndex, endIfIndex, currentSegment, SegmentType::If);
 
-	//create exit segment
-	Segment* exitSegment = new Segment(endIfIndex + 1, currentSegment->end, currentSegment->next);
-
-	//create if segment
-	Segment* ifSeg = new Segment(ifStartIndex, endIfIndex, exitSegment);
-
-	//restructure outer segment
-	currentSegment->end = statementNumber;
-	currentSegment->next = ifSeg;
-
-
-	//if condition was false
 	bool conditionResolve = StringToBool(ResolveBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1));
-	if (!conditionResolve)
+	if (conditionResolve) //if condition was true
+		SetupJump(ifSeg, ifStartIndex);//sets up a jump to the start of the if statement
 
-		//sets up a jump to the end of the if statement
-		SetupJump(ifSeg, ifSeg->end);
-
-
-	//if the condition was true no action is needed, because the previous segment will end and the if segment will start automatically
-	//consider putting a jump once the jumper is changed to jump to the start of the next segment
+	else //if condition was false
+		SetupJump(currentSegment, endIfIndex + 1);//sets up a jump to the line after the endif instruction
 
 	if (debug) {
 		std::string message = "If statement [" + std::to_string(ifStartIndex) + " - " + std::to_string(endIfIndex) + "] " + BoolToString(conditionResolve);
 		AddToConsoleOutput(statementNumber, message, BLUE);
 		return;
 	}
+}
 
-	//todo 
-	//if a jump is needed, jump before handling the next statement, not after handling the current statement 
-	//jump should happen at the start of the inner for loop of run (both at the start of a segment, and at the start of each statement)
-	//this lets the jumper jump to the start of the next segment, rather than the end of the current segment
+void Kode::HandleEndIf(int statementNumber, std::vector<std::string> chunks) {
+	if (currentSegment->type == SegmentType::If)
+		SetupJump(currentSegment->next, currentSegment->end + 1); //sets up a jump to the line after the end if
 }
 
 //returns if the chunks from the startIndex onwards make a valid arithmetic operation

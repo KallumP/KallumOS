@@ -9,18 +9,22 @@ enum class BoolOperator { Null, And, Or };
 enum class BoolComparator { Equal, NotEqual, Less, LessEqual, More, MoreEqual };
 
 enum class VariableType { Int, Bool, String, Null };
+enum class SegmentType { Main, If, While, Func };
 
 struct Segment {
-	Segment(int _start, int _end, Segment* _next)
+	Segment(int _start, int _end, Segment* _next, SegmentType _type)
 	{
 		start = _start;
 		end = _end;
 		next = _next;
+		type = _type;
 	}
 
 	int start;
 	int end;
 	Segment* next;
+	SegmentType type;
+
 };
 struct Variable {
 	std::string identifier;
@@ -83,6 +87,8 @@ private:
 	void HandleBool(int statementNumber, std::vector<std::string> chunks);
 	void HandleAssign(int statementNumber, std::vector<std::string> chunks);
 	void HandleIf(int statementNumber, std::vector<std::string> chunks);
+
+	void HandleEndIf(int statementNumber, std::vector<std::string> chunks);
 
 	//variable edits
 	bool ValidArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);
