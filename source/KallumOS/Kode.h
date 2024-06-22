@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 
-enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign, If, EndIf };
+enum class Instruction { Empty, Error, NoInstruction, Out, Int, Bool, Assign, If, EndIf, While, EndWhile };
 enum class BoolOperator { Null, And, Or };
 enum class BoolComparator { Equal, NotEqual, Less, LessEqual, More, MoreEqual };
 
@@ -87,8 +87,10 @@ private:
 	void HandleBool(int statementNumber, std::vector<std::string> chunks);
 	void HandleAssign(int statementNumber, std::vector<std::string> chunks);
 	void HandleIf(int statementNumber, std::vector<std::string> chunks);
+	void HandleWhile(int statementNumber, std::vector<std::string> chunks);
 
 	void HandleEndIf(int statementNumber, std::vector<std::string> chunks);
+	void HandleEndWhile(int statementNumber, std::vector<std::string> chunks);
 
 	//variable edits
 	bool ValidArithmeticOperation(int statementNumber, std::vector<std::string> chunks, int startIndex, int endIndex = -1);

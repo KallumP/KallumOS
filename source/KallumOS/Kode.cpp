@@ -18,10 +18,12 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//default statements
 	//statements.push_back("out Hello world!");
 	//statements.push_back("out Hello second line! 0:)");
-	statements.push_back("int bar = 3");
-	statements.push_back("int car = 2");
-	statements.push_back("out inside if statement"); //should run
-	statements.push_back("endif");
+
+	statements.push_back("int foo = 3");
+	statements.push_back("while foo > 1");
+	statements.push_back("out inside while statement"); //should run
+	statements.push_back("foo = foo - 1");
+	statements.push_back("endwhile");
 	statements.push_back("out rest of program");
 
 	fontSize = 20;
@@ -250,6 +252,8 @@ void Kode::SetupSupportedInstructions() {
 	supportedInstructions["bool"] = Instruction::Bool;
 	supportedInstructions["if"] = Instruction::If;
 	supportedInstructions["endif"] = Instruction::EndIf;
+	supportedInstructions["while"] = Instruction::While;
+	supportedInstructions["endwhile"] = Instruction::EndWhile;
 }
 
 //runs the program
@@ -341,6 +345,13 @@ void Kode::HandleStatement(std::string statement, int statementIndex) {
 		case Instruction::EndIf:
 			HandleEndIf(statementIndex, chunks);
 			break;
+
+		case Instruction::While: //while statement instruction
+			HandleWhile(statementIndex, chunks);
+			break;
+		case Instruction::EndWhile:
+			HandleEndWhile(statementIndex, chunks);
+			break;
 	}
 }
 
@@ -392,19 +403,24 @@ void Kode::HandleOut(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 
+	bool oldDebug = debug;
+	debug = false; //turn off debug when checking for functions
 	if (ValidArithmeticOperation(statementNumber, chunks, 1)) { //checks if the operation to output is arithmetic
 
 		std::string operationResult = ResolveArithmeticOperation(statementNumber, chunks, 1);
 		AddToConsoleOutput(statementNumber, operationResult, WHITE);
+		debug = oldDebug;
 		return;
 
 	} else if (ValidBooleanOperation(statementNumber, chunks, 1)) { //checks if the operation to output is boolean
 
 		std::string operationResult = ResolveBooleanOperation(statementNumber, chunks, 1);
 		AddToConsoleOutput(statementNumber, operationResult, WHITE);
+		debug = oldDebug;
 		return;
 
 	}
+	debug = oldDebug;
 
 	//loops through all the chunks and gets the whole output
 	std::string toOutput = "";
@@ -581,14 +597,14 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 	//not enough chunks (needs the if and atleast a single boolean value)
 	if (chunks.size() < 2) {
 		if (debug)
-			AddToConsoleOutput(statementNumber, "Need to have two chunks for an if, needs to have 2", RED);
+			AddToConsoleOutput(statementNumber, "Need to have two chunks for an if", RED);
 		return;
 	}
 
 	//handles if the if condition was bad
 	if (!ValidBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1)) {
 		if (debug)
-			AddToConsoleOutput(statementNumber, "Invalid boolean condition for if statement", RED);
+			AddToConsoleOutput(statementNumber, "Invalid boolean condition provided for the if statement", RED);
 		return;
 	}
 
@@ -638,10 +654,81 @@ void Kode::HandleIf(int statementNumber, std::vector<std::string> chunks) {
 		return;
 	}
 }
+void Kode::HandleWhile(int statementNumber, std::vector<std::string> chunks) {
+
+	//not enough chunks (needs the while and atleast a single boolean value)
+	if (chunks.size() < 2) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Need to have two chunks for a while", RED);
+		return;
+	}
+
+	//handles if the if condition was bad
+	if (!ValidBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1)) {
+		if (debug)
+			AddToConsoleOutput(statementNumber, "Invalid boolean condition provided for the while statement", RED);
+		return;
+	}
+
+	//find the corresponding endwhile instruction
+	int endWhileIndex = -1; //the index of the "endwhile" instruction
+	int foundWhiles = 1;
+	for (int i = statementNumber + 1; i < currentSegment->end; i++) {
+
+		std::vector<std::string> toCheck = StatementToChunk(statements[i]);
+		Instruction instruction = CheckInstruction(toCheck);
+
+		if (instruction == Instruction::While) {
+
+			foundWhiles++; //keeps track of this while instruction
+
+		} else if (instruction == Instruction::EndWhile) {
+
+			foundWhiles--; //notes that an endwhile instruction was found
+
+			if (foundWhiles == 0) { // this endwhile doesn't belong to an inner while block
+
+				endWhileIndex = i;
+				break;
+			}
+		}
+	}
+
+	// no corresponding endwhile found
+	if (endWhileIndex == -1) {
+		AddToConsoleOutput(statementNumber, "No endwhile instruction found to complete this while statement", RED);
+		return;
+	}
+
+	int whileStartIndex = statementNumber + 1;
+	Segment* whileSeg = new Segment(whileStartIndex, endWhileIndex, currentSegment, SegmentType::While);
+
+	bool conditionResolve = StringToBool(ResolveBooleanOperation(statementNumber, chunks, 1, chunks.size() - 1));
+	if (conditionResolve) //while condition was true
+		SetupJump(whileSeg, whileStartIndex);//sets up a jump to the start of the while statement
+
+	else //while condition was false
+		SetupJump(currentSegment, endWhileIndex + 1);//sets up a jump to the line after the endwhile instruction
+
+	if (debug) {
+		std::string message = "While statement [" + std::to_string(endWhileIndex) + " - " + std::to_string(endWhileIndex) + "] " + BoolToString(conditionResolve);
+		AddToConsoleOutput(statementNumber, message, BLUE);
+		return;
+	}
+}
 
 void Kode::HandleEndIf(int statementNumber, std::vector<std::string> chunks) {
 	if (currentSegment->type == SegmentType::If)
 		SetupJump(currentSegment->next, currentSegment->end + 1); //sets up a jump to the line after the end if
+
+	//should also check that this end if was at the end of this statement
+}
+
+void Kode::HandleEndWhile(int statementNumber, std::vector<std::string> chunks) {
+	if (currentSegment->type == SegmentType::While)
+		SetupJump(currentSegment->next, currentSegment->start - 1); //sets up a jump to the line the while segment
+
+	//should also check that this end if was at the end of this statement
 }
 
 //returns if the chunks from the startIndex onwards make a valid arithmetic operation
