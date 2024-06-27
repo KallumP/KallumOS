@@ -18,13 +18,34 @@ Kode::Kode(Point _position, Point _size) : Process("Kode", _position, _size) {
 	//default statements
 	//statements.push_back("out Hello world!");
 	//statements.push_back("out Hello second line! 0:)");
+	//statements.push_back("");
 
-	statements.push_back("int foo = 3");
-	statements.push_back("while foo > 1");
-	statements.push_back("out inside while statement"); //should run
-	statements.push_back("foo = foo - 1");
+	statements.push_back("int input = 16");
+	statements.push_back("int current = 0");
+	statements.push_back("int previous = 1");
+	statements.push_back("int iterations = 1");
+	statements.push_back("int buffer = 1");
+	statements.push_back("bool exit = false");
+
+	statements.push_back("if input < 2");
+	statements.push_back("exit = true");
+	statements.push_back("current = 1");
+	statements.push_back("endif");
+
+	statements.push_back("while ! exit");
+
+	statements.push_back("buffer = current");
+	statements.push_back("current = current + previous");
+	statements.push_back("previous = buffer");
+	statements.push_back("iterations = iterations + 1");
+
+	statements.push_back("if iterations > input");
+	statements.push_back("exit = true");
+	statements.push_back("endif");
+
 	statements.push_back("endwhile");
-	statements.push_back("out rest of program");
+
+	statements.push_back("out current");
 
 	fontSize = 20;
 	consoleHeight = 150;
@@ -711,7 +732,7 @@ void Kode::HandleWhile(int statementNumber, std::vector<std::string> chunks) {
 		SetupJump(currentSegment, endWhileIndex + 1);//sets up a jump to the line after the endwhile instruction
 
 	if (debug) {
-		std::string message = "While statement [" + std::to_string(endWhileIndex) + " - " + std::to_string(endWhileIndex) + "] " + BoolToString(conditionResolve);
+		std::string message = "While statement [" + std::to_string(whileStartIndex) + " - " + std::to_string(endWhileIndex) + "] " + BoolToString(conditionResolve);
 		AddToConsoleOutput(statementNumber, message, BLUE);
 		return;
 	}
@@ -983,9 +1004,9 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 
 			lSide = ResolveBooleanOperation(statementNumber, chunks, startIndex, delimeterIndex - 1);
 			rSide = ResolveBooleanOperation(statementNumber, chunks, delimeterIndex + 1, endIndex);
-
+		
 		}
-
+		
 		//does the evaluation of the two side values
 		switch (comparator) {
 			case BoolComparator::Equal:
@@ -993,13 +1014,13 @@ std::string Kode::ResolveBooleanOperation(int statementNumber, std::vector<std::
 			case BoolComparator::NotEqual:
 				return BoolToString(lSide != rSide);
 			case BoolComparator::Less:
-				return BoolToString(lSide < rSide);
+				return BoolToString(std::stoi(lSide) < std::stoi(rSide));
 			case BoolComparator::LessEqual:
-				return BoolToString(lSide <= rSide);
+				return BoolToString(std::stoi(lSide) <= std::stoi(rSide));
 			case BoolComparator::More:
-				return BoolToString(lSide > rSide);
+				return BoolToString(std::stoi(lSide) > std::stoi(rSide));
 			case BoolComparator::MoreEqual:
-				return BoolToString(lSide >= rSide);
+				return BoolToString(std::stoi(lSide) >= std::stoi(rSide));
 		}
 	}
 
