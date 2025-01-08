@@ -94,6 +94,8 @@ void KodeTests::RunTests() {
 	testOutputs.push_back(NestedIf_BothFalse());
 	testOutputs.push_back(NestedIf_NoEnds());
 	testOutputs.push_back(NestedIf_OneEnd());
+
+	testOutputs.push_back(MiscFibonacci());
 }
 
 TestResult KodeTests::KodeTestRun(std::string name, std::vector<std::string> statements, std::vector<ExpectedOutput> expectedOutputs) {
@@ -669,6 +671,66 @@ TestResult KodeTests::NestedIf_OneEnd() {
 	expectedOutputs.push_back(ExpectedOutput(0, "No endif instruction found to complete this if statement"));
 	expectedOutputs.push_back(ExpectedOutput(4, "outer if"));
 	expectedOutputs.push_back(ExpectedOutput(5, "rest of program"));
+
+	return KodeTestRun(name, statements, expectedOutputs);
+}
+
+
+TestResult KodeTests::MiscFibonacci() {
+	std::string name = "miscellaneous Fibonacci numbers";
+
+	std::vector<std::string> statements;
+	statements.push_back("int input = 20");
+	statements.push_back("int current = 0");
+	statements.push_back("int previous = 1");
+	statements.push_back("int iterations = 1");
+	statements.push_back("int buffer = 1");
+	statements.push_back("bool exit = false");
+
+	statements.push_back("if input < 2");
+	statements.push_back("exit = true");
+	statements.push_back("current = 1");
+	statements.push_back("endif");
+
+	statements.push_back("while ! exit");
+
+	statements.push_back("buffer = current");
+	statements.push_back("current = current + previous");
+	statements.push_back("previous = buffer");
+	statements.push_back("iterations = iterations + 1");
+
+	statements.push_back("if iterations > input");
+	statements.push_back("exit = true");
+	statements.push_back("endif");
+
+	statements.push_back("out current");
+	statements.push_back("endwhile");
+	statements.push_back("out done");
+
+
+
+	std::vector<ExpectedOutput> expectedOutputs;
+	expectedOutputs.push_back(ExpectedOutput(18, "1"));
+	expectedOutputs.push_back(ExpectedOutput(18, "1"));
+	expectedOutputs.push_back(ExpectedOutput(18, "2"));
+	expectedOutputs.push_back(ExpectedOutput(18, "3"));
+	expectedOutputs.push_back(ExpectedOutput(18, "5"));
+	expectedOutputs.push_back(ExpectedOutput(18, "8"));
+	expectedOutputs.push_back(ExpectedOutput(18, "13"));
+	expectedOutputs.push_back(ExpectedOutput(18, "21"));
+	expectedOutputs.push_back(ExpectedOutput(18, "34"));
+	expectedOutputs.push_back(ExpectedOutput(18, "55"));
+	expectedOutputs.push_back(ExpectedOutput(18, "89"));
+	expectedOutputs.push_back(ExpectedOutput(18, "144"));
+	expectedOutputs.push_back(ExpectedOutput(18, "233"));
+	expectedOutputs.push_back(ExpectedOutput(18, "377"));
+	expectedOutputs.push_back(ExpectedOutput(18, "610"));
+	expectedOutputs.push_back(ExpectedOutput(18, "987"));
+	expectedOutputs.push_back(ExpectedOutput(18, "1597"));
+	expectedOutputs.push_back(ExpectedOutput(18, "2584"));
+	expectedOutputs.push_back(ExpectedOutput(18, "4181"));
+	expectedOutputs.push_back(ExpectedOutput(18, "6765"));
+	expectedOutputs.push_back(ExpectedOutput(20, "done"));
 
 	return KodeTestRun(name, statements, expectedOutputs);
 }

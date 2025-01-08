@@ -68,6 +68,8 @@ public:
 	TestResult NestedIf_NoEnds();
 	TestResult NestedIf_OneEnd();
 
+	TestResult MiscFibonacci();
+
 	static std::string ValuesNotEqualMessage(std::string expected, std::string actual) { return "Expected: " + expected + " but recieved: " + actual; }
 	const std::string PassString = "Pass";
 
@@ -78,12 +80,18 @@ public:
 
 //found bugs
 
-//helper.h line 116
-//intable was being wrongly set to the converted int value casted to a bool
+//helper.h Intable() line 116
+//intable boolean was being wrongly set to the converted int value casted to a bool
 //which meant that any non-0 number returned true (seems like normal code flow)
 //but any 0 value returned false (even though it could be converted to an int)
 //caused by the intellisense asking me to save the return value of std::stoi (so i stupidly saved it into the bool)
 
-//kode.cpp line 402
-//used to combine all chunks with a " " on the end (including the last chunk)
+//kode.cpp HandleOut()
+//at the bottom of the function
+//used to combine all chunks with a " " on the end (which wrongly added one onto the last chunk)
 //This was not noticable until tests that checked the text out feature were failing
+
+//kode.cpp ResolveBooleanOperation
+//the < <= > >= operations were testing strings, which worked for small numbers
+//solution was to make those functions convert to int first
+//noticed when doing the fibonacci test, which used comparisons between biggers numbers

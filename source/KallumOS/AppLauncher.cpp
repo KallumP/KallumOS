@@ -155,7 +155,7 @@ void AppLauncher::SetupProcessInfos() {
 
 
 	launchCode = [this]() {
-		Kode* app = new Kode(Point(525, 60), Point(700, 500));
+		Kode* app = new Kode(Point(525, 60), Point(750, 720));
 		LaunchApp(app);
 	};
 	ProcessInfo kode = ProcessInfo("Kode", launchCode);
